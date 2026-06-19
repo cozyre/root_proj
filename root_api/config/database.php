@@ -1,7 +1,7 @@
 <?php
 class Database {
     private $host = "localhost";
-    private $db_name = "root_db";
+    private $db_name = "rootandroid";
     private $username = "root";
     private $password = "";
 
