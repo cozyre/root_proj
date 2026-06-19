@@ -1,26 +1,32 @@
 <?php
 class Database {
-    private $host = "localhost";
-    private $db_name = "rootandroid";
-    private $username = "root";
-    private $password = "";
+    private string $host     = "localhost";
+    private string $db_name  = "rootandroid";
+    private string $username = "root";
+    private string $password = "";
 
+    private ?PDO $conn = null;
 
-    public $conn;
-    public function connect() {
-        $this->conn = null;
+    public function connect(): PDO {
+        if ($this->conn !== null) return $this->conn;
+
         try {
             $this->conn = new PDO(
-                "mysql:host=" . $this->host . ";dbname=" . $this->db_name,
+                "mysql:host={$this->host};dbname={$this->db_name};charset=utf8mb4",
                 $this->username,
-                $this->password
+                $this->password,
+                [
+                    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES   => false,
+                ]
             );
-            $this->conn->exec("set names utf8");
-            echo "Database successfully connected.";
-        } catch(PDOException $e) {
-            echo "Connection Error: " . $e->getMessage();
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'data' => null, 'message' => 'Database connection failed']);
+            exit;
         }
+
         return $this->conn;
     }
 }
-
