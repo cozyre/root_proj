@@ -11,11 +11,11 @@ class User {
     public function findByIdentifier(string $identifier): ?array {
         $stmt = $this->db->prepare(
             "SELECT * FROM {$this->table}
-             WHERE (email = :identifier OR username = :identifier)
-             AND deleted_at IS NULL
-             LIMIT 1"
+            WHERE (email = :email OR username = :username)
+            AND deleted_at IS NULL
+            LIMIT 1"
         );
-        $stmt->execute(['identifier' => $identifier]);
+        $stmt->execute(['email' => $identifier, 'username' => $identifier]);
         return $stmt->fetch() ?: null;
     }
 
