@@ -18,6 +18,10 @@ $authCtrl = new AuthController($db);
 $groupModel = new GroupModel($db);
 $groupCtrl  = new GroupController($groupModel);
 
+$auth         = new AuthMiddleware();
+$accountModel = new AccountModel($db);
+$accountCtrl  = new AccountController($accountModel, $auth);
+
 match (true) {
     $method === 'POST' && $route === 'auth/register'
         => $authCtrl->register($body()),
@@ -33,6 +37,15 @@ match (true) {
 
     $method === 'GET' && $route === 'group/history'
         => $groupCtrl->history($_GET, $auth->requireAuth()),
+
+    $method === 'POST' && $route === 'account/order'
+        => $accountCtrl->order(),
+
+    $method === 'GET' && $route === 'account/status'
+        => $accountCtrl->status(),
+
+    $method === 'GET' && $route === 'account/groupDetail'
+        => $accountCtrl->groupDetail(),
 
     default => (function () use ($route, $method) {
         http_response_code(404);
