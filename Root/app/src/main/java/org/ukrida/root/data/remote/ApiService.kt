@@ -1,10 +1,14 @@
 package org.ukrida.root.data.remote
 
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.ukrida.root.data.model.*
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Query
 
 interface ApiService {
@@ -121,4 +125,64 @@ interface ApiService {
         @Query("route")    route: String = "devotion/getDates",
         @Query("group_id") groupId: Int
     ): Response<ApiResponse<List<DevotionDate>>>
+
+    //Journal -----------------------------------------------------------------
+    @POST("index.php")
+    suspend fun createJournal(
+        @Query("route") route: String = "journal/create",
+        @Body body: CreateJournalRequest
+    ): Response<ApiResponse<Journal>>
+
+    @GET("index.php")
+    suspend fun listJournals(
+        @Query("route")    route: String = "journal/list",
+        @Query("group_id") groupId: Int
+    ): Response<ApiResponse<List<Journal>>>
+
+    @POST("index.php")
+    suspend fun updateJournal(
+        @Query("route") route: String = "journal/update",
+        @Body body: UpdateJournalRequest
+    ): Response<ApiResponse<Journal>>
+
+    @POST("index.php")
+    suspend fun deleteJournal(
+        @Query("route") route: String = "journal/delete",
+        @Body body: DeleteJournalRequest
+    ): Response<ApiResponse<Unit>>
+
+    //Gallery -----------------------------------------------------------------
+    @GET("index.php")
+    suspend fun listImages(
+        @Query("route")    route: String = "gallery/list",
+        @Query("group_id") groupId: Int
+    ): Response<ApiResponse<List<GroupImage>>>
+
+    /**
+     * Upload an image (from device gallery OR camera).
+     * Android side: convert the URI/File to a MultipartBody.Part before calling.
+     * Both sources (camera + gallery) produce a File — the upload call is identical.
+     */
+    @Multipart
+    @POST("index.php")
+    suspend fun uploadImage(
+        @Query("route")     route: String = "gallery/upload",
+        @Part("group_id")   groupId: RequestBody,
+        @Part("caption")    caption: RequestBody?,
+        @Part            image: MultipartBody.Part
+    ): Response<ApiResponse<GroupImage>>
+
+    //Member -----------------------------------------------------------------
+    @GET("index.php")
+    suspend fun listMembers(
+        @Query("route")    route: String = "member/list",
+        @Query("group_id") groupId: Int
+    ): Response<ApiResponse<List<Member>>>
+
+    @GET("index.php")
+    suspend fun getMemberDetail(
+        @Query("route")    route: String = "member/detail",
+        @Query("user_id")  userId: Int,
+        @Query("group_id") groupId: Int
+    ): Response<ApiResponse<MemberDetail>>
 }

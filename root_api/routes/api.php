@@ -10,6 +10,13 @@ require_once __DIR__ . '/../models/ItineraryModel.php';
 require_once __DIR__ . '/../controllers/ItineraryController.php';
 require_once __DIR__ . '/../models/SongModel.php';
 require_once __DIR__ . '/../controllers/SongController.php';
+require_once __DIR__ . '/../models/JournalModel.php';
+require_once __DIR__ . '/../controllers/JournalController.php';
+require_once __DIR__ . '/../models/GroupImageModel.php';
+require_once __DIR__ . '/../controllers/GroupImageController.php';
+require_once __DIR__ . '/../models/MemberModel.php';
+require_once __DIR__ . '/../controllers/MemberController.php';
+
 
 $db     = (new Database())->connect();
 $method = $_SERVER['REQUEST_METHOD'];
@@ -36,13 +43,19 @@ $itineraryCtrl  = new ItineraryController($itineraryModel, $auth);
 $songModel = new SongModel($db);
 $songCtrl  = new SongController($songModel, $auth);
 
+$journalCtrl   = new JournalController(new JournalModel($db), $auth);
+$galleryCtrl   = new GroupImageController(new GroupImageModel($db), $auth);
+$memberCtrl    = new MemberController(new MemberModel($db), $auth);
+
 match (true) {
+    // register & login ------------------------------
     $method === 'POST' && $route === 'auth/register'
         => $authCtrl->register($body()),
 
     $method === 'POST' && $route === 'auth/login'
         => $authCtrl->login($body()),
 
+    // groups ----------------------------------------
     $method === 'GET' && $route === 'group/index'
         => $groupCtrl->index(),
 
@@ -52,6 +65,7 @@ match (true) {
     $method === 'GET' && $route === 'group/history'
         => $groupCtrl->history($_GET, $auth->requireAuth()),
 
+    // accounts --------------------------------------
     $method === 'POST' && $route === 'account/order'
         => $accountCtrl->order(),
 
@@ -61,32 +75,62 @@ match (true) {
     $method === 'GET' && $route === 'account/groupDetail'
         => $accountCtrl->groupDetail(),
 
+    // devotions ------------------------------------
     $method === 'GET' && $route === 'devotion/get'
         => $devotionCtrl->get(),
 
     $method === 'GET' && $route === 'devotion/getDates'
         => $devotionCtrl->getDates(),
 
+    // itinerary ------------------------------------
     $method === 'GET' && $route === 'itinerary/getByDate'
         => $itineraryCtrl->getByDate(),
 
     $method === 'GET' && $route === 'itinerary/getDates'
         => $itineraryCtrl->getDates(),
 
+    // songs ----------------------------------------
     $method === 'GET' && $route === 'song/list'
         => $songCtrl->list(),
 
-    $method === 'GET' && 'song/listByDate'
+    $method === 'GET' && $route ==='song/listByDate'
         => $songCtrl->listByDate(),
 
-    $method === 'GET' && 'song/get'
+    $method === 'GET' && $route ==='song/get'
         => $songCtrl->get(),
 
-    $method === 'GET' && 'song/search'
+    $method === 'GET' && $route ==='song/search'
         => $songCtrl->search(),
     
-    $method === 'GET' && 'song/browse'
+    $method === 'GET' && $route ==='song/browse'
         => $songCtrl->browse(),
+
+    // ── Journal ──────────────────────────────────────────────────────────────
+    $method === 'POST' && $route === 'journal/create'
+        => $journalCtrl->create(),
+ 
+    $method === 'GET'  && $route === 'journal/list'
+        => $journalCtrl->list(),
+ 
+    $method === 'POST' && $route === 'journal/update'
+        => $journalCtrl->update(),
+ 
+    $method === 'POST' && $route === 'journal/delete'
+        => $journalCtrl->delete(),
+ 
+    // ── Gallery ───────────────────────────────────────────────────────────────
+    $method === 'GET'  && $route === 'gallery/list'
+        => $galleryCtrl->list(),
+ 
+    $method === 'POST' && $route === 'gallery/upload'
+        => $galleryCtrl->upload(),
+ 
+    // ── Members ───────────────────────────────────────────────────────────────
+    $method === 'GET' && $route === 'member/list'
+        => $memberCtrl->list(),
+ 
+    $method === 'GET' && $route === 'member/detail'
+        => $memberCtrl->detail(),
 
     default => (function () use ($route, $method) {
         http_response_code(404);
