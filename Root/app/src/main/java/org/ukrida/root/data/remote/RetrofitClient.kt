@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 
-    // Emulator → 10.0.2.2, physical device → your PC's local IP
+    // Emulator -> 10.0.2.2, physical device → your PC's local IP
     private const val BASE_URL = "http://10.0.2.2/root_proj/root_api/public/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
