@@ -1,0 +1,143 @@
+<?php
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../middleware/AuthMiddleware.php';
+require_once __DIR__ . '/../controllers/AuthController.php';
+require_once __DIR__ . '/../models/GroupModel.php';
+require_once __DIR__ . '/../controllers/GroupController.php';
+require_once __DIR__ . '/../models/DevotionModel.php';
+require_once __DIR__ . '/../controllers/DevotionController.php';
+require_once __DIR__ . '/../models/ItineraryModel.php';
+require_once __DIR__ . '/../controllers/ItineraryController.php';
+require_once __DIR__ . '/../models/SongModel.php';
+require_once __DIR__ . '/../controllers/SongController.php';
+require_once __DIR__ . '/../models/JournalModel.php';
+require_once __DIR__ . '/../controllers/JournalController.php';
+require_once __DIR__ . '/../models/GroupImageModel.php';
+require_once __DIR__ . '/../controllers/GroupImageController.php';
+require_once __DIR__ . '/../models/MemberModel.php';
+require_once __DIR__ . '/../controllers/MemberController.php';
+
+
+$db     = (new Database())->connect();
+$method = $_SERVER['REQUEST_METHOD'];
+
+// Use query param instead of path
+$route  = $_GET['route'] ?? '';
+$body   = fn() => json_decode(file_get_contents('php://input'), true) ?? [];
+
+$auth     = new AuthMiddleware();
+$authCtrl = new AuthController($db);
+
+$groupModel = new GroupModel($db);
+$groupCtrl  = new GroupController($groupModel);
+
+$accountModel = new AccountModel($db);
+$accountCtrl  = new AccountController($accountModel, $auth);
+
+$devotionModel = new DevotionModel($db);
+$devotionCtrl  = new DevotionController($devotionModel, $auth);
+
+$itineraryModel = new ItineraryModel($db);
+$itineraryCtrl  = new ItineraryController($itineraryModel, $auth);
+
+$songModel = new SongModel($db);
+$songCtrl  = new SongController($songModel, $auth);
+
+$journalCtrl   = new JournalController(new JournalModel($db), $auth);
+$galleryCtrl   = new GroupImageController(new GroupImageModel($db), $auth);
+$memberCtrl    = new MemberController(new MemberModel($db), $auth);
+
+match (true) {
+    // register & login ------------------------------
+    $method === 'POST' && $route === 'auth/register'
+        => $authCtrl->register($body()),
+
+    $method === 'POST' && $route === 'auth/login'
+        => $authCtrl->login($body()),
+
+    // groups ----------------------------------------
+    $method === 'GET' && $route === 'group/index'
+        => $groupCtrl->index(),
+
+    $method === 'GET' && $route === 'group/show'
+        => $groupCtrl->show($_GET),
+
+    $method === 'GET' && $route === 'group/history'
+        => $groupCtrl->history($_GET, $auth->requireAuth()),
+
+    // accounts --------------------------------------
+    $method === 'POST' && $route === 'account/order'
+        => $accountCtrl->order(),
+
+    $method === 'GET' && $route === 'account/status'
+        => $accountCtrl->status(),
+
+    $method === 'GET' && $route === 'account/groupDetail'
+        => $accountCtrl->groupDetail(),
+
+    // devotions ------------------------------------
+    $method === 'GET' && $route === 'devotion/get'
+        => $devotionCtrl->get(),
+
+    $method === 'GET' && $route === 'devotion/getDates'
+        => $devotionCtrl->getDates(),
+
+    // itinerary ------------------------------------
+    $method === 'GET' && $route === 'itinerary/getByDate'
+        => $itineraryCtrl->getByDate(),
+
+    $method === 'GET' && $route === 'itinerary/getDates'
+        => $itineraryCtrl->getDates(),
+
+    // songs ----------------------------------------
+    $method === 'GET' && $route === 'song/list'
+        => $songCtrl->list(),
+
+    $method === 'GET' && $route ==='song/listByDate'
+        => $songCtrl->listByDate(),
+
+    $method === 'GET' && $route ==='song/get'
+        => $songCtrl->get(),
+
+    $method === 'GET' && $route ==='song/search'
+        => $songCtrl->search(),
+    
+    $method === 'GET' && $route ==='song/browse'
+        => $songCtrl->browse(),
+
+    // ── Journal ──────────────────────────────────────────────────────────────
+    $method === 'POST' && $route === 'journal/create'
+        => $journalCtrl->create(),
+ 
+    $method === 'GET'  && $route === 'journal/list'
+        => $journalCtrl->list(),
+ 
+    $method === 'POST' && $route === 'journal/update'
+        => $journalCtrl->update(),
+ 
+    $method === 'POST' && $route === 'journal/delete'
+        => $journalCtrl->delete(),
+ 
+    // ── Gallery ───────────────────────────────────────────────────────────────
+    $method === 'GET'  && $route === 'gallery/list'
+        => $galleryCtrl->list(),
+ 
+    $method === 'POST' && $route === 'gallery/upload'
+        => $galleryCtrl->upload(),
+ 
+    // ── Members ───────────────────────────────────────────────────────────────
+    $method === 'GET' && $route === 'member/list'
+        => $memberCtrl->list(),
+ 
+    $method === 'GET' && $route === 'member/detail'
+        => $memberCtrl->detail(),
+
+    default => (function () use ($route, $method) {
+        http_response_code(404);
+        echo json_encode([
+            'success' => false,
+            'data'    => null,
+            'message' => "Route [{$method}] {$route} not found",
+        ]);
+    })()
+};

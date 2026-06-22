@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 19, 2026 at 08:04 PM
+-- Generation Time: Jun 21, 2026 at 07:54 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -100,6 +100,20 @@ CREATE TABLE `group_images` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `group_songs`
+--
+
+CREATE TABLE `group_songs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `group_id` bigint(20) UNSIGNED NOT NULL,
+  `song_id` bigint(20) UNSIGNED NOT NULL,
+  `itenary_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `sort_order` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `itenaries`
 --
 
@@ -167,9 +181,8 @@ CREATE TABLE `notifications` (
 
 CREATE TABLE `songs` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `group_id` bigint(20) UNSIGNED NOT NULL,
   `title` varchar(200) NOT NULL,
-  `artist` varchar(150) DEFAULT NULL,
+  `author` varchar(150) DEFAULT NULL,
   `lyrics` longtext DEFAULT NULL,
   `audio_url` varchar(500) DEFAULT NULL,
   `sort_order` int(11) NOT NULL DEFAULT 0,
@@ -249,6 +262,15 @@ ALTER TABLE `group_images`
   ADD KEY `idx_group_images_group` (`group_id`,`image_type`);
 
 --
+-- Indexes for table `group_songs`
+--
+ALTER TABLE `group_songs`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_group_song_day` (`group_id`,`song_id`,`itenary_id`),
+  ADD KEY `song_id` (`song_id`),
+  ADD KEY `itenary_id` (`itenary_id`);
+
+--
 -- Indexes for table `itenaries`
 --
 ALTER TABLE `itenaries`
@@ -284,8 +306,7 @@ ALTER TABLE `notifications`
 -- Indexes for table `songs`
 --
 ALTER TABLE `songs`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_songs_group` (`group_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `users`
@@ -323,6 +344,12 @@ ALTER TABLE `groups`
 -- AUTO_INCREMENT for table `group_images`
 --
 ALTER TABLE `group_images`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `group_songs`
+--
+ALTER TABLE `group_songs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -394,6 +421,14 @@ ALTER TABLE `group_images`
   ADD CONSTRAINT `fk_group_images_group` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `group_songs`
+--
+ALTER TABLE `group_songs`
+  ADD CONSTRAINT `group_songs_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `group_songs_ibfk_2` FOREIGN KEY (`song_id`) REFERENCES `songs` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `group_songs_ibfk_3` FOREIGN KEY (`itenary_id`) REFERENCES `itenaries` (`id`) ON DELETE SET NULL;
+
+--
 -- Constraints for table `itenaries`
 --
 ALTER TABLE `itenaries`
@@ -418,12 +453,6 @@ ALTER TABLE `journals`
 ALTER TABLE `notifications`
   ADD CONSTRAINT `fk_notifications_group` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_notifications_sender` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `songs`
---
-ALTER TABLE `songs`
-  ADD CONSTRAINT `fk_songs_group` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
