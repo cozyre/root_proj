@@ -185,4 +185,15 @@ interface ApiService {
         @Query("user_id")  userId: Int,
         @Query("group_id") groupId: Int
     ): Response<ApiResponse<MemberDetail>>
+
+    @GET("index.php")
+    suspend fun getProfile(
+        @Query("route") route: String = "profile/get"
+    ): Response<ApiResponse<Profile>>
+
+    @POST("index.php")
+    suspend fun updateProfile(
+        @Query("route") route: String = "profile/update",
+        @Body body: UpdateProfileRequest
+    ): Response<ApiResponse<Profile>>
 }
