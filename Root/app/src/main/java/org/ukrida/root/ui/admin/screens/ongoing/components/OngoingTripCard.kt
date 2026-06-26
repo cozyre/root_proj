@@ -36,7 +36,7 @@ fun OngoingTripCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(180.dp)
-                    .background(BackgroundDark)
+                    .background(MainButton)
             )
         }
 

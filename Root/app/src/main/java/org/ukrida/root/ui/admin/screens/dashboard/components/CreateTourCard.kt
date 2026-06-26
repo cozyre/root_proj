@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.ukrida.root.ui.theme.BodyColor
-import org.ukrida.root.ui.theme.LogoutButton
+import org.ukrida.root.ui.theme.MainButton
 import org.ukrida.root.ui.theme.*
 
 @Composable
@@ -52,7 +52,7 @@ fun CreateTourCard(
         Button(
             onClick = onCreateTourClick,
             colors = ButtonDefaults.buttonColors(
-                containerColor = LogoutButton
+                containerColor = MainButton
             ),
             shape = RoundedCornerShape(50)
         ) {

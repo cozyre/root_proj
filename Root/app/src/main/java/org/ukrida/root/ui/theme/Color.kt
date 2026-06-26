@@ -19,7 +19,7 @@ val H1Color = Color(0xFFE8D8C9)
 val TitleColor = Color(0xFFC8A07A)
 
 val BodyColor = Color(0xFFFFFFFF)
-val LogoutButton = Color(0xFF6C7A49)
+val MainButton = Color(0xFF6C7A49)
 
 val RejectButton = Color(0xFF8C4747)
 
