@@ -19,38 +19,67 @@ import org.ukrida.root.data.remote.RetrofitClient
 import org.ukrida.root.data.repository.AuthRepository
 import org.ukrida.root.utils.Resource
 import android.util.Log
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlexDirection.Companion.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
+import org.ukrida.root.ui.admin.navigation.AppNavigation
+import org.ukrida.root.ui.admin.screens.RootScreen
+import org.ukrida.root.ui.theme.Inter
+import org.ukrida.root.ui.admin.screens.RootScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            //remove this later, this is only for testing
-            CoroutineScope(Dispatchers.IO).launch {
-                val repo = AuthRepository(RetrofitClient.instance)
-                val result = repo.login("admin@email.com", "your_password")
-                when (result) {
-                    is Resource.Success -> Log.d("AUTH_TEST", "Token: ${result.data.token}")
-                    is Resource.Error   -> Log.d("AUTH_TEST", "Error: ${result.message}")
-                    is Resource.Loading -> {}
-                }
+            RootTheme {
+                RootScreen()
+
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun Greeting(
+    name: String,
+    modifier: Modifier = Modifier
+) {
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RootTheme {
-        Greeting("Android")
+    Column(
+        modifier = modifier.padding(16.dp)
+    ) {
+
+        Text(
+            text = "TEST INTER",
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        Spacer(
+            modifier = Modifier.height(16.dp)
+        )
+
+        Text(
+            text = "INTER TEST",
+            fontFamily = Inter,
+            fontWeight = FontWeight.Normal,
+            fontSize = 40.sp
+        )
+
     }
 }
+
+    @Preview(showBackground = true)
+    @Composable
+    fun GreetingPreview() {
+        RootTheme {
+            Greeting("Android")
+        }
+    }
