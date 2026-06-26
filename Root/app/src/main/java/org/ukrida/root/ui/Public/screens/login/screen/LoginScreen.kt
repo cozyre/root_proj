@@ -40,7 +40,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun LoginScreen(onRegisterClick: () -> Unit) {
+fun LoginScreen(
+    onRegisterClick: () -> Unit,
+    onLoginSuccess: () -> Unit) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -148,9 +150,7 @@ fun LoginScreen(onRegisterClick: () -> Unit) {
                         },
                         modifier = Modifier.fillMaxWidth()
                     )
-
                     Spacer(modifier = Modifier.height(20.dp))
-
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
@@ -164,17 +164,11 @@ fun LoginScreen(onRegisterClick: () -> Unit) {
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(32.dp))
-
                     Button(
                         onClick = {
-                            when(selectedRole) {
-                                "Admin" -> {
-                                    // Login admin
-                                }
-                                else -> {
-                                    // Login user
-                                }
-                            }},
+                            // Sementara langsung masuk Home
+                            onLoginSuccess()
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(55.dp),
