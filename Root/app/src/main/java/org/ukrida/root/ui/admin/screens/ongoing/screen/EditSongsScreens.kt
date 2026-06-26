@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import org.ukrida.root.ui.admin.screens.ongoing.components.TimelineBar
 import org.ukrida.root.ui.admin.screens.ongoing.model.SongItem
-import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.EditDailyBreadViewModel
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.EditSongsViewModel
 import org.ukrida.root.ui.theme.*
 
@@ -99,7 +98,7 @@ fun EditSongsScreen(
                         .height(30.dp),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = LogoutButton,
+                        containerColor = MainButton,
                         contentColor = Color.White
                     ),
                     border = null,
@@ -172,7 +171,7 @@ fun EditSongsScreen(
                             .height(28.dp),
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = LogoutButton,
+                            containerColor = MainButton,
                             contentColor = H1Color
                         ),
                         border = null,
@@ -200,7 +199,7 @@ fun EditSongsScreen(
                     .fillMaxWidth()
                     .height(32.dp),
                 shape = RoundedCornerShape(26.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = LogoutButton)
+                colors = ButtonDefaults.buttonColors(containerColor = MainButton)
             ) {
                 Text(
                     text = "SUBMIT",
@@ -254,7 +253,7 @@ fun SongEditRow(
                 // Nama lagu (placeholder jika belum dipilih)
                 Text(
                     text = if (item.selectedSong.isNotEmpty()) item.selectedSong
-                    else "TITLE SONG X",
+                    else "TITLE SONG",
                     color = if (item.selectedSong.isNotEmpty()) H1Color
                     else Color(0xFF9E8878),
                     style = MaterialTheme.typography.bodyMedium,
@@ -273,7 +272,7 @@ fun SongEditRow(
                             .height(28.dp),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = Color(0xFF4A5C2A),
+                            containerColor = Color(0xFF6C7A49),
                             contentColor = H1Color
                         ),
                         border = null,

@@ -98,7 +98,7 @@ fun EditDailyBreadScreen(
                         .height(30.dp),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = LogoutButton,
+                        containerColor = MainButton,
                         contentColor = Color.White
                     ),
                     border = null,
@@ -246,7 +246,7 @@ fun EditDailyBreadScreen(
                     .fillMaxWidth()
                     .height(32.dp),
                 shape = RoundedCornerShape(26.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = LogoutButton)
+                colors = ButtonDefaults.buttonColors(containerColor = MainButton)
             ) {
                 Text(
                     text = "SUBMIT",

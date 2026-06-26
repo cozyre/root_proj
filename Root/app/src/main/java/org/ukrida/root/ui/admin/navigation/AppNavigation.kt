@@ -11,6 +11,7 @@ import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import org.ukrida.root.ui.admin.screens.dashboard.screen.DashboardScreen
 import org.ukrida.root.ui.admin.screens.approval.screen.ApprovalScreen
+import org.ukrida.root.ui.admin.screens.finished.screen.FinishedTripDetailScreen
 import org.ukrida.root.ui.admin.screens.hymn.screen.HymnForHimScreen
 import org.ukrida.root.ui.admin.screens.newtrip.screen.NewTripScreen
 import org.ukrida.root.ui.admin.screens.finished.screen.FinishedTripScreen
@@ -23,6 +24,7 @@ import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.EditDailyBreadViewMode
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.EditItineraryViewModel
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.EditSongsViewModel
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.OnGoingDetailViewModel
+import org.ukrida.root.ui.admin.screens.trip.screen.TripScreen
 
 
 @Composable
@@ -85,8 +87,6 @@ fun AppNavigation(
             route = Screen.EditItinerary.route,
             arguments = listOf(navArgument("tripId") { type = NavType.IntType })
         ) {
-            // ✅ Tidak perlu backStackEntry, tidak perlu factory
-            // SavedStateHandle otomatis menerima tripId dari navigation argument
             val viewModel: EditItineraryViewModel = viewModel()
 
             EditItineraryScreen(
@@ -117,6 +117,28 @@ fun AppNavigation(
                 navController = navController,
                 onMenuClick = onMenuClick,
                 viewModel = viewModel
+            )
+        }
+
+        composable(
+            route = Screen.FinishedDetail.route,
+            arguments = listOf(
+                navArgument("tripId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+
+            val tripId =
+                backStackEntry.arguments?.getInt("tripId") ?: 1
+
+            FinishedTripDetailScreen(onMenuClick = onMenuClick)
+        }
+
+        composable(Screen.Trip.route) {
+            TripScreen(
+                navController = navController,
+                onMenuClick = onMenuClick
             )
         }
 
