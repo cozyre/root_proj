@@ -30,6 +30,9 @@ require_once __DIR__ . '/../controllers/MemberController.php';
 require_once __DIR__ . '/../models/ProfileModel.php';
 require_once __DIR__ . '/../controllers/ProfileController.php';
 
+require_once __DIR__ . '/../models/AdminModel.php';
+require_once __DIR__ . '/../controllers/AdminController.php';
+
 $db     = (new Database())->connect();
 $method = $_SERVER['REQUEST_METHOD'];
 $route  = $_GET['route'] ?? '';
@@ -47,6 +50,7 @@ $journalCtrl   = new JournalController(new JournalModel($db), $auth);
 $galleryCtrl   = new GroupImageController(new GroupImageModel($db), $auth);
 $memberCtrl    = new MemberController(new MemberModel($db), $auth);
 $profileCtrl   = new ProfileController(new ProfileModel($db), $auth);
+$adminCtrl = new AdminController(new AdminModel(($db)), $auth);
 
 match (true) {
     // Auth
@@ -122,6 +126,31 @@ match (true) {
         => $profileCtrl->get(),
     $method === 'POST' && $route === 'profile/update'
         => $profileCtrl->update(),
+
+    // Admin
+    $method === 'GET'  && $route === 'admin/trips'
+        => $adminCtrl->trips(),
+    $method === 'POST' && $route === 'admin/trip/create'
+        => $adminCtrl->tripCreate(),
+    $method === 'POST' && $route === 'admin/trip/update'
+        => $adminCtrl->tripUpdate(),
+    $method === 'POST' && $route === 'admin/order/approve'
+        => $adminCtrl->orderApprove(),
+    $method === 'POST' && $route === 'admin/order/reject'
+        => $adminCtrl->orderReject(),
+    $method === 'POST' && $route === 'admin/member/remove'
+        => $adminCtrl->memberRemove(),
+    $method === 'POST' && $route === 'admin/gallery/removeImage'
+        => $adminCtrl->galleryRemoveImage(),
+    $method === 'POST' && $route === 'admin/song/create'
+        => $adminCtrl->songCreate(),
+    $method === 'POST' && $route === 'admin/song/addToGroup'
+        => $adminCtrl->songAddToGroup(),
+    $method === 'POST' && $route === 'admin/devotion/create'
+        => $adminCtrl->devotionCreate(),
+    $method === 'POST' && $route === 'admin/devotion/update'
+        => $adminCtrl->devotionUpdate(),
+
 
     default => (function () use ($route, $method) {
         http_response_code(404);
