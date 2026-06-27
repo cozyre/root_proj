@@ -15,12 +15,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.ukrida.root.R
+import org.ukrida.root.data.model.Group
 import org.ukrida.root.ui.admin.screens.ongoing.model.Trip
 import org.ukrida.root.ui.theme.*
 
 @Composable
 fun PriceTripCard(
-    trip: Trip,
+    group: Group,
     onClick: () -> Unit = {}
 ) {
 
@@ -51,7 +52,7 @@ fun PriceTripCard(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = trip.title,
+                text = group.name,
                 style = MaterialTheme.typography.titleLarge,
                 color = H1Color
             )
@@ -59,7 +60,7 @@ fun PriceTripCard(
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = trip.description,
+                text = group.description?:"",
                 style = MaterialTheme.typography.bodyLarge,
                 color = BodyColor
             )

@@ -1,5 +1,6 @@
 package org.ukrida.root.data.fake
 
+import androidx.room.util.copy
 import kotlinx.coroutines.delay
 import org.ukrida.root.data.dummy.DummyAccountData
 import org.ukrida.root.data.model.AccountStatus
@@ -7,6 +8,14 @@ import org.ukrida.root.data.model.GroupDetail
 import org.ukrida.root.data.model.OrderResult
 
 class FakeAccountRepository {
+
+    suspend fun getAllStatuses(): Result<List<AccountStatus>> {
+        delay(500)
+
+        return Result.success(
+            DummyAccountData.accountStatuses
+        )
+    }
 
     suspend fun orderTour(groupId: Int): Result<OrderResult> {
         delay(500)
@@ -21,11 +30,15 @@ class FakeAccountRepository {
     suspend fun getOrderStatus(groupId: Int): Result<AccountStatus> {
         delay(500)
 
-        return Result.success(
-            DummyAccountData.accountStatus.copy(
-                accountId = groupId
-            )
-        )
+        val accountStatus = DummyAccountData.accountStatuses.find {
+            it.accountId == groupId
+        }
+
+        return if (accountStatus != null) {
+            Result.success(accountStatus)
+        } else {
+            Result.failure(Exception("Account status not found"))
+        }
     }
 
     suspend fun getGroupDetail(groupId: Int): Result<GroupDetail> {

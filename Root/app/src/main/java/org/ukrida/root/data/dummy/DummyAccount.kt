@@ -8,15 +8,49 @@ object DummyAccountData {
         statusJoin = "pending",
         isPaid = false
     )
-
-    val accountStatus = AccountStatus(
-        accountId = 1,
-        groupName = "ROOT Tour Rohani Batch 1",
-        statusJoin = "approved",
-        joinDate = "2026-06-20",
-        approvedDate = "2026-06-22",
-        isPaid = true
+    val accountStatuses = listOf(
+        AccountStatus(
+            accountId = 1,
+            groupName = "ROOT Bandung 2025",
+            statusJoin = "pending",
+            joinDate = "2025-06-20",
+            approvedDate = null,
+            isPaid = false
+        ),
+        AccountStatus(
+            accountId = 5,
+            groupName = "ROOT Yogyakarta 2025",
+            statusJoin = "pending",
+            joinDate = "2025-06-21",
+            approvedDate = null,
+            isPaid = false
+        ),
+        AccountStatus(
+            accountId = 1,
+            groupName = "ROOT Bandung 2025",
+            statusJoin = "pending",
+            joinDate = "2025-06-20",
+            approvedDate = null,
+            isPaid = false
+        ),
+        AccountStatus(
+            accountId = 10,
+            groupName = "ROOT Yogyakarta 2025",
+            statusJoin = "pending",
+            joinDate = "2025-06-21",
+            approvedDate = null,
+            isPaid = false
+        ),
+        AccountStatus(
+            accountId = 20,
+            groupName = "ROOT Tour Rohani Batch 1",
+            statusJoin = "approved",
+            joinDate = "2026-06-20",
+            approvedDate = "2026-06-22",
+            isPaid = true
+        )
     )
+
 
     val groupDetail = GroupDetail(
         id = 1,
