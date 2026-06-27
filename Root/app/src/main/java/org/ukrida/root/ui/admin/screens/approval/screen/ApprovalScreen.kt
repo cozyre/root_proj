@@ -12,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.ukrida.root.ui.admin.screens.ongoing.screen.TopBar
 import org.ukrida.root.ui.theme.BackgroundDark
 
 @Composable
@@ -24,7 +25,7 @@ fun ApprovalScreen(onMenuClick: () -> Unit) {
             .verticalScroll(rememberScrollState())
     ) {
         Row(){
-            ApprovalTopBar(
+            TopBar(
                 onMenuClick = {
                     onMenuClick()
                 }
