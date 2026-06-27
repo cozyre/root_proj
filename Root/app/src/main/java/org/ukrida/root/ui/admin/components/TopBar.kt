@@ -1,4 +1,4 @@
-package org.ukrida.root.ui.admin.screens.approval.screen
+package org.ukrida.root.ui.admin.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -14,7 +14,8 @@ import androidx.compose.ui.unit.dp
 import org.ukrida.root.ui.theme.*
 
 @Composable
-fun ApprovalTopBar(
+fun TopBar(
+    title: String,
     onMenuClick: () -> Unit
 ) {
 
@@ -45,7 +46,7 @@ fun ApprovalTopBar(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "DASHBOARD",
+                text = title,
                 style = MaterialTheme.typography.titleLarge,
                 color = TitleColor
             )

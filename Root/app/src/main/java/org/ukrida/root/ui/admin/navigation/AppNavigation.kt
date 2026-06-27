@@ -57,25 +57,12 @@ fun AppNavigation(
         composable(Screen.OngoingTrip.route) {
             OnGoingScreen(navController = navController,  onMenuClick = onMenuClick)
         }
+
         composable(
             route = Screen.OngoingDetail.route,
-            arguments = listOf(
-                navArgument("tripId") { type = NavType.IntType }
-            )
-        ) { backStackEntry ->
-
-            // 1. Ambil tripId dari bundle argument navigasi secara aman (default ke 1 jika gagal)
-            val tripId = backStackEntry.arguments?.getInt("tripId") ?: 1
-
-            // 2. Buat ViewModel secara manual menggunakan Factory agar argument ter-inject sempurna
-            val viewModel: OnGoingDetailViewModel = viewModel(
-                factory = viewModelFactory {
-                    initializer {
-                        OnGoingDetailViewModel(tripId = tripId)
-                    }
-                }
-            )
-
+            arguments = listOf(navArgument("tripId") { type = NavType.IntType })
+        ) {
+            val viewModel: OnGoingDetailViewModel = viewModel()
             OnGoingDetailScreen(
                 navController = navController,
                 onMenuClick = onMenuClick,
@@ -88,7 +75,6 @@ fun AppNavigation(
             arguments = listOf(navArgument("tripId") { type = NavType.IntType })
         ) {
             val viewModel: EditItineraryViewModel = viewModel()
-
             EditItineraryScreen(
                 navController = navController,
                 onMenuClick = onMenuClick,
@@ -118,21 +104,6 @@ fun AppNavigation(
                 onMenuClick = onMenuClick,
                 viewModel = viewModel
             )
-        }
-
-        composable(
-            route = Screen.FinishedDetail.route,
-            arguments = listOf(
-                navArgument("tripId") {
-                    type = NavType.IntType
-                }
-            )
-        ) { backStackEntry ->
-
-            val tripId =
-                backStackEntry.arguments?.getInt("tripId") ?: 1
-
-            FinishedTripDetailScreen(onMenuClick = onMenuClick)
         }
 
         composable(Screen.Trip.route) {

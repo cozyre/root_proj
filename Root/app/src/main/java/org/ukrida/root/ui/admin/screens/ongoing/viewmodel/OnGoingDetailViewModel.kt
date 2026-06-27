@@ -1,5 +1,6 @@
 package org.ukrida.root.ui.admin.screens.ongoing.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -8,7 +9,8 @@ import org.ukrida.root.ui.admin.screens.ongoing.model.Trip
 
 // Langsung minta tripId: Int di konstruktor utamanya
 class OnGoingDetailViewModel(
-    val tripId: Int
+    val tripId: Int,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _tripState = MutableStateFlow<Trip?>(null)

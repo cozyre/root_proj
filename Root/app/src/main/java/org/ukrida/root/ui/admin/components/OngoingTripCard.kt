@@ -1,4 +1,4 @@
-package org.ukrida.root.ui.admin.screens.dashboard.components
+package org.ukrida.root.ui.admin.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,7 +18,7 @@ import org.ukrida.root.R
 import org.ukrida.root.ui.theme.*
 
 @Composable
-fun TripCard(
+fun OngoingTripCard(
     onClick: () -> Unit = {}
 ) {
 
