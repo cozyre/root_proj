@@ -4,6 +4,8 @@
     import androidx.navigation.compose.NavHost
     import androidx.navigation.compose.composable
     import androidx.navigation.compose.rememberNavController
+    import org.ukrida.root.ui.Public.screens.history.screen.HistoryScreen
+    import org.ukrida.root.ui.Public.screens.historydetail.screen.HistoryDetailScreen
     import org.ukrida.root.ui.Public.screens.home.screen.HomeScreen
     import org.ukrida.root.ui.Public.screens.promisedland.screen.PromisedLandScreen
 
@@ -26,6 +28,19 @@
             composable(PublicScreen.History.route) {
                 HistoryScreen(
                     navController = navController
+                )
+            }
+            composable(
+                route = PublicScreen.HistoryDetail.route
+            ){ backStackEntry ->
+
+                val groupId =
+                    backStackEntry.arguments
+                        ?.getString("groupId")
+                        ?.toInt() ?: 0
+                HistoryDetailScreen(
+                    navController,
+                    groupId
                 )
             }
         }

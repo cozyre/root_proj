@@ -18,7 +18,8 @@ import org.ukrida.root.data.model.Group
 @Composable
 fun HistorySection(
     historyGroups: List<Group>,
-    onSeeMoreClick: () -> Unit
+    onSeeMoreClick: () -> Unit,
+    onHistoryClick: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 20.dp)
@@ -47,7 +48,10 @@ fun HistorySection(
                 .forEach { group ->
                     Spacer(modifier = Modifier.height(20.dp))
                     HistoryCard(
-                        group = group
+                        group = group,
+                        onClick = {
+                            onHistoryClick?.invoke(group.id)
+                        }
                     )
                 }
         }

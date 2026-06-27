@@ -1,4 +1,4 @@
-package org.ukrida.root.ui.Public.screens.promisedland.screen
+package org.ukrida.root.ui.Public.screens.historydetail.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -21,73 +22,71 @@ import org.ukrida.root.ui.Public.components.PublicBottomNavigation
 import org.ukrida.root.ui.Public.components.PublicDestination
 import org.ukrida.root.ui.Public.components.PublicTopBar
 import org.ukrida.root.ui.Public.navigation.PublicScreen
-import org.ukrida.root.ui.Public.screens.promisedland.components.AllTripSection
-import org.ukrida.root.ui.Public.screens.promisedland.components.HistorySection
-import org.ukrida.root.ui.Public.screens.promisedland.viewmodel.PromisedLandViewModel
+import org.ukrida.root.ui.Public.screens.historydetail.components.GallerySection
+import org.ukrida.root.ui.Public.screens.historydetail.components.HistoryHeader
+import org.ukrida.root.ui.Public.screens.historydetail.components.GroupMemberSection
+import org.ukrida.root.ui.Public.screens.historydetail.viewmodel.HistoryDetailViewModel
 
 @Composable
-fun PromisedLandScreen(
-    navController: NavHostController
+fun HistoryDetailScreen(
+    navController: NavHostController,
+    groupId: Int
 ) {
-    val viewModel: PromisedLandViewModel = viewModel()
-    val historyGroups by viewModel.historyGroups.collectAsState()
-    val allTrips by viewModel.allTrips.collectAsState()
+
+    val viewModel: HistoryDetailViewModel = viewModel()
+
+    val group by viewModel.group.collectAsState()
+    val members by viewModel.members.collectAsState()
+    val gallery by viewModel.gallery.collectAsState()
+
+    LaunchedEffect(groupId) {
+        viewModel.loadHistoryDetail(groupId)
+    }
+
     Scaffold(
         containerColor = Color(0xFF2A2522),
         bottomBar = {
             PublicBottomNavigation(
                 currentDestination = PublicDestination.PROMISED_LAND,
                 onNavigate = { destination ->
-                    when (destination) {
-
-                        PublicDestination.HOME -> {
+                    when(destination){
+                        PublicDestination.HOME ->
                             navController.navigate(PublicScreen.Home.route)
-                        }
-
-                        PublicDestination.PROMISED_LAND -> {
-                            // Sudah berada di Promised Land
-                        }
-
-                        PublicDestination.GROUP -> {
+                        PublicDestination.PROMISED_LAND ->
+                            navController.popBackStack()
+                        PublicDestination.GROUP ->
                             navController.navigate(PublicScreen.Group.route)
-                        }
-
-                        PublicDestination.PROFILE -> {
+                        PublicDestination.PROFILE ->
                             navController.navigate(PublicScreen.Profile.route)
-                        }
                     }
                 }
             )
         }
-    ) { paddingValues ->
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(padding)
                 .background(Color(0xFF2A2522))
                 .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp)
         ) {
-            PublicTopBar(title = "PROMISED LAND")
-            Spacer(modifier = Modifier.height(12.dp))
-            HistorySection(
-                historyGroups = historyGroups,
-                onSeeMoreClick = {
-                    navController.navigate(
-                        PublicScreen.History.route
-                    )
-                },
-                onHistoryClick = { groupId ->
-                    navController.navigate(
-                        PublicScreen.HistoryDetail.createRoute(groupId)
-                    )
-                }
+            PublicTopBar(
+                title = "HISTORY"
             )
-            Spacer(modifier = Modifier.height(10.dp))
-            AllTripSection(
-                allTrips = allTrips
-            )
-
-            Spacer(modifier = Modifier.height(30.dp))
+            group?.let {
+                HistoryHeader(group = it)
+                Spacer(Modifier.height(30.dp))
+                GroupMemberSection(
+                    members = members,
+                    onMemberClick={},
+                )
+                Spacer(Modifier.height(30.dp))
+                GallerySection(
+                    gallery = gallery,
+                    onImageClick = {},
+                )
+            }
         }
     }
 }

@@ -20,13 +20,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.ukrida.root.R
 import org.ukrida.root.data.model.Group
+import androidx.compose.foundation.clickable
 
 @Composable
 fun HistoryCard(
-    group: Group
+    group: Group,
+        onClick: () -> Unit
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick()
+            },
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFF9A775B)
         ),
