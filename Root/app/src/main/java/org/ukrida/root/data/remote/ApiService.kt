@@ -199,6 +199,13 @@ interface ApiService {
 
     //Admin -----------------------------------------------------------------
 
+    @GET("index.php")
+    suspend fun getPendingAccounts(
+        @Query("route") route: String = "admin/accounts/pending",
+        @Query("group_id") groupId: Int? = null
+    ): Response<ApiResponse<List<PendingAccount>>>
+
+
     // Admin — Trips ─────────────────────────────────────────────────────────
     /** GET ?route=admin/trips  →  list of completed/archived trips */
     @GET("index.php")

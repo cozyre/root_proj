@@ -12,6 +12,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -27,14 +29,18 @@ import org.ukrida.root.ui.theme.DrawerBackground
 import org.ukrida.root.ui.theme.H1Color
 import org.ukrida.root.ui.theme.MainButton
 import org.ukrida.root.ui.theme.TitleColor
+import org.ukrida.root.utils.Resource
 
 @Composable
 fun DashboardScreen(
     onMenuClick: () -> Unit,
     viewModel: DashboardViewModel = viewModel()
 ) {
-    val approvals = viewModel.approvals
-    val latestTour = viewModel.latestTour
+    val approvalsState by viewModel.pendingApprovals.collectAsState()
+    val latestTourState by viewModel.latestTour.collectAsState()
+
+    val approvals = (approvalsState as? Resource.Success)?.data ?: emptyList()
+    val latestTour = (latestTourState as? Resource.Success)?.data
 
     Column(
         modifier = Modifier
@@ -97,12 +103,15 @@ fun DashboardScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                approvals.forEach { approval ->
-                    ApprovalCard(
-                        userName = approval.userName,
-                        groupName = approval.groupName
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
+                for (i in 0 until 3) {
+                    val approval = approvals.getOrNull(i)
+                    if (approval != null) {
+                        ApprovalCard(
+                            userName = approval.userName,
+                            groupName = approval.groupName
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
                 Row(
                     modifier = Modifier.fillMaxWidth(),

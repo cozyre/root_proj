@@ -50,7 +50,7 @@ $journalCtrl   = new JournalController(new JournalModel($db), $auth);
 $galleryCtrl   = new GroupImageController(new GroupImageModel($db), $auth);
 $memberCtrl    = new MemberController(new MemberModel($db), $auth);
 $profileCtrl   = new ProfileController(new ProfileModel($db), $auth);
-$adminCtrl = new AdminController(new AdminModel(($db)), $auth);
+$adminCtrl = new AdminController(new AdminModel(($db)), new AccountModel($db),$auth);
 
 match (true) {
     // Auth
@@ -150,6 +150,8 @@ match (true) {
         => $adminCtrl->devotionCreate(),
     $method === 'POST' && $route === 'admin/devotion/update'
         => $adminCtrl->devotionUpdate(),
+    $method === 'GET' && $route === 'admin/accounts/pending'
+        => $adminCtrl->pendingAccounts(),
 
 
     default => (function () use ($route, $method) {
