@@ -12,8 +12,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.ukrida.root.ui.admin.screens.ongoing.screen.TopBar
 import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.admin.components.*
 
 @Composable
 fun ApprovalScreen(onMenuClick: () -> Unit) {
@@ -26,6 +26,7 @@ fun ApprovalScreen(onMenuClick: () -> Unit) {
     ) {
         Row(){
             TopBar(
+                title = "Approval",
                 onMenuClick = {
                     onMenuClick()
                 }

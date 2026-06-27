@@ -27,5 +27,5 @@ sealed class Screen(val route: String) {
     object CreateTrip : Screen("create_trip")
 
     object FinishedDetail :
-        Screen("finished_detail/{tripId}")
+        Screen("finished_detail")
 }

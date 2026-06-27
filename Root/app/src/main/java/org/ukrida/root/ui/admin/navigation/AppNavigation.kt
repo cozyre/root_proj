@@ -106,16 +106,6 @@ fun AppNavigation(
             )
         }
 
-        composable(
-            route = Screen.FinishedTrip.route,
-            arguments = listOf(navArgument("tripId") { type = NavType.StringType })
-        ) {
-            val viewModel: EditDailyBreadViewModel = viewModel()
-            FinishedTripScreen(
-                onMenuClick = onMenuClick,
-            )
-        }
-
         composable(Screen.Trip.route) {
             TripScreen(
                 navController = navController,

@@ -1,4 +1,4 @@
-package org.ukrida.root.ui.admin.screens.ongoing.screen
+package org.ukrida.root.ui.admin.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
