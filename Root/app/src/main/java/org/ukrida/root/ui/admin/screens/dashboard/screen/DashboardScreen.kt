@@ -31,6 +31,9 @@ import org.ukrida.root.ui.theme.TitleColor
 @Composable
 fun DashboardScreen(
     onMenuClick: () -> Unit,
+    onApprovalClick: () -> Unit,
+    onRecentClick: () -> Unit,
+    onSongClick: () -> Unit,
     viewModel: DashboardViewModel = viewModel()
 ) {
     val approvals = viewModel.approvals
@@ -111,7 +114,7 @@ fun DashboardScreen(
                         text = "See More",
                         color = BodyColor,
                         modifier = Modifier
-                            .clickable {},
+                            .clickable {onApprovalClick()},
                     )
                 }
             }
@@ -155,7 +158,7 @@ fun DashboardScreen(
                     Text(
                         text = "See More",
                         color = BodyColor,
-                        modifier = Modifier.clickable {}
+                        modifier = Modifier.clickable {onSongClick()}
                     )
                 }
             }
@@ -198,7 +201,7 @@ fun DashboardScreen(
 
                     Text(
                         text = "See More",
-                        modifier = Modifier.clickable {},
+                        modifier = Modifier.clickable {onRecentClick()},
                         color = BodyColor
                     )
                 }

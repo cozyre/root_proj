@@ -42,7 +42,19 @@ fun AppNavigation(
 
         composable(Screen.Dashboard.route) {
             DashboardScreen(
-                onMenuClick = onMenuClick
+                onMenuClick = onMenuClick,
+
+                onApprovalClick = {
+                    navController.navigate(Screen.Approval.route)
+                },
+
+                onSongClick = {
+                    navController.navigate(Screen.HymnForHim.route)
+                },
+
+                onRecentClick = {
+                    navController.navigate(Screen.OngoingTrip.route)
+                }
             )
         }
 
@@ -109,7 +121,9 @@ fun AppNavigation(
         composable(Screen.Trip.route) {
             TripScreen(
                 navController = navController,
-                onMenuClick = onMenuClick
+                onMenuClick = onMenuClick,
+                onNewTripClick ={
+                    navController.navigate(Screen.NewTrip.route)}
             )
         }
 
