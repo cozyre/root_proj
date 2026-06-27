@@ -16,13 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.ukrida.root.ui.Public.screens.home.model.Mission
 
 @Composable
 fun MissionCard(
-    mission: Mission
+    text: String
 ) {
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -39,7 +37,7 @@ fun MissionCard(
         ) {
 
             Text(
-                text = mission.description,
+                text = text,
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White,
                 textAlign = TextAlign.Center,

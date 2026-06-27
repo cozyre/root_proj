@@ -15,10 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun VisionSection(
-    vision: String
-) {
-
+fun VisionSection() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -35,12 +32,10 @@ fun VisionSection(
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = vision,
+            text = "To become a trusted Christian pilgrimage community that strengthens faith and fellowship through meaningful journeys.",
             style = MaterialTheme.typography.bodyLarge,
             color = Color.White,
             textAlign = TextAlign.Center
         )
-
     }
-
 }

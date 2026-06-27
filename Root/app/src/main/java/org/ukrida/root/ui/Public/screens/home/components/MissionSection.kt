@@ -16,13 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.ukrida.root.ui.Public.screens.home.model.Mission
 
+private val missions = listOf(
+    "Growing closer to God through every pilgrimage.",
+    "Building strong Christian fellowship.",
+    "Serving others with love and compassion.",
+    "Providing meaningful spiritual journeys."
+)
 @Composable
-fun MissionSection(
-    missions: List<Mission>
-) {
-
+fun MissionSection() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -43,17 +45,11 @@ fun MissionSection(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             userScrollEnabled = false
         ) {
-
-            items(missions) {
-
+            items(missions) { mission ->
                 MissionCard(
-                    mission = it
+                    text = mission
                 )
-
             }
-
         }
-
     }
-
 }

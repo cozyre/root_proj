@@ -44,7 +44,7 @@ fun LoginScreen(
     onRegisterClick: () -> Unit,
     onLoginSuccess: () -> Unit) {
 
-    var email by remember { mutableStateOf("") }
+    var identifier by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var selectedRole by remember { mutableStateOf("User") }
 
@@ -140,8 +140,8 @@ fun LoginScreen(
                     Spacer(modifier = Modifier.height(32.dp))
 
                     OutlinedTextField(
-                        value = email,
-                        onValueChange = { email = it },
+                        value = identifier,
+                        onValueChange = { identifier = it },
                         label = {
                             Text(
                                 "Username / Email",

@@ -14,8 +14,6 @@ class MainActivity : ComponentActivity() {
             setContent {
                 AuthNavigation()
             }
-//            HomeScreen()
-//            PromisedLandScreen()
         }
     }
 }

@@ -12,18 +12,21 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import org.ukrida.root.ui.Public.screens.home.model.Trip
+import org.ukrida.root.R
+import org.ukrida.root.data.model.Group
 
 @Composable
 fun RecommendationCard(
-    trip: Trip
+    group: Group
 ) {
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -31,9 +34,11 @@ fun RecommendationCard(
         ),
         shape = RoundedCornerShape(18.dp)
     ) {
+
+        // Sementara masih pakai drawable lokal
         Image(
-            painter = painterResource(trip.imageRes),
-            contentDescription = trip.title,
+            painter = painterResource(R.drawable.pyramid),
+            contentDescription = group.name,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(220.dp)
@@ -45,26 +50,32 @@ fun RecommendationCard(
                 ),
             contentScale = ContentScale.Crop
         )
+
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = trip.title,
+                text = group.name,
                 style = MaterialTheme.typography.titleLarge,
                 color = Color.White
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = trip.description,
+                text = group.description ?: "",
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White
             )
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            //Kalau model sudah ada price bisa di ganti
             Text(
-                text = trip.price,
+                text = "Rp. 42.000.000",
                 style = MaterialTheme.typography.titleLarge,
-                color = Color.White
+                color = Color.White,
+                modifier = Modifier.align(Alignment.End)
             )
+
         }
+
     }
+
 }

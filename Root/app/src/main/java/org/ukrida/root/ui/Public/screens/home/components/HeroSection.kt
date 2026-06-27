@@ -16,10 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun HeroSection(
-    title: String,
-    description: String
-) {
+fun HeroSection() {
 
     Column(
         modifier = Modifier
@@ -38,7 +35,7 @@ fun HeroSection(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = title,
+            text = "ROOT",
             style = MaterialTheme.typography.titleLarge,
             color = Color.White
         )
@@ -46,7 +43,7 @@ fun HeroSection(
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = description,
+            text = "Walk together in faith and experience unforgettable spiritual journeys with PilgrimMate.",
             style = MaterialTheme.typography.bodyLarge,
             color = Color.White,
             textAlign = TextAlign.Center

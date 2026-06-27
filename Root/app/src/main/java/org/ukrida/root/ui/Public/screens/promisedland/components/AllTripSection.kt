@@ -1,4 +1,4 @@
-package org.ukrida.root.ui.Public.screens.home.components
+package org.ukrida.root.ui.Public.screens.promisedland.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,27 +12,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.ukrida.root.data.model.Group
+import org.ukrida.root.ui.Public.screens.home.components.RecommendationCard
+import java.time.Year
 
 @Composable
-fun RecommendationSection(
-    groups: List<Group>
+fun AllTripSection(
+    allTrips: List<Group>
 ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
             .padding(horizontal = 20.dp)
+            .fillMaxWidth()
     ) {
         Text(
-            text = "RECOMMENDATION TRIP",
+            text = "ALL TRIP ${Year.now().value}",
             style = MaterialTheme.typography.titleLarge,
             color = Color.White
         )
-        Spacer(modifier = Modifier.height(18.dp))
-        groups.forEach {
-            RecommendationCard(
-                group = it
+        Spacer(modifier = Modifier.height(20.dp))
+        if (allTrips.isEmpty()) {
+            Text(
+                text = "No trips available.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White.copy(alpha = 0.7f)
             )
-            Spacer(modifier = Modifier.height(20.dp))
+        } else {
+            allTrips.forEach { group ->
+                RecommendationCard(group = group)
+                Spacer(modifier = Modifier.height(20.dp))
+            }
         }
     }
 }

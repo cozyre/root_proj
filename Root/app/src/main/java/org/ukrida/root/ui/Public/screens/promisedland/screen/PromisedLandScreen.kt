@@ -1,4 +1,4 @@
-package org.ukrida.root.ui.Public.screens.home.screen
+package org.ukrida.root.ui.Public.screens.promisedland.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -21,35 +21,37 @@ import org.ukrida.root.ui.Public.components.PublicBottomNavigation
 import org.ukrida.root.ui.Public.components.PublicDestination
 import org.ukrida.root.ui.Public.components.PublicTopBar
 import org.ukrida.root.ui.Public.navigation.PublicScreen
-import org.ukrida.root.ui.Public.screens.home.components.BookingBanner
-import org.ukrida.root.ui.Public.screens.home.components.HeroSection
-import org.ukrida.root.ui.Public.screens.home.components.MissionSection
-import org.ukrida.root.ui.Public.screens.home.components.RecommendationSection
-import org.ukrida.root.ui.Public.screens.home.components.VisionSection
-import org.ukrida.root.ui.Public.screens.home.viewmodel.HomeViewModel
+import org.ukrida.root.ui.Public.screens.promisedland.components.AllTripSection
+import org.ukrida.root.ui.Public.screens.promisedland.components.HistorySection
+import org.ukrida.root.ui.Public.screens.promisedland.viewmodel.PromisedLandViewModel
 
 @Composable
-fun HomeScreen(
+fun PromisedLandScreen(
     navController: NavHostController
 ) {
-    val viewModel: HomeViewModel = viewModel()
-    val groups by viewModel.groups.collectAsState()
+    val viewModel: PromisedLandViewModel = viewModel()
+    val historyGroups by viewModel.historyGroups.collectAsState()
+    val allTrips by viewModel.allTrips.collectAsState()
     Scaffold(
         containerColor = Color(0xFF2A2522),
         bottomBar = {
             PublicBottomNavigation(
-                currentDestination = PublicDestination.HOME,
+                currentDestination = PublicDestination.PROMISED_LAND,
                 onNavigate = { destination ->
                     when (destination) {
+
                         PublicDestination.HOME -> {
-                            // Tidak perlu apa-apa
+                            navController.navigate(PublicScreen.Home.route)
                         }
+
                         PublicDestination.PROMISED_LAND -> {
-                            navController.navigate(PublicScreen.PromisedLand.route)
+                            // Sudah berada di Promised Land
                         }
+
                         PublicDestination.GROUP -> {
                             navController.navigate(PublicScreen.Group.route)
                         }
+
                         PublicDestination.PROFILE -> {
                             navController.navigate(PublicScreen.Profile.route)
                         }
@@ -61,23 +63,25 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFF2A2522))
                 .padding(paddingValues)
+                .background(Color(0xFF2A2522))
                 .verticalScroll(rememberScrollState())
         ) {
-            PublicTopBar(title = "HOME")
-            Spacer(modifier = Modifier.height(20.dp))
-            HeroSection()
-            Spacer(modifier = Modifier.height(50.dp))
-            VisionSection()
-            Spacer(modifier = Modifier.height(60.dp))
-            MissionSection()
-            Spacer(modifier = Modifier.height(60.dp))
-            RecommendationSection(groups = groups)
-            Spacer(modifier = Modifier.height(50.dp))
-            BookingBanner(
-                modifier = Modifier.padding(horizontal = 20.dp)
+            PublicTopBar(title = "PROMISED LAND")
+            Spacer(modifier = Modifier.height(12.dp))
+            HistorySection(
+                historyGroups = historyGroups,
+                onSeeMoreClick = {
+                    navController.navigate(
+                        PublicScreen.History.route
+                    )
+                }
             )
+            Spacer(modifier = Modifier.height(10.dp))
+            AllTripSection(
+                allTrips = allTrips
+            )
+
             Spacer(modifier = Modifier.height(30.dp))
         }
     }

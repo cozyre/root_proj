@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import org.ukrida.root.ui.Public.screens.home.screen.HomeScreen
+import org.ukrida.root.ui.Public.navigation.PublicNavigation
 import org.ukrida.root.ui.Public.screens.login.screen.LoginScreen
 import org.ukrida.root.ui.Public.screens.login.screen.RegisterScreen
 
@@ -47,7 +47,7 @@ fun AuthNavigation(){
                 )
             }
             composable("home") {
-                HomeScreen()
+                PublicNavigation()
             }
         }
     }

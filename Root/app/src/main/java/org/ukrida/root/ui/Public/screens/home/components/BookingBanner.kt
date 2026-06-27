@@ -42,7 +42,7 @@ fun BookingBanner(
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vel luctus justo.",
+                text = "Manage your booked pilgrimage and prepare for your journey.♦",
                 color = Color.White
             )
         }
