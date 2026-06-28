@@ -17,7 +17,8 @@ import java.time.Year
 
 @Composable
 fun AllTripSection(
-    allTrips: List<Group>
+    allTrips: List<Group>,
+    onTripClick: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -38,7 +39,12 @@ fun AllTripSection(
             )
         } else {
             allTrips.forEach { group ->
-                RecommendationCard(group = group)
+                RecommendationCard(
+                    group = group,
+                    onClick = {
+                        onTripClick(group.id)
+                    }
+                )
                 Spacer(modifier = Modifier.height(20.dp))
             }
         }

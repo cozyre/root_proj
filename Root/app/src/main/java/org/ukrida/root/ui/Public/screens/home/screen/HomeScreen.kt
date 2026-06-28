@@ -73,7 +73,14 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(60.dp))
             MissionSection()
             Spacer(modifier = Modifier.height(60.dp))
-            RecommendationSection(groups = groups)
+            RecommendationSection(
+                groups = groups,
+                onTripClick = { groupId ->
+                    navController.navigate(
+                        PublicScreen.Order.createRoute(groupId)
+                    )
+                }
+            )
             Spacer(modifier = Modifier.height(50.dp))
             BookingBanner(
                 modifier = Modifier.padding(horizontal = 20.dp)

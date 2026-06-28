@@ -17,6 +17,8 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,11 +34,20 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import org.ukrida.root.ui.Public.screens.login.viewmodel.RegisterViewModel
 
 @Composable
 fun RegisterScreen(
     onBackLogin: () -> Unit
 ) {
+    val viewModel: RegisterViewModel = viewModel()
+    val state by viewModel.uiState.collectAsState()
+    LaunchedEffect(state.registerSuccess){
+        if(state.registerSuccess){
+            onBackLogin()
+        }
+    }
 
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
@@ -113,9 +124,29 @@ fun RegisterScreen(
             }
 
             Spacer(Modifier.height(24.dp))
+            state.error?.let {
 
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = it,
+                    color = Color.Red
+                )
+
+            }
+            Spacer(Modifier.height(24.dp))
             Button(
-                onClick = { },
+                onClick = {
+                    viewModel.register(
+                        firstName,
+                        lastName,
+                        username,
+                        email,
+                        phone,
+                        password,
+                        confirmPassword
+                    )
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp),

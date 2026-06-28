@@ -15,7 +15,8 @@ import org.ukrida.root.data.model.Group
 
 @Composable
 fun RecommendationSection(
-    groups: List<Group>
+    groups: List<Group>,
+    onTripClick: (Int) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -28,9 +29,12 @@ fun RecommendationSection(
             color = Color.White
         )
         Spacer(modifier = Modifier.height(18.dp))
-        groups.forEach {
+        groups.forEach { group ->
             RecommendationCard(
-                group = it
+                group = group,
+                onClick = {
+                    onTripClick(group.id)
+                }
             )
             Spacer(modifier = Modifier.height(20.dp))
         }

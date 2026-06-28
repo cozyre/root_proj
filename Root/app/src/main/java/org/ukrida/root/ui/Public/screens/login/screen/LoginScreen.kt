@@ -21,6 +21,8 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,17 +40,27 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import org.ukrida.root.ui.Public.screens.login.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(
     onRegisterClick: () -> Unit,
     onLoginSuccess: () -> Unit) {
 
+    val viewModel: LoginViewModel = viewModel()
+    val state by viewModel.uiState.collectAsState()
+    LaunchedEffect(state.loginSuccess) {
+
+        if (state.loginSuccess) {
+            onLoginSuccess()
+        }
+
+    }
     var identifier by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var selectedRole by remember { mutableStateOf("User") }
 
-    val topBrown = Color(0xFF9A775B)
     val darkBrown = Color(0xFF2A2522)
     val cream = Color(0xFFE5C19A)
     val olive = Color(0xFF7A8A4A)
@@ -151,6 +163,7 @@ fun LoginScreen(
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(20.dp))
+
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
@@ -163,11 +176,22 @@ fun LoginScreen(
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth()
                     )
+                    state.error?.let {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = it,
+                            color = Color.Red,
+                            fontSize = 14.sp
+                        )
+                    }
                     Spacer(modifier = Modifier.height(32.dp))
                     Button(
                         onClick = {
-                            // Sementara langsung masuk Home
-                            onLoginSuccess()
+                            viewModel.login(
+                                identifier,
+                                password,
+                                selectedRole
+                            )
                         },
                         modifier = Modifier
                             .fillMaxWidth()

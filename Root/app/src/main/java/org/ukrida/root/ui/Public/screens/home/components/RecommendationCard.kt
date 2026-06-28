@@ -1,6 +1,7 @@
 package org.ukrida.root.ui.Public.screens.home.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,11 +25,15 @@ import org.ukrida.root.data.model.Group
 
 @Composable
 fun RecommendationCard(
-    group: Group
+    group: Group,
+    onClick: () -> Unit = {}
 ) {
-
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick()
+            },
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFF9A775B)
         ),

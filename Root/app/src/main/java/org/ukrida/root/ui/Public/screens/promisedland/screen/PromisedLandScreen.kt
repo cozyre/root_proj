@@ -84,9 +84,13 @@ fun PromisedLandScreen(
             )
             Spacer(modifier = Modifier.height(10.dp))
             AllTripSection(
-                allTrips = allTrips
+                allTrips = allTrips,
+                onTripClick = { groupId ->
+                    navController.navigate(
+                        PublicScreen.Order.createRoute(groupId)
+                    )
+                }
             )
-
             Spacer(modifier = Modifier.height(30.dp))
         }
     }
