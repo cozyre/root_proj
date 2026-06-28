@@ -15,4 +15,9 @@ sealed class PublicScreen(val route: String) {
         const val route = "order/{groupId}"
         fun createRoute(groupId: Int) = "order/$groupId"
     }
+    object Dashboard {
+        const val route = "dashboard/{groupId}"
+        fun createRoute(groupId: Int) =
+            "dashboard/$groupId"
+    }
 }

@@ -1,0 +1,87 @@
+package org.ukrida.root.ui.Public.screens.dashboard.components
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import org.ukrida.root.R
+
+@Composable
+fun DashboardTopBar(
+    title: String,
+    expanded: Boolean,
+    onExpandClick: () -> Unit,
+    onNotificationClick: () -> Unit = {}
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = 20.dp,
+                vertical = 16.dp
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+
+        Text(
+            text = "R",
+            style = MaterialTheme.typography.headlineMedium,
+            color = Color(0xFFE5C19A)
+        )
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineSmall,
+                color = Color(0xFFE5C19A)
+            )
+
+            IconButton(
+                onClick = onExpandClick
+            ) {
+
+                Icon(
+                    imageVector =
+                        if (expanded)
+                            Icons.Default.ArrowDropUp
+                        else
+                            Icons.Default.ArrowDropDown,
+                    contentDescription = null,
+                    tint = Color(0xFFE5C19A)
+                )
+
+            }
+
+        }
+        IconButton(
+            onClick = onNotificationClick
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Notifications,
+                contentDescription = null,
+                tint = Color(0xFFE5C19A)
+            )
+
+        }
+
+    }
+
+}

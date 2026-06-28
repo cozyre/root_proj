@@ -1,0 +1,48 @@
+package org.ukrida.root.ui.Public.screens.group.components
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import org.ukrida.root.data.model.Group
+import org.ukrida.root.utils.GroupStatus
+
+@Composable
+fun GroupSection(
+    groups: List<Group>,
+    onGroupClick: (Int) -> Unit = {}
+) {
+    Column(
+        modifier = Modifier.padding(horizontal = 20.dp)
+    ) {
+        Text(
+            text = "TAKE A TOUR!",
+            style = MaterialTheme.typography.titleLarge,
+            color = Color.White
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vel luctus justo. Etiam aliquet tempus felis eget imperdiet.",
+            style = MaterialTheme.typography.bodyLarge,
+            color = Color.White.copy(alpha = .8f)
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        groups.forEach { group ->
+            GroupCard(
+                group = group,
+                onClick = {
+                    if (group.statusJoin == GroupStatus.APPROVED) {
+                        onGroupClick(group.id)
+                    }
+                }
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+    }
+}

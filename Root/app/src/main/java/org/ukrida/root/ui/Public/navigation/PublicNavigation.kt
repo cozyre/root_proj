@@ -6,6 +6,8 @@
     import androidx.navigation.compose.composable
     import androidx.navigation.compose.rememberNavController
     import androidx.navigation.navArgument
+    import org.ukrida.root.ui.Public.screens.dashboard.screen.DashboardScreen
+    import org.ukrida.root.ui.Public.screens.group.screen.GroupScreen
     import org.ukrida.root.ui.Public.screens.history.screen.HistoryScreen
     import org.ukrida.root.ui.Public.screens.historydetail.screen.HistoryDetailScreen
     import org.ukrida.root.ui.Public.screens.home.screen.HomeScreen
@@ -60,6 +62,29 @@
                     navController = navController,
                     groupId = groupId
                 )
+            }
+            composable(
+                route = PublicScreen.Group.route
+            ) {
+                GroupScreen(
+                    navController = navController
+                )
+            }
+            composable(
+                route = PublicScreen.Dashboard.route,
+                arguments = listOf(
+                    navArgument("groupId") {
+                        type = NavType.IntType
+                    }
+                )
+            ) {
+                val groupId =
+                    it.arguments?.getInt("groupId") ?: 0
+                DashboardScreen(
+                    navController = navController,
+                    groupId = groupId
+                )
+
             }
         }
     }
