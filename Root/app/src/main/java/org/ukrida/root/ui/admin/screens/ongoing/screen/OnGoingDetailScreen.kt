@@ -19,13 +19,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import org.ukrida.root.ui.admin.navigation.Screen
+import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.screens.ongoing.components.*
-import org.ukrida.root.ui.admin.screens.ongoing.model.Documentation
-import org.ukrida.root.ui.admin.screens.ongoing.model.Member
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.OnGoingDetailViewModel
 import org.ukrida.root.ui.theme.BackgroundDark
 import org.ukrida.root.ui.theme.DrawerBackground
+import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.MemberUiModel
+import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.DocumentationUiModel
 
 @Composable
 fun OnGoingDetailScreen(
@@ -34,198 +34,258 @@ fun OnGoingDetailScreen(
     viewModel: OnGoingDetailViewModel,
     modifier: Modifier = Modifier
 ) {
-    val tripData by viewModel.tripState.collectAsState()
+    var showAllMembers by remember { mutableStateOf(false) }
+    var showAllDocs by remember { mutableStateOf(false) }
 
-    // Ambil properti dari tripData dengan nilai cadangan (fallback) jika data sedang memuat
+    val uiState by viewModel.uiState.collectAsState()
+    val tripData = uiState.tripState
+
     val currentTitle = tripData?.title ?: "Loading..."
     val currentDescription = tripData?.description ?: "Memuat deskripsi..."
     val currentDateRange = tripData?.dateRange ?: "DD - DD MM YYYY"
 
-    // --- STATE MANAGEMENT ---
+    // --- STATE DIALOG ---
     var showDeleteMemberDialog by remember { mutableStateOf(false) }
-    var selectedMemberToRemove by remember { mutableStateOf<Member?>(null) }
+    var selectedMemberToRemove by remember { mutableStateOf<MemberUiModel?>(null) }
 
     var showDeleteDocDialog by remember { mutableStateOf(false) }
-    var selectedDocToRemove by remember { mutableStateOf<Documentation?>(null) }
-
-    // Dummy List (Saat data MySQL siap, ganti dengan data dari ViewModel)
-    var memberList by remember {
-        mutableStateOf(
-            listOf(
-                Member("1", "Mike", android.R.drawable.ic_menu_gallery),
-                Member("2", "Josh", android.R.drawable.ic_menu_gallery),
-                Member("3", "Austin", android.R.drawable.ic_menu_gallery)
-            )
-        )
-    }
-
-    var docList by remember {
-        mutableStateOf(
-            listOf(
-                Documentation("1", android.R.drawable.ic_menu_gallery),
-                Documentation("2", android.R.drawable.ic_menu_gallery)
-            )
-        )
-    }
+    var selectedDocToRemove by remember { mutableStateOf<DocumentationUiModel?>(null) }
 
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> /* Aksi update URI gambar utama ke database MySQL */ }
+        onResult = { uri -> /* TODO: update foto utama */ }
     )
 
     Scaffold(
-        containerColor = BackgroundDark, // Gunakan BackgroundDark aplikasi Anda langsung di Scaffold
+        containerColor = BackgroundDark,
         topBar = {
-            // Memindahkan TopBar ke slot parameter resmi Scaffold agar posisinya mantap di atas
-            OnGoingTopBar(
+            TopBar(
                 title = "EDIT TOUR",
                 onMenuClick = onMenuClick
             )
         }
     ) { innerPadding ->
 
-        // Cukup gunakan SATU Column utama untuk membungkus seluruh konten scrollable
-        Column(
-            modifier = modifier
-                .padding(innerPadding) // innerPadding wajib dipasang di layout terluar dalam Scaffold
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 1. Breadcrumb (Poin 1)
-            Text(
-                text = "$currentTitle > Ongoing Trip > Detail",
-                color = DrawerBackground,
-                fontSize = 12.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { navController.popBackStack() }
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // 2. Timeline Bar Component (Poin 2)
-            TimelineBar(onStageClick = { stage ->
-                when (stage) {
-                    "Hymn for Him" ->
-                        navController.navigate("edit_songs/${viewModel.tripId}")
-                    "Itinerary" ->
-                        navController.navigate("edit_itinerary/${viewModel.tripId}")
-                    "Daily Bread" ->
-                        navController.navigate("daily_bread/${viewModel.tripId}")
-                    // "Hymn for Him" = halaman ini, tidak di-navigate ulang
-                }
-            })
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // 3. Trip Header Component (Poin 3)
-            TripHeader(
-                title = currentTitle,
-                description = currentDescription,
-                dateRange = currentDateRange,
-                onEditClick = { navController.navigate("EditSongsScreens") }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Image Placeholder Component
-            ImagePlaceholder(
-                imageUrl = tripData?.imageUrl,
-                onClick = {
-                    galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                }
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Section Group Member
-            Text(text = "GROUP MEMBER", color = Color(0xFFD4C5B9), fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(16.dp))
-
-            val gridRows = (memberList.size + 2) / 3  // hitung berapa baris yang dibutuhkan
-            val gridHeight = (gridRows * 100).dp       // sesuaikan 100.dp dengan tinggi 1 item MemberGridItem
-
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .height(gridHeight)
-            ) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(3),          // 3 kolom, otomatis wrap ke baris baru
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    userScrollEnabled = false              // scroll sudah ditangani Column luar
+        when {
+            uiState.isLoading -> {
+                Box(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    items(memberList, key = { it.id }) { member ->
-                        Box(contentAlignment = Alignment.Center) {
-                            MemberGridItem(
-                                member = member,
-                                onRemoveClick = {
-                                    selectedMemberToRemove = it
-                                    showDeleteMemberDialog = true
+                    CircularProgressIndicator(color = Color(0xFFC49A6C))
+                }
+            }
+
+            uiState.errorMessage != null -> {
+                Box(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = uiState.errorMessage!!,
+                        color = Color.White,
+                        fontSize = 14.sp
+                    )
+                }
+            }
+
+            else -> {
+                Column(
+                    modifier = modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Breadcrumb
+                    Text(
+                        text = "$currentTitle > Ongoing Trip > Detail",
+                        color = DrawerBackground,
+                        fontSize = 12.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { navController.popBackStack() }
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Timeline
+                    TimelineBar(onStageClick = { stage ->
+                        when (stage) {
+                            "Hymn for Him" -> navController.navigate("edit_songs/${viewModel.tripId}")
+                            "Itinerary" -> navController.navigate("edit_itinerary/${viewModel.tripId}")
+                            "Daily Bread" -> navController.navigate("daily_bread/${viewModel.tripId}")
+                        }
+                    })
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    // Trip Header
+                    TripHeader(
+                        title = currentTitle,
+                        description = currentDescription,
+                        dateRange = currentDateRange,
+                        onEditClick = { /* TODO: edit trip info */ }
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Image Placeholder
+                    ImagePlaceholder(
+                        imageUrl = tripData?.imageUrl,
+                        onClick = {
+                            galleryLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    // Section Group Member
+                    Text(
+                        text = "GROUP MEMBER",
+                        color = Color(0xFFD4C5B9),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    val memberList =
+                        if (showAllMembers)
+                            uiState.members
+                        else
+                            uiState.members.take(3)
+                    val gridRows = (memberList.size + 2) / 3
+                    val gridHeight = (gridRows * 100).dp
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(gridHeight)
+                    ) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(3),
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            userScrollEnabled = false
+                        ) {
+                            items(memberList, key = { it.id }) { member ->
+                                Box(contentAlignment = Alignment.Center) {
+                                    MemberGridItem(
+                                        member = member,
+                                        onRemoveClick = {
+                                            selectedMemberToRemove = it
+                                            showDeleteMemberDialog = true
+                                        }
+                                    )
                                 }
+                            }
+                        }
+                    }
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = if (showAllMembers) "See Less" else "See More",
+                            color = Color.White,
+                            fontSize = 12.sp,
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .clickable {
+                                    showAllMembers = !showAllMembers
+                                }
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Section Dokumentasi
+                    Text(
+                        text = "DOKUMENTASI",
+                        color = Color(0xFFD4C5B9),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    val docList =
+                        if (showAllDocs)
+                            uiState.documentations
+                        else
+                            uiState.documentations.take(6)
+                    val docGridRows = (docList.size + 1) / 2
+                    val docGridHeight = (docGridRows * 112).dp
+
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(docGridHeight)
+                    ) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            userScrollEnabled = false
+                        ) {
+                            items(docList, key = { it.id }) { doc ->
+                                DocumentationGridItem(
+                                    documentation = doc,
+                                    onRemoveClick = {
+                                        selectedDocToRemove = it
+                                        showDeleteDocDialog = true
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    if (uiState.documentations.size > 6) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = if (showAllDocs) "See Less" else "See More",
+                                color = Color.White,
+                                fontSize = 12.sp,
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd)
+                                    .clickable {
+                                        showAllDocs = !showAllDocs
+                                    }
                             )
                         }
                     }
+
+
+                    Spacer(modifier = Modifier.height(32.dp))
                 }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 6. Section Dokumentasi
-            Box(modifier = Modifier.height(240.dp)) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    userScrollEnabled = false
-                ) {
-                    items(docList) { doc ->
-                        DocumentationGridItem(
-                            documentation = doc,
-                            onRemoveClick = {
-                                selectedDocToRemove = it
-                                showDeleteDocDialog = true
-                            }
-                        )
-                    }
-                }
-            }
-
-            Text(
-                text = "See More",
-                color = Color.White,
-                fontSize = 12.sp,
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
-                    .clickable { /* See More Dokumentasi */ }
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 
-    // --- ALERTLOG CONFIRMATION (Poin 5 - Dua Kali Konfirmasi Hapus) ---
+    // Dialog hapus member
     if (showDeleteMemberDialog && selectedMemberToRemove != null) {
         AlertDialog(
             onDismissRequest = { showDeleteMemberDialog = false },
-            title = { Text(text = "Hapus Anggota") },
-            text = { Text(text = "Apakah Anda yakin ingin menghapus ${selectedMemberToRemove?.name}?") },
+            title = { Text("Hapus Anggota") },
+            text = { Text("Apakah Anda yakin ingin menghapus ${selectedMemberToRemove?.name}?") },
             confirmButton = {
                 Button(
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9534F)),
                     onClick = {
-                        memberList = memberList.filter { it.id != selectedMemberToRemove?.id }
+                        selectedMemberToRemove?.let { viewModel.removeMember(it) }
                         showDeleteMemberDialog = false
                         selectedMemberToRemove = null
                     }
-                ) {
-                    Text("Ya, Hapus", color = Color.White)
-                }
+                ) { Text("Ya, Hapus", color = Color.White) }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteMemberDialog = false }) { Text("Batal") }
@@ -233,22 +293,21 @@ fun OnGoingDetailScreen(
         )
     }
 
+    // Dialog hapus dokumentasi
     if (showDeleteDocDialog && selectedDocToRemove != null) {
         AlertDialog(
             onDismissRequest = { showDeleteDocDialog = false },
-            title = { Text(text = "Hapus Foto") },
-            text = { Text(text = "Apakah Anda yakin ingin menghapus foto dokumentasi ini?") },
+            title = { Text("Hapus Foto") },
+            text = { Text("Apakah Anda yakin ingin menghapus foto dokumentasi ini?") },
             confirmButton = {
                 Button(
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD9534F)),
                     onClick = {
-                        docList = docList.filter { it.id != selectedDocToRemove?.id }
+                        selectedDocToRemove?.let { viewModel.removeDocumentation(it) }
                         showDeleteDocDialog = false
                         selectedDocToRemove = null
                     }
-                ) {
-                    Text("Ya, Hapus", color = Color.White)
-                }
+                ) { Text("Ya, Hapus", color = Color.White) }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDocDialog = false }) { Text("Batal") }

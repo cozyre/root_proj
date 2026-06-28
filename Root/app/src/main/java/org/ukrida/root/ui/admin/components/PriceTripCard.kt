@@ -22,7 +22,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.ukrida.root.R
 import org.ukrida.root.data.model.Group
-import org.ukrida.root.ui.admin.screens.ongoing.model.Trip
 import org.ukrida.root.ui.theme.*
 
 @Composable
@@ -122,7 +121,7 @@ fun PriceTripCard(
                     )
 
                     Text(
-                        text = "$start - $end",
+                        text = "${group.startDate ?: "-"} - ${group.endDate ?: "-"}",
                         style = MaterialTheme.typography.titleMedium,
                         color = H1Color
                     )

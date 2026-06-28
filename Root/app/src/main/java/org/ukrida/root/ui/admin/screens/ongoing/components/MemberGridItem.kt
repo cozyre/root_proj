@@ -4,22 +4,23 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.ukrida.root.ui.admin.screens.ongoing.model.Member
+import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.MemberUiModel
 
 @Composable
 fun MemberGridItem(
-    member: Member,
-    onRemoveClick: (Member) -> Unit,
+    member: MemberUiModel,
+    onRemoveClick: (MemberUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -33,14 +34,15 @@ fun MemberGridItem(
                     .background(Color(0xFFE6DCD2), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
+                // Nanti ganti AsyncImage (Coil) jika profilePhotoUrl != null
                 Icon(
-                    painter = painterResource(id = member.avatarRes),
+                    imageVector = Icons.Default.Person,
                     contentDescription = null,
-                    tint = Color.Gray
+                    tint = Color.Gray,
+                    modifier = Modifier.size(36.dp)
                 )
             }
 
-            // Tombol minus merah
             Box(
                 modifier = Modifier
                     .size(20.dp)
@@ -49,7 +51,12 @@ fun MemberGridItem(
                     .clickable { onRemoveClick(member) },
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "-", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                Text(
+                    text = "-",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp
+                )
             }
         }
         Spacer(modifier = Modifier.height(4.dp))

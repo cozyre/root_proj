@@ -14,12 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.ukrida.root.ui.admin.screens.ongoing.model.Documentation
+import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.DocumentationUiModel
 
 @Composable
 fun DocumentationGridItem(
-    documentation: Documentation,
-    onRemoveClick: (Documentation) -> Unit,
+    documentation: DocumentationUiModel,
+    onRemoveClick: (DocumentationUiModel) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -29,6 +29,8 @@ fun DocumentationGridItem(
             .clip(RoundedCornerShape(16.dp))
             .background(Color.LightGray)
     ) {
+        // Nanti ganti AsyncImage (Coil) jika imageUrl != null
+
         Box(
             modifier = Modifier
                 .padding(8.dp)
@@ -38,7 +40,12 @@ fun DocumentationGridItem(
                 .clickable { onRemoveClick(documentation) },
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "-", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            Text(
+                text = "-",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp
+            )
         }
     }
 }

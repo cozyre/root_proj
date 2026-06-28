@@ -74,7 +74,14 @@ fun AppNavigation(
             route = Screen.OngoingDetail.route,
             arguments = listOf(navArgument("tripId") { type = NavType.IntType })
         ) {
-            val viewModel: OnGoingDetailViewModel = viewModel()
+            backStackEntry ->
+
+            val tripId =
+                backStackEntry.arguments?.getInt("tripId") ?: 0
+
+            val viewModel: OnGoingDetailViewModel = viewModel(
+                factory = OnGoingDetailViewModel.factory(tripId)
+            )
             OnGoingDetailScreen(
                 navController = navController,
                 onMenuClick = onMenuClick,
@@ -84,9 +91,20 @@ fun AppNavigation(
 
         composable(
             route = Screen.EditItinerary.route,
-            arguments = listOf(navArgument("tripId") { type = NavType.IntType })
-        ) {
-            val viewModel: EditItineraryViewModel = viewModel()
+            arguments = listOf(
+                navArgument("tripId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+
+            val tripId =
+                backStackEntry.arguments?.getInt("tripId") ?: 0
+
+            val viewModel: EditItineraryViewModel = viewModel(
+                factory = EditItineraryViewModel.factory(tripId)
+            )
+
             EditItineraryScreen(
                 navController = navController,
                 onMenuClick = onMenuClick,
@@ -96,9 +114,20 @@ fun AppNavigation(
 
         composable(
             route = Screen.EditSongs.route,
-            arguments = listOf(navArgument("tripId") { type = NavType.StringType })
-        ) {
-            val viewModel: EditSongsViewModel = viewModel()
+            arguments = listOf(
+                navArgument("tripId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+
+            val tripId =
+                backStackEntry.arguments?.getInt("tripId") ?: 0
+
+            val viewModel: EditSongsViewModel = viewModel(
+                factory = EditSongsViewModel.factory(tripId)
+            )
+
             EditSongsScreen(
                 navController = navController,
                 onMenuClick = onMenuClick,
@@ -108,9 +137,20 @@ fun AppNavigation(
 
         composable(
             route = Screen.EditDailyBread.route,
-            arguments = listOf(navArgument("tripId") { type = NavType.StringType })
-        ) {
-            val viewModel: EditDailyBreadViewModel = viewModel()
+            arguments = listOf(
+                navArgument("tripId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+
+            val tripId =
+                backStackEntry.arguments?.getInt("tripId") ?: 0
+
+            val viewModel: EditDailyBreadViewModel = viewModel(
+                factory = EditDailyBreadViewModel.factory(tripId)
+            )
+
             EditDailyBreadScreen(
                 navController = navController,
                 onMenuClick = onMenuClick,
