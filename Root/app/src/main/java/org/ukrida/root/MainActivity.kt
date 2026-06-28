@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import org.ukrida.root.ui.Public.screens.login.components.AuthNavigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -42,8 +43,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RootTheme {
-                RootScreen(appContainer = appContainer)
-
+                AuthNavigation()
+                //RootScreen(appContainer = appContainer)
             }
         }
     }
