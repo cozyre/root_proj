@@ -51,7 +51,7 @@ fun GroupMemberSection(
         Text(
             text = "GROUP MEMBER",
             style = MaterialTheme.typography.titleLarge,
-            color = Color.White,
+            color = Color(0xFFE8D8C9),
         )
         Spacer(modifier = Modifier.height(16.dp))
         LazyVerticalGrid(
@@ -65,10 +65,7 @@ fun GroupMemberSection(
         ) {
             items(displayedMembers) { member ->
                 MemberAvatar(
-                    member = member,
-                    onClick = {
-                        onMemberClick(member)
-                    }
+                    member = member
                 )
             }
         }

@@ -32,7 +32,7 @@ fun DashboardHeader(
         Text(
             text = group.name,
             style = MaterialTheme.typography.headlineSmall,
-            color = Color.White
+            color = Color(0xFFE8D8C9)
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -49,7 +49,7 @@ fun DashboardHeader(
         Text(
             text = "${group.startDate} - ${group.endDate}",
             style = MaterialTheme.typography.titleMedium,
-            color = Color.White
+            color = Color(0xFFE8D8C9)
         )
 
         Spacer(modifier = Modifier.height(20.dp))

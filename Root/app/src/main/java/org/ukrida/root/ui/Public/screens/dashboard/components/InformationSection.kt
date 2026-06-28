@@ -26,7 +26,7 @@ fun InformationSection(
         Text(
             text = "Information",
             style = MaterialTheme.typography.headlineSmall,
-            color = Color.White
+            color = Color(0xFFE8D8C9)
         )
         Spacer(modifier = Modifier.height(18.dp))
         Text(

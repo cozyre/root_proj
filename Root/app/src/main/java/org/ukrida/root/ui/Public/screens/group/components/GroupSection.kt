@@ -24,7 +24,7 @@ fun GroupSection(
         Text(
             text = "TAKE A TOUR!",
             style = MaterialTheme.typography.titleLarge,
-            color = Color.White
+            color = Color(0xFFE8D8C9)
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(

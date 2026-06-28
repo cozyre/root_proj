@@ -77,7 +77,7 @@ fun DashboardScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 DashboardTopBar(
-                    title = "Dashboard",
+                    title = "DASHBOARD",
                     expanded = expanded,
                     onExpandClick = {
                         expanded = !expanded
@@ -120,6 +120,9 @@ fun DashboardScreen(
                     },
                     onHymnClick = {
                         expanded = false
+                        navController.navigate(
+                            PublicScreen.Hymn.createRoute(groupId)
+                        )
                     },
                     onDailyBreadClick = {
                         expanded = false

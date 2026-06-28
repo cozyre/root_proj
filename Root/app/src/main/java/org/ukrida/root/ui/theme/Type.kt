@@ -22,11 +22,17 @@ val Inter = FontFamily(
         FontWeight.Bold
     ))
 val Typography = Typography(
-    // BODY
-    bodyLarge = TextStyle(
+    //TITLE
+    headlineLarge = TextStyle(
         fontFamily = Inter,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp
+        fontWeight = FontWeight.Bold,
+        fontSize = 32.sp
+    ),
+
+    headlineSmall = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 20.sp
     ),
     //H1
     titleLarge = TextStyle(
@@ -34,9 +40,28 @@ val Typography = Typography(
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp
     ),
-    //TITLE
-    headlineLarge = TextStyle(
+
+    titleMedium = TextStyle(
         fontFamily = Inter,
-        fontWeight = FontWeight.Bold,
-        fontSize = 32.sp
-    ))
+        fontWeight = FontWeight.Medium,
+        fontSize = 18.sp
+    ),
+    //BODY
+    bodyLarge = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp
+    ),
+
+    bodyMedium = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp
+    ),
+
+    bodySmall = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp
+    )
+)

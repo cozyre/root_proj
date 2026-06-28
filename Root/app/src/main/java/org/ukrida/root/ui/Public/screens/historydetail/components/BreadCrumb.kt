@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 fun Breadcrumb() {
 
     Text(
-        text = "Promised Land > History",
+        text = "Promised Land > History > History Detail",
         style = MaterialTheme.typography.bodyMedium,
         color = Color.White.copy(alpha = 0.7f)
     )

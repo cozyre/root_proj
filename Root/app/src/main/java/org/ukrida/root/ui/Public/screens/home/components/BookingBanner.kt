@@ -36,7 +36,7 @@ fun BookingBanner(
         Column {
             Text(
                 text = "ALREADY BOOK?",
-                color = Color.White,
+                color = Color(0xFFE8D8C9),
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp
             )

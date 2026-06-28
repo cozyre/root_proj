@@ -43,7 +43,7 @@ fun OrganizerSection(
         Text(
             text = "Organizer",
             style = MaterialTheme.typography.headlineSmall,
-            color = Color.White
+            color = Color(0xFFE8D8C9)
         )
         Spacer(modifier = Modifier.height(24.dp))
         OrganizerItem(
@@ -90,7 +90,7 @@ private fun OrganizerItem(
         Text(
             text = name,
             style = MaterialTheme.typography.titleMedium,
-            color = Color.White
+            color = Color(0xFFE8D8C9)
         )
     }
 

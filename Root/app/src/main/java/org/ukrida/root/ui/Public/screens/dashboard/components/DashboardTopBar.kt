@@ -1,9 +1,12 @@
 package org.ukrida.root.ui.Public.screens.dashboard.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
@@ -30,58 +33,67 @@ fun DashboardTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(
-                horizontal = 20.dp,
-                vertical = 16.dp
-            ),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(horizontal = 20.dp, vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Text(
-            text = "R",
-            style = MaterialTheme.typography.headlineMedium,
-            color = Color(0xFFE5C19A)
-        )
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically
+        // Logo
+        Box(
+            modifier = Modifier.weight(1f),
+            contentAlignment = Alignment.CenterStart
         ) {
-
             Text(
-                text = title,
-                style = MaterialTheme.typography.headlineSmall,
+                text = "R",
+                style = MaterialTheme.typography.headlineMedium,
                 color = Color(0xFFE5C19A)
             )
+        }
 
-            IconButton(
-                onClick = onExpandClick
+        // Title
+        Box(
+            modifier = Modifier.weight(3f),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Icon(
-                    imageVector =
-                        if (expanded)
+                Text(
+                    text = title.uppercase(),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color(0xFFE5C19A)
+                )
+
+                IconButton(
+                    modifier = Modifier.size(28.dp),
+                    onClick = onExpandClick
+                ) {
+                    Icon(
+                        imageVector = if (expanded)
                             Icons.Default.ArrowDropUp
                         else
                             Icons.Default.ArrowDropDown,
+                        contentDescription = null,
+                        tint = Color(0xFFE5C19A)
+                    )
+                }
+            }
+        }
+
+        // Notification
+        Box(
+            modifier = Modifier.weight(1f),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            IconButton(
+                onClick = onNotificationClick
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Notifications,
                     contentDescription = null,
                     tint = Color(0xFFE5C19A)
                 )
-
             }
-
         }
-        IconButton(
-            onClick = onNotificationClick
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Notifications,
-                contentDescription = null,
-                tint = Color(0xFFE5C19A)
-            )
-
-        }
-
     }
-
 }

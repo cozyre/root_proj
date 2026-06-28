@@ -49,37 +49,37 @@ fun DashboardMenu(
     ) {
 
         DashboardMenuItem(
-            title = "Dashboard",
+            title = "DASHBOARD",
             onClick = onDashboardClick
         )
 
         DashboardMenuItem(
-            title = "Itinerary",
+            title = "ITINERARY",
             onClick = onItineraryClick
         )
 
         DashboardMenuItem(
-            title = "Hymn for Him",
+            title = "HYMN FOR HIM",
             onClick = onHymnClick
         )
 
         DashboardMenuItem(
-            title = "Daily Bread",
+            title = "DAILY BREAD",
             onClick = onDailyBreadClick
         )
 
         DashboardMenuItem(
-            title = "Journal",
+            title = "JOURNAL",
             onClick = onJournalClick
         )
 
         DashboardMenuItem(
-            title = "Gallery",
+            title = "GALLERY",
             onClick = onGalleryClick
         )
 
         DashboardMenuItem(
-            title = "Members",
+            title = "MEMBERS",
             onClick = onMembersClick
         )
 

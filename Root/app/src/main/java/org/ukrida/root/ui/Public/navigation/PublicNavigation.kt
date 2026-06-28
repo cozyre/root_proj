@@ -11,6 +11,7 @@
     import org.ukrida.root.ui.Public.screens.history.screen.HistoryScreen
     import org.ukrida.root.ui.Public.screens.historydetail.screen.HistoryDetailScreen
     import org.ukrida.root.ui.Public.screens.home.screen.HomeScreen
+    import org.ukrida.root.ui.Public.screens.hymn.screen.HymnScreen
     import org.ukrida.root.ui.Public.screens.order.screen.OrderScreen
     import org.ukrida.root.ui.Public.screens.promisedland.screen.PromisedLandScreen
 
@@ -84,7 +85,39 @@
                     navController = navController,
                     groupId = groupId
                 )
-
             }
+            composable(
+                route = PublicScreen.Hymn.route,
+                arguments = listOf(
+                    navArgument("groupId") {
+                        type = NavType.IntType
+                    }
+                )
+            ) { backStackEntry ->
+                val groupId =
+                    backStackEntry.arguments?.getInt("groupId") ?: 0
+                HymnScreen(
+                    navController = navController,
+                    groupId = groupId
+                )
+            }
+//            composable(
+//                route = PublicScreen.HymnDetail.route,
+//                arguments = listOf(
+//                    navArgument("songId") {
+//                        type = NavType.IntType
+//                    }
+//                )
+//            ) { backStackEntry ->
+//
+//                val songId =
+//                    backStackEntry.arguments?.getInt("songId") ?: 0
+//
+//                HymnDetailScreen(
+//                    navController = navController,
+//                    songId = songId
+//                )
+//
+//            }
         }
     }

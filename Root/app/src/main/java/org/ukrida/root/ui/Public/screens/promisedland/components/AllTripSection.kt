@@ -28,7 +28,7 @@ fun AllTripSection(
         Text(
             text = "ALL TRIP ${Year.now().value}",
             style = MaterialTheme.typography.titleLarge,
-            color = Color.White
+            color = Color(0xFFE8D8C9)
         )
         Spacer(modifier = Modifier.height(20.dp))
         if (allTrips.isEmpty()) {

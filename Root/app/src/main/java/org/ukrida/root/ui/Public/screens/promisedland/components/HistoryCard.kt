@@ -58,7 +58,7 @@ fun HistoryCard(
             Text(
                 text = group.name,
                 style = MaterialTheme.typography.titleLarge,
-                color = Color.White
+                color = Color(0xFFE8D8C9)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -70,7 +70,7 @@ fun HistoryCard(
             Text(
                 text = "${group.startDate ?: "-"} - ${group.endDate ?: "-"}",
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
+                color = Color(0xFFE8D8C9)
             )
         }
     }

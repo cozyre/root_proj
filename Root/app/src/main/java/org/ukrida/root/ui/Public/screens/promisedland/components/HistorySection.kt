@@ -27,7 +27,7 @@ fun HistorySection(
         Text(
             text = "YOUR TRIP HISTORY",
             style = MaterialTheme.typography.titleLarge,
-            color = Color.White
+            color = Color(0xFFE8D8C9)
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(

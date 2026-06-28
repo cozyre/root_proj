@@ -54,7 +54,7 @@ fun MeetupSection(
             Text(
                 text = group.meetupAddress ?: "-",
                 style = MaterialTheme.typography.titleMedium,
-                color = Color.White
+                color = Color(0xFFE8D8C9)
             )
 
         }

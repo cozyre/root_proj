@@ -46,13 +46,13 @@ fun MemberAvatar(
                 modifier = Modifier
                     .size(64.dp)
                     .clip(CircleShape),
-                tint = Color.LightGray
+                tint = Color(0xFFE8D8C9)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = member.firstName,
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.White,
+                color = Color(0xFFE8D8C9),
                 maxLines = 1
             )
 

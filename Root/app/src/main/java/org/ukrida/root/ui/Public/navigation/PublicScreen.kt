@@ -20,4 +20,10 @@ sealed class PublicScreen(val route: String) {
         fun createRoute(groupId: Int) =
             "dashboard/$groupId"
     }
+    object Hymn : PublicScreen("hymn/{groupId}") {
+        fun createRoute(groupId: Int) = "hymn/$groupId"
+    }
+    object HymnDetail : PublicScreen("hymn_detail/{songId}") {
+        fun createRoute(songId: Int) = "hymn_detail/$songId"
+    }
 }
