@@ -29,18 +29,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
+import org.ukrida.root.data.AppContainer
 import org.ukrida.root.ui.admin.navigation.AppNavigation
 import org.ukrida.root.ui.admin.screens.RootScreen
 import org.ukrida.root.ui.theme.Inter
 import org.ukrida.root.ui.admin.screens.RootScreen
 
 class MainActivity : ComponentActivity() {
+    private val appContainer = AppContainer()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             RootTheme {
-                RootScreen()
+                RootScreen(appContainer = appContainer)
 
             }
         }

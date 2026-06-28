@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../models/AdminModel.php';
 require_once __DIR__ . '/../middleware/AuthMiddleware.php';
-require_once __DIR__ . '/../models/AccountModel.php.php';
+require_once __DIR__ . '/../models/AccountModel.php';
 
 class AdminController {
 

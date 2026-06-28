@@ -4,13 +4,17 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
+import org.ukrida.root.data.AppContainer
 import org.ukrida.root.ui.admin.screens.dashboard.screen.DashboardScreen
 import org.ukrida.root.ui.admin.screens.approval.screen.ApprovalScreen
+import org.ukrida.root.ui.admin.screens.dashboard.viewmodel.DashboardViewModel
+import org.ukrida.root.ui.admin.screens.dashboard.viewmodel.DashboardViewModelFactory
 import org.ukrida.root.ui.admin.screens.finished.screen.FinishedTripDetailScreen
 import org.ukrida.root.ui.admin.screens.hymn.screen.HymnForHimScreen
 import org.ukrida.root.ui.admin.screens.newtrip.screen.NewTripScreen
@@ -31,7 +35,8 @@ import org.ukrida.root.ui.admin.screens.trip.screen.TripScreen
 fun AppNavigation(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    onMenuClick: () -> Unit
+    onMenuClick: () -> Unit,
+    appContainer: AppContainer
 ) {
 
     NavHost(
@@ -41,20 +46,19 @@ fun AppNavigation(
     ) {
 
         composable(Screen.Dashboard.route) {
+            val factory = remember {
+                DashboardViewModelFactory(
+                    appContainer.adminRepository,
+                    appContainer.groupRepository
+                )
+            }
+
+            val viewModel: DashboardViewModel = viewModel(factory = factory)
             DashboardScreen(
                 onMenuClick = onMenuClick,
-
-                onApprovalClick = {
-                    navController.navigate(Screen.Approval.route)
-                },
-
-                onSongClick = {
-                    navController.navigate(Screen.HymnForHim.route)
-                },
-
-                onRecentClick = {
-                    navController.navigate(Screen.OngoingTrip.route)
-                }
+                onApprovalClick = { navController.navigate(Screen.Approval.route) },
+                onSongClick = { navController.navigate(Screen.HymnForHim.route) },
+                onRecentClick = { navController.navigate(Screen.OngoingTrip.route) }
             )
         }
 

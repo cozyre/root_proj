@@ -11,23 +11,14 @@ import org.ukrida.root.data.repository.AdminRepository
 import org.ukrida.root.data.repository.GroupRepository
 import org.ukrida.root.utils.Resource
 
-data class ApprovalItem(
-    val accountId: Int,
-    val userId: Int,
-    val userName: String,
-    val groupName: String,
-    val joinDate: String,
-    val profilePhotoUrl: String?
-)
-
 class DashboardViewModel(
     private val adminRepository: AdminRepository,
     private val groupRepository: GroupRepository
 ) : ViewModel() {
 
     // Pending approvals
-    private val _pendingApprovals = MutableStateFlow<Resource<List<ApprovalItem>>>(Resource.Loading())
-    val pendingApprovals: StateFlow<Resource<List<ApprovalItem>>> = _pendingApprovals
+    private val _pendingApprovals = MutableStateFlow<Resource<List<PendingAccount>>>(Resource.Loading())
+    val pendingApprovals: StateFlow<Resource<List<PendingAccount>>> = _pendingApprovals
 
     // Latest tour
     private val _latestTour = MutableStateFlow<Resource<Group>>(Resource.Loading())
@@ -52,21 +43,7 @@ class DashboardViewModel(
         if (result.isSuccess) {
             val pending = result.getOrNull() ?: emptyList()
 
-            // Map raw API response to ApprovalItem (UI-specific model)
-            val items = pending
-                .map { account ->
-                    ApprovalItem(
-                        accountId = account.id,
-                        userId = account.userId,
-                        userName = account.fullName,
-                        groupName = account.groupName,
-                        joinDate = account.joinDate,
-                        profilePhotoUrl = account.profilePhotoUrl
-                    )
-                }
-                .take(3) // Show only the 3 most recent
-
-            _pendingApprovals.value = Resource.Success(items)
+            _pendingApprovals.value = Resource.Success(pending)
         } else {
             _pendingApprovals.value = Resource.Error(
                 result.exceptionOrNull()?.message ?: "Failed to load pending approvals"
