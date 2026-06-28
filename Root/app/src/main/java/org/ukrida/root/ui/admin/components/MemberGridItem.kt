@@ -1,4 +1,4 @@
-package org.ukrida.root.ui.admin.screens.ongoing.components
+package org.ukrida.root.ui.admin.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,12 +15,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.MemberUiModel
+import org.ukrida.root.ui.admin.screens.finished.viewmodel.MemberUiModel
+
 
 @Composable
 fun MemberGridItem(
     member: MemberUiModel,
-    onRemoveClick: (MemberUiModel) -> Unit,
+    onRemoveClick: (MemberUiModel) -> Unit = {},
+    showRemoveButton: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -43,20 +45,22 @@ fun MemberGridItem(
                 )
             }
 
-            Box(
-                modifier = Modifier
-                    .size(20.dp)
-                    .background(Color(0xFFD9534F), CircleShape)
-                    .align(Alignment.TopEnd)
-                    .clickable { onRemoveClick(member) },
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "-",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                )
+            if (showRemoveButton) {
+                Box(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .background(Color(0xFFD9534F), CircleShape)
+                        .align(Alignment.TopEnd)
+                        .clickable { onRemoveClick(member) },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "-",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(4.dp))

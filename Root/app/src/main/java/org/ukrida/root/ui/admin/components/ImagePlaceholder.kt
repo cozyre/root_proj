@@ -1,5 +1,6 @@
-package org.ukrida.root.ui.admin.screens.ongoing.components
+package org.ukrida.root.ui.admin.components
 
+import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -39,7 +40,7 @@ fun ImagePlaceholder(
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                painter = painterResource(id = android.R.drawable.ic_menu_gallery),
+                painter = painterResource(id = R.drawable.ic_menu_gallery),
                 contentDescription = "Change Photo",
                 tint = Color.Black
             )

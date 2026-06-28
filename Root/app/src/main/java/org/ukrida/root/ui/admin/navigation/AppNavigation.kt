@@ -15,6 +15,7 @@ import org.ukrida.root.ui.admin.screens.finished.screen.FinishedTripDetailScreen
 import org.ukrida.root.ui.admin.screens.hymn.screen.HymnForHimScreen
 import org.ukrida.root.ui.admin.screens.newtrip.screen.NewTripScreen
 import org.ukrida.root.ui.admin.screens.finished.screen.FinishedTripScreen
+import org.ukrida.root.ui.admin.screens.finished.viewmodel.FinishedTripDetailViewModel
 import org.ukrida.root.ui.admin.screens.ongoing.screen.EditDailyBreadScreen
 import org.ukrida.root.ui.admin.screens.ongoing.screen.EditItineraryScreen
 import org.ukrida.root.ui.admin.screens.ongoing.screen.EditSongsScreen
@@ -172,7 +173,30 @@ fun AppNavigation(
         }
 
         composable(Screen.FinishedTrip.route) {
-            FinishedTripScreen(onMenuClick = onMenuClick)
+            FinishedTripScreen(navController = navController, onMenuClick = onMenuClick)
+        }
+
+        composable(
+            route = Screen.FinishedDetail.route,
+            arguments = listOf(
+                navArgument("tripId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+
+            val tripId =
+                backStackEntry.arguments?.getInt("tripId") ?: 0
+
+            val viewModel: FinishedTripDetailViewModel = viewModel(
+                factory = FinishedTripDetailViewModel.factory(tripId)
+            )
+
+            FinishedTripDetailScreen(
+                navController = navController,
+                onMenuClick = onMenuClick,
+                viewModel = viewModel
+            )
         }
     }
 }

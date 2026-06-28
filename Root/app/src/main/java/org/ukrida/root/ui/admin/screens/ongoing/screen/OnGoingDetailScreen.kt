@@ -19,13 +19,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import org.ukrida.root.ui.admin.components.DocumentationGridItem
+import org.ukrida.root.ui.admin.components.ImagePlaceholder
+import org.ukrida.root.ui.admin.components.MemberGridItem
 import org.ukrida.root.ui.admin.components.TopBar
+import org.ukrida.root.ui.admin.navigation.Screen
 import org.ukrida.root.ui.admin.screens.ongoing.components.*
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.OnGoingDetailViewModel
 import org.ukrida.root.ui.theme.BackgroundDark
 import org.ukrida.root.ui.theme.DrawerBackground
-import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.MemberUiModel
-import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.DocumentationUiModel
+import org.ukrida.root.ui.admin.screens.finished.viewmodel.*
 
 @Composable
 fun OnGoingDetailScreen(
@@ -111,7 +114,12 @@ fun OnGoingDetailScreen(
                         fontSize = 12.sp,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { navController.popBackStack() }
+                            .clickable {
+                                navController.navigate(Screen.OngoingTrip.route) {
+                                    popUpTo(Screen.OngoingTrip.route)
+                                    launchSingleTop = true
+                                }
+                            }
                     )
 
                     Spacer(modifier = Modifier.height(24.dp))
