@@ -114,7 +114,9 @@ fun GalleryScreen(
                 },
                 onItineraryClick = {
                     expanded = false
-                    // TODO Navigation
+                    navController.navigate(
+                        PublicScreen.Itinerary.createRoute(groupId)
+                    )
                 },
                 onHymnClick = {
                     expanded = false

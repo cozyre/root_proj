@@ -1,4 +1,4 @@
-package org.ukrida.root.ui.Public.screens.hymn.screen
+package org.ukrida.root.ui.Public.screens.itinerary.screen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -6,22 +6,15 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -30,26 +23,28 @@ import org.ukrida.root.ui.Public.components.PublicDestination
 import org.ukrida.root.ui.Public.navigation.PublicScreen
 import org.ukrida.root.ui.Public.screens.dashboard.components.DashboardMenu
 import org.ukrida.root.ui.Public.screens.dashboard.components.DashboardTopBar
-import org.ukrida.root.ui.Public.screens.hymn.components.DayHeader
-import org.ukrida.root.ui.Public.screens.hymn.components.HymnCard
-import org.ukrida.root.ui.Public.screens.hymn.components.HymnSearchBar
-import org.ukrida.root.ui.Public.screens.hymn.viewmodel.HymnViewModel
+import org.ukrida.root.ui.Public.screens.itinerary.components.ActivityRow
+import org.ukrida.root.ui.Public.screens.itinerary.components.ActivityTableHeader
+import org.ukrida.root.ui.Public.screens.itinerary.components.DateNavigator
+import org.ukrida.root.ui.Public.screens.itinerary.components.ItineraryHeader
+import org.ukrida.root.ui.Public.screens.itinerary.viewmodel.ItineraryViewModel
 
 @Composable
-fun HymnScreen(
+fun ItineraryScreen(
     navController: NavHostController,
     groupId: Int
 ) {
-    val viewModel: HymnViewModel = viewModel()
-    val songs by viewModel.songs.collectAsState()
+    val viewModel: ItineraryViewModel = viewModel()
+
+    val itinerary by viewModel.itinerary.collectAsState()
+    val dates by viewModel.dates.collectAsState()
+    val selectedIndex by viewModel.selectedIndex.collectAsState()
+
     var expanded by remember {
         mutableStateOf(false)
     }
-    var searchQuery by remember {
-        mutableStateOf("")
-    }
     LaunchedEffect(groupId) {
-        viewModel.loadSongs(groupId)
+        viewModel.load(groupId)
     }
     Scaffold(
         containerColor = Color(0xFF2A2522),
@@ -57,7 +52,7 @@ fun HymnScreen(
             PublicBottomNavigation(
                 currentDestination = PublicDestination.GROUP,
                 onNavigate = { destination ->
-                    when(destination){
+                    when (destination) {
                         PublicDestination.HOME ->
                             navController.navigate(PublicScreen.Home.route)
                         PublicDestination.PROMISED_LAND ->
@@ -76,61 +71,45 @@ fun HymnScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .background(Color(0xFF2A2522))
-                .verticalScroll(rememberScrollState())
         ) {
             DashboardTopBar(
-                title = "Hymn For Him",
+                title = "ITINERARY",
                 expanded = expanded,
                 onExpandClick = {
                     expanded = !expanded
                 }
             )
-            Column(
-                modifier = Modifier.padding(horizontal = 20.dp)
-            ) {
+            itinerary?.let { data ->
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp)
                 ) {
                     Spacer(modifier = Modifier.height(24.dp))
-                    androidx.compose.material3.Text(
-                        text = "Hymn for Him",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = Color(0xFFE8D8C9),
-                        textAlign = TextAlign.Center
+                    ItineraryHeader(
+                        date = data.date,
+                        description = data.desc
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    androidx.compose.material3.Text(
-                        text = "Search your songs.",
-                        color = Color.White.copy(alpha = .8f),
-                        textAlign = TextAlign.Center
-                    )
+                    ActivityTableHeader()
                 }
-                HymnSearchBar(
-                    query = searchQuery,
-                    onQueryChange = {
-                        searchQuery = it
-                        // TODO Backend Integration
-                        // Search songs from API
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(horizontal = 20.dp)
+                ) {
+                    items(data.items) { item ->
+                        ActivityRow(item)
+                    }
+                }
+                DateNavigator(
+                    date = dates[selectedIndex].date,
+                    canPrevious = selectedIndex > 0,
+                    canNext = selectedIndex < dates.lastIndex,
+                    onPrevious = {
+                        viewModel.previousDay(groupId)
+                    },
+                    onNext = {
+                        viewModel.nextDay(groupId)
                     }
                 )
-                // TODO Backend Integration
-                // Display songs grouped by itinerary/day returned from API.
-                // Current implementation uses dummy "DAY 01".
-                Spacer(modifier = Modifier.height(24.dp))
-                DayHeader(
-                    title = "DAY 01"
-                )
-                songs.forEach { song ->
-                    HymnCard(
-                        song = song,
-                        onClick = {
-                            navController.navigate(
-                                PublicScreen.HymnDetail.createRoute(groupId, song.id)
-                            )
-                        }
-                    )
-                }
             }
         }
         AnimatedVisibility(
@@ -141,10 +120,12 @@ fun HymnScreen(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.4f))
+                    .background(Color.Black.copy(alpha = .4f))
                     .clickable(
                         indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
+                        interactionSource = remember {
+                            MutableInteractionSource()
+                        }
                     ) {
                         expanded = false
                     }
@@ -160,12 +141,12 @@ fun HymnScreen(
                 },
                 onItineraryClick = {
                     expanded = false
-                    navController.navigate(
-                        PublicScreen.Itinerary.createRoute(groupId)
-                    )
                 },
                 onHymnClick = {
                     expanded = false
+                    navController.navigate(
+                        PublicScreen.Hymn.createRoute(groupId)
+                    )
                 },
                 onDailyBreadClick = {
                     expanded = false

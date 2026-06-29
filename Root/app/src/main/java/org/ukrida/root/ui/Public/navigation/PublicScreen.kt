@@ -39,4 +39,8 @@ sealed class PublicScreen(val route: String) {
             journalId: Int = -1
         ) = "journal_editor/$groupId/$journalId"
     }
+    object Itinerary : PublicScreen("itinerary/{groupId}") {
+        fun createRoute(groupId: Int) =
+            "itinerary/$groupId"
+    }
 }

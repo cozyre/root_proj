@@ -14,6 +14,7 @@
     import org.ukrida.root.ui.Public.screens.home.screen.HomeScreen
     import org.ukrida.root.ui.Public.screens.hymn.screen.HymnDetailScreen
     import org.ukrida.root.ui.Public.screens.hymn.screen.HymnScreen
+    import org.ukrida.root.ui.Public.screens.itinerary.screen.ItineraryScreen
     import org.ukrida.root.ui.Public.screens.journal.screen.JournalEditorScreen
     import org.ukrida.root.ui.Public.screens.journal.screen.JournalScreen
     import org.ukrida.root.ui.Public.screens.order.screen.OrderScreen
@@ -176,6 +177,21 @@
                     groupId = groupId,
                     journalId =
                         if (journalId == -1) null else journalId
+                )
+            }
+            composable(
+                route = PublicScreen.Itinerary.route,
+                arguments = listOf(
+                    navArgument("groupId") {
+                        type = NavType.IntType
+                    }
+                )
+            ) { backStackEntry ->
+                val groupId =
+                    backStackEntry.arguments?.getInt("groupId") ?: 0
+                ItineraryScreen(
+                    navController = navController,
+                    groupId = groupId
                 )
             }
         }

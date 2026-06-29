@@ -117,6 +117,9 @@ fun DashboardScreen(
                     },
                     onItineraryClick = {
                         expanded = false
+                        navController.navigate(
+                            PublicScreen.Itinerary.createRoute(groupId)
+                        )
                     },
                     onHymnClick = {
                         expanded = false
