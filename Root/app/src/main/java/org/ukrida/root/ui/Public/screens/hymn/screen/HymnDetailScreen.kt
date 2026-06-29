@@ -131,6 +131,9 @@ fun HymnDetailScreen(
                         },
                         onDailyBreadClick = {
                             expanded = false
+                            navController.navigate(
+                                PublicScreen.DailyBread.createRoute(groupId)
+                            )
                         },
                         onJournalClick = {
                             expanded = false
@@ -146,6 +149,9 @@ fun HymnDetailScreen(
                         },
                         onMembersClick = {
                             expanded = false
+                            navController.navigate(
+                                PublicScreen.Members.createRoute(groupId)
+                            )
                         }
                     )
                 }

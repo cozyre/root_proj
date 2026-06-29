@@ -6,6 +6,8 @@
     import androidx.navigation.compose.composable
     import androidx.navigation.compose.rememberNavController
     import androidx.navigation.navArgument
+    import org.ukrida.root.ui.Public.screens.dailybread.screen.DailyBreadDetailScreen
+    import org.ukrida.root.ui.Public.screens.dailybread.screen.DailyBreadScreen
     import org.ukrida.root.ui.Public.screens.dashboard.screen.DashboardScreen
     import org.ukrida.root.ui.Public.screens.gallery.screen.GalleryScreen
     import org.ukrida.root.ui.Public.screens.group.screen.GroupScreen
@@ -17,6 +19,8 @@
     import org.ukrida.root.ui.Public.screens.itinerary.screen.ItineraryScreen
     import org.ukrida.root.ui.Public.screens.journal.screen.JournalEditorScreen
     import org.ukrida.root.ui.Public.screens.journal.screen.JournalScreen
+    import org.ukrida.root.ui.Public.screens.members.screen.MemberDetailScreen
+    import org.ukrida.root.ui.Public.screens.members.screen.MemberScreen
     import org.ukrida.root.ui.Public.screens.order.screen.OrderScreen
     import org.ukrida.root.ui.Public.screens.promisedland.screen.PromisedLandScreen
 
@@ -192,6 +196,78 @@
                 ItineraryScreen(
                     navController = navController,
                     groupId = groupId
+                )
+            }
+            composable(
+                route = PublicScreen.DailyBread.route,
+                arguments = listOf(
+                    navArgument("groupId") {
+                        type = NavType.IntType
+                    }
+                )
+            ) { backStackEntry ->
+                val groupId =
+                    backStackEntry.arguments?.getInt("groupId") ?: 0
+                DailyBreadScreen(
+                    navController = navController,
+                    groupId = groupId
+                )
+            }
+            composable(
+                route = PublicScreen.DailyBreadDetail.route,
+                arguments = listOf(
+                    navArgument("groupId") {
+                        type = NavType.IntType
+                    },
+                    navArgument("date") {
+                        type = NavType.StringType
+                    }
+                )
+            ) { backStackEntry ->
+                val groupId =
+                    backStackEntry.arguments?.getInt("groupId") ?: 0
+                val date =
+                    backStackEntry.arguments?.getString("date") ?: ""
+                DailyBreadDetailScreen(
+                    navController = navController,
+                    groupId = groupId,
+                    date = date
+                )
+            }
+            composable(
+                route = PublicScreen.Members.route,
+                arguments = listOf(
+                    navArgument("groupId") {
+                        type = NavType.IntType
+                    }
+                )
+            ) { backStackEntry ->
+                val groupId =
+                    backStackEntry.arguments?.getInt("groupId") ?: 0
+                MemberScreen(
+                    navController = navController,
+                    groupId = groupId
+                )
+            }
+            composable(
+                route = PublicScreen.MemberDetail.route,
+                arguments = listOf(
+                    navArgument("groupId") {
+                        type = NavType.IntType
+                    },
+                    navArgument("userId") {
+                        type = NavType.IntType
+                    }
+                )
+            ) { backStackEntry ->
+                val groupId =
+                    backStackEntry.arguments?.getInt("groupId") ?: 0
+                val userId =
+                    backStackEntry.arguments?.getInt("userId") ?: 0
+                MemberDetailScreen(
+                    navController = navController,
+                    groupId = groupId,
+                    userId = userId
                 )
             }
         }

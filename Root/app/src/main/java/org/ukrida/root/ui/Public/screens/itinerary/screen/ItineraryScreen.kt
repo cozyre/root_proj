@@ -150,6 +150,9 @@ fun ItineraryScreen(
                 },
                 onDailyBreadClick = {
                     expanded = false
+                    navController.navigate(
+                        PublicScreen.DailyBread.createRoute(groupId)
+                    )
                 },
                 onJournalClick = {
                     expanded = false
@@ -165,6 +168,9 @@ fun ItineraryScreen(
                 },
                 onMembersClick = {
                     expanded = false
+                    navController.navigate(
+                        PublicScreen.Members.createRoute(groupId)
+                    )
                 }
             )
         }

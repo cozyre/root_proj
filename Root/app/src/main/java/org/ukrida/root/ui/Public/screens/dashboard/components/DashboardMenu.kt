@@ -44,7 +44,7 @@ fun DashboardMenu(
 
         horizontalAlignment = Alignment.CenterHorizontally,
 
-        verticalArrangement = Arrangement.spacedBy(28.dp)
+        verticalArrangement = Arrangement.spacedBy(14.dp)
 
     ) {
 

@@ -175,6 +175,9 @@ fun JournalEditorScreen(
                     },
                     onDailyBreadClick = {
                         expanded = false
+                        navController.navigate(
+                            PublicScreen.DailyBread.createRoute(groupId)
+                        )
                     },
                     onJournalClick = {
                         expanded = false
@@ -190,6 +193,9 @@ fun JournalEditorScreen(
                     },
                     onMembersClick = {
                         expanded = false
+                        navController.navigate(
+                            PublicScreen.Members.createRoute(groupId)
+                        )
                     }
                 )
             }

@@ -43,4 +43,26 @@ sealed class PublicScreen(val route: String) {
         fun createRoute(groupId: Int) =
             "itinerary/$groupId"
     }
+    object DailyBread : PublicScreen("daily_bread/{groupId}") {
+        fun createRoute(groupId: Int) =
+            "daily_bread/$groupId"
+    }
+    object DailyBreadDetail :
+        PublicScreen("daily_bread_detail/{groupId}/{date}") {
+        fun createRoute(
+            groupId: Int,
+            date: String
+        ) = "daily_bread_detail/$groupId/$date"
+    }
+    object Members : PublicScreen("members/{groupId}") {
+        fun createRoute(groupId: Int) =
+            "members/$groupId"
+    }
+    object MemberDetail :
+        PublicScreen("member_detail/{groupId}/{userId}") {
+        fun createRoute(
+            groupId: Int,
+            userId: Int
+        ) = "member_detail/$groupId/$userId"
+    }
 }
