@@ -129,6 +129,9 @@ fun DashboardScreen(
                     },
                     onJournalClick = {
                         expanded = false
+                        navController.navigate(
+                            PublicScreen.Journal.createRoute(groupId)
+                        )
                     },
                     onGalleryClick = {
                         expanded = false

@@ -14,6 +14,8 @@
     import org.ukrida.root.ui.Public.screens.home.screen.HomeScreen
     import org.ukrida.root.ui.Public.screens.hymn.screen.HymnDetailScreen
     import org.ukrida.root.ui.Public.screens.hymn.screen.HymnScreen
+    import org.ukrida.root.ui.Public.screens.journal.screen.JournalEditorScreen
+    import org.ukrida.root.ui.Public.screens.journal.screen.JournalScreen
     import org.ukrida.root.ui.Public.screens.order.screen.OrderScreen
     import org.ukrida.root.ui.Public.screens.promisedland.screen.PromisedLandScreen
 
@@ -137,6 +139,43 @@
                 GalleryScreen(
                     navController = navController,
                     groupId = groupId
+                )
+            }
+            composable(
+                route = PublicScreen.Journal.route,
+                arguments = listOf(
+                    navArgument("groupId") {
+                        type = NavType.IntType
+                    }
+                )
+            ) { backStackEntry ->
+                val groupId =
+                    backStackEntry.arguments?.getInt("groupId") ?: 0
+                JournalScreen(
+                    navController = navController,
+                    groupId = groupId
+                )
+            }
+            composable(
+                route = PublicScreen.JournalEditor.route,
+                arguments = listOf(
+                    navArgument("groupId") {
+                        type = NavType.IntType
+                    },
+                    navArgument("journalId") {
+                        type = NavType.IntType
+                    }
+                )
+            ) { backStackEntry ->
+                val groupId =
+                    backStackEntry.arguments?.getInt("groupId") ?: 0
+                val journalId =
+                    backStackEntry.arguments?.getInt("journalId") ?: -1
+                JournalEditorScreen(
+                    navController = navController,
+                    groupId = groupId,
+                    journalId =
+                        if (journalId == -1) null else journalId
                 )
             }
         }

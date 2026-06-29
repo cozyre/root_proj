@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -17,8 +18,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -74,50 +77,60 @@ fun HymnScreen(
                 .padding(padding)
                 .background(Color(0xFF2A2522))
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
         ) {
             DashboardTopBar(
-                title = "HYMN FOR HIM",
+                title = "Hymn For Him",
                 expanded = expanded,
                 onExpandClick = {
                     expanded = !expanded
                 }
             )
-            Spacer(modifier = Modifier.height(24.dp))
-            androidx.compose.material3.Text(
-                text = "Hymn for Him",
-                style = MaterialTheme.typography.headlineSmall,
-                color = Color(0xFFE8D8C9)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            androidx.compose.material3.Text(
-                text = "Search your songs.",
-                color = Color.White.copy(alpha = .8f)
-            )
-            HymnSearchBar(
-                query = searchQuery,
-                onQueryChange = {
-                    searchQuery = it
-                    // TODO Backend Integration
-                    // Search songs from API
+            Column(
+                modifier = Modifier.padding(horizontal = 20.dp)
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    androidx.compose.material3.Text(
+                        text = "Hymn for Him",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color(0xFFE8D8C9),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    androidx.compose.material3.Text(
+                        text = "Search your songs.",
+                        color = Color.White.copy(alpha = .8f),
+                        textAlign = TextAlign.Center
+                    )
                 }
-            )
-            // TODO Backend Integration
-            // Display songs grouped by itinerary/day returned from API.
-            // Current implementation uses dummy "DAY 01".
-            Spacer(modifier = Modifier.height(24.dp))
-            DayHeader(
-                title = "DAY 01"
-            )
-            songs.forEach { song ->
-                HymnCard(
-                    song = song,
-                    onClick = {
-                        navController.navigate(
-                            PublicScreen.HymnDetail.createRoute(groupId,song.id)
-                        )
+                HymnSearchBar(
+                    query = searchQuery,
+                    onQueryChange = {
+                        searchQuery = it
+                        // TODO Backend Integration
+                        // Search songs from API
                     }
                 )
+                // TODO Backend Integration
+                // Display songs grouped by itinerary/day returned from API.
+                // Current implementation uses dummy "DAY 01".
+                Spacer(modifier = Modifier.height(24.dp))
+                DayHeader(
+                    title = "DAY 01"
+                )
+                songs.forEach { song ->
+                    HymnCard(
+                        song = song,
+                        onClick = {
+                            navController.navigate(
+                                PublicScreen.HymnDetail.createRoute(groupId, song.id)
+                            )
+                        }
+                    )
+                }
             }
         }
         AnimatedVisibility(
@@ -156,6 +169,9 @@ fun HymnScreen(
                 },
                 onJournalClick = {
                     expanded = false
+                    navController.navigate(
+                        PublicScreen.Journal.createRoute(groupId)
+                    )
                 },
                 onGalleryClick = {
                     expanded = false

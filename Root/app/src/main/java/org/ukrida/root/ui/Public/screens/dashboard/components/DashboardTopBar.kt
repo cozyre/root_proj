@@ -1,5 +1,6 @@
 package org.ukrida.root.ui.Public.screens.dashboard.components
 
+import android.R.id.bold
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -19,9 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import org.ukrida.root.R
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun DashboardTopBar(
@@ -60,8 +61,10 @@ fun DashboardTopBar(
 
                 Text(
                     text = title.uppercase(),
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color(0xFFE5C19A)
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = Color(0xFFE5C19A),
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold
                 )
 
                 IconButton(

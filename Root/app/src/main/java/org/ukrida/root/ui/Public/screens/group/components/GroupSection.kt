@@ -28,7 +28,7 @@ fun GroupSection(
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
-            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vel luctus justo. Etiam aliquet tempus felis eget imperdiet.",
+            text = "Explore every sacred destination and discover the stories behind each place.",
             style = MaterialTheme.typography.bodyLarge,
             color = Color.White.copy(alpha = .8f)
         )

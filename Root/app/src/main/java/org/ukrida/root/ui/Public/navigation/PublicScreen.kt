@@ -29,4 +29,14 @@ sealed class PublicScreen(val route: String) {
     object Gallery : PublicScreen("gallery/{groupId}") {
         fun createRoute(groupId: Int) = "gallery/$groupId"
     }
+    object Journal : PublicScreen("journal/{groupId}") {
+        fun createRoute(groupId: Int) =
+            "journal/$groupId"
+    }
+    object JournalEditor : PublicScreen("journal_editor/{groupId}/{journalId}") {
+        fun createRoute(
+            groupId: Int,
+            journalId: Int = -1
+        ) = "journal_editor/$groupId/$journalId"
+    }
 }

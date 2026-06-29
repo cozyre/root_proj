@@ -31,7 +31,7 @@ fun DashboardHeader(
 
         Text(
             text = group.name,
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleLarge,
             color = Color(0xFFE8D8C9)
         )
 

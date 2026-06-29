@@ -65,7 +65,6 @@ fun HymnDetailScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 20.dp)
                 ) {
                     DashboardTopBar(
                         title = "HYMN FOR HIM",
@@ -74,20 +73,24 @@ fun HymnDetailScreen(
                             expanded = !expanded
                         }
                     )
-                    HymnBackButton(
-                        onBackClick = {
-                            navController.popBackStack()
-                        }
-                    )
-                    HymnDetailHeader(
-                        song = it
-                    )
-                    Spacer(
-                        modifier = Modifier.height(20.dp)
-                    )
-                    HymnLyricsSection(
-                        song = it
-                    )
+                    Column(
+                        modifier = Modifier.padding(horizontal = 20.dp)
+                    ) {
+                        HymnBackButton(
+                            onBackClick = {
+                                navController.popBackStack()
+                            }
+                        )
+                        HymnDetailHeader(
+                            song = it
+                        )
+                        Spacer(
+                            modifier = Modifier.height(20.dp)
+                        )
+                        HymnLyricsSection(
+                            song = it
+                        )
+                    }
                 }
                 if (expanded) {
                     AnimatedVisibility(
@@ -128,6 +131,9 @@ fun HymnDetailScreen(
                         },
                         onJournalClick = {
                             expanded = false
+                            navController.navigate(
+                                PublicScreen.Journal.createRoute(groupId)
+                            )
                         },
                         onGalleryClick = {
                             expanded = false

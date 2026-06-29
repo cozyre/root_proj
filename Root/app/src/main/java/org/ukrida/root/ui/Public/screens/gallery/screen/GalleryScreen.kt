@@ -128,7 +128,9 @@ fun GalleryScreen(
                 },
                 onJournalClick = {
                     expanded = false
-                    // TODO Navigation
+                    navController.navigate(
+                        PublicScreen.Journal.createRoute(groupId)
+                    )
                 },
                 onGalleryClick = {
                     expanded = false
