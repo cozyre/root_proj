@@ -196,4 +196,100 @@ interface ApiService {
         @Query("route") route: String = "profile/update",
         @Body body: UpdateProfileRequest
     ): Response<ApiResponse<Profile>>
+
+    //Admin -----------------------------------------------------------------
+
+    @GET("index.php")
+    suspend fun getPendingAccounts(
+        @Query("route") route: String = "admin/accounts/pending",
+        @Query("group_id") groupId: Int? = null
+    ): Response<ApiResponse<List<PendingAccount>>>
+
+
+    // Admin — Trips ─────────────────────────────────────────────────────────
+    /** GET ?route=admin/trips  →  list of completed/archived trips */
+    @GET("index.php")
+    suspend fun adminGetTrips(
+        @Query("route") route: String = "admin/trips"
+    ): Response<ApiResponse<List<CompletedTrip>>>
+
+    /** POST ?route=admin/trip/create */
+    @POST("index.php")
+    suspend fun adminCreateTrip(
+        @Query("route") route: String = "admin/trip/create",
+        @Body body: AdminTripRequest
+    ): Response<ApiResponse<AdminTripResult>>
+
+    /** POST ?route=admin/trip/update */
+    @POST("index.php")
+    suspend fun adminUpdateTrip(
+        @Query("route") route: String = "admin/trip/update",
+        @Body body: AdminTripUpdateRequest
+    ): Response<ApiResponse<AdminTripResult>>
+
+    // Admin — Orders ────────────────────────────────────────────────────────
+
+    /** POST ?route=admin/order/approve */
+    @POST("index.php")
+    suspend fun adminApproveOrder(
+        @Query("route") route: String = "admin/order/approve",
+        @Body body: AdminOrderAction
+    ): Response<ApiResponse<AdminOrderResult>>
+
+    /** POST ?route=admin/order/reject */
+    @POST("index.php")
+    suspend fun adminRejectOrder(
+        @Query("route") route: String = "admin/order/reject",
+        @Body body: AdminOrderAction
+    ): Response<ApiResponse<AdminOrderResult>>
+
+    // Admin — Members ───────────────────────────────────────────────────────
+
+    /** POST ?route=admin/member/remove */
+    @POST("index.php")
+    suspend fun adminRemoveMember(
+        @Query("route") route: String = "admin/member/remove",
+        @Body body: AdminMemberRemoveRequest
+    ): Response<ApiResponse<Unit>>
+
+    // Admin — Gallery ───────────────────────────────────────────────────────
+
+    /** POST ?route=admin/gallery/removeImage */
+    @POST("index.php")
+    suspend fun adminRemoveImage(
+        @Query("route") route: String = "admin/gallery/removeImage",
+        @Body body: AdminImageRemoveRequest
+    ): Response<ApiResponse<Unit>>
+
+    // Admin — Songs ─────────────────────────────────────────────────────────
+
+    /** POST ?route=admin/song/create  →  add to global library */
+    @POST("index.php")
+    suspend fun adminCreateSong(
+        @Query("route") route: String = "admin/song/create",
+        @Body body: AdminSongRequest
+    ): Response<ApiResponse<Song>>
+
+    /** POST ?route=admin/song/addToGroup  →  assign to group/day */
+    @POST("index.php")
+    suspend fun adminAddSongToGroup(
+        @Query("route") route: String = "admin/song/addToGroup",
+        @Body body: AdminSongAddToGroupRequest
+    ): Response<ApiResponse<AdminSongAddResult>>
+
+    // Admin — Devotions ─────────────────────────────────────────────────────
+
+    /** POST ?route=admin/devotion/create */
+    @POST("index.php")
+    suspend fun adminCreateDevotion(
+        @Query("route") route: String = "admin/devotion/create",
+        @Body body: AdminDevotionRequest
+    ): Response<ApiResponse<AdminDevotion>>
+
+    /** POST ?route=admin/devotion/update */
+    @POST("index.php")
+    suspend fun adminUpdateDevotion(
+        @Query("route") route: String = "admin/devotion/update",
+        @Body body: AdminDevotionUpdateRequest
+    ): Response<ApiResponse<AdminDevotion>>
 }

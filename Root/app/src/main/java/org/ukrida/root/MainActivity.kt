@@ -5,14 +5,46 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import org.ukrida.root.ui.Public.screens.login.components.AuthNavigation
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import org.ukrida.root.ui.theme.RootTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.ukrida.root.data.remote.RetrofitClient
+import org.ukrida.root.data.repository.AuthRepository
+import org.ukrida.root.utils.Resource
+import android.util.Log
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlexDirection.Companion.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
+import org.ukrida.root.data.AppContainer
+import org.ukrida.root.ui.admin.navigation.AppNavigation
+import org.ukrida.root.ui.admin.screens.RootScreen
+import org.ukrida.root.ui.theme.Inter
+import org.ukrida.root.ui.admin.screens.RootScreen
+
 class MainActivity : ComponentActivity() {
+    private val appContainer = AppContainer()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            //remove this later, this is only for testing
-            setContent {
+            RootTheme {
                 AuthNavigation()
+                //RootScreen(appContainer = appContainer)
             }
         }
     }
