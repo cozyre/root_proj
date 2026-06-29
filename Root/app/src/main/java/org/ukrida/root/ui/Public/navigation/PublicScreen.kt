@@ -26,4 +26,7 @@ sealed class PublicScreen(val route: String) {
     object HymnDetail : PublicScreen("hymn_detail/{groupId}/{songId}") {
         fun createRoute(groupId: Int,songId: Int) = "hymn_detail/$groupId/$songId"
     }
+    object Gallery : PublicScreen("gallery/{groupId}") {
+        fun createRoute(groupId: Int) = "gallery/$groupId"
+    }
 }

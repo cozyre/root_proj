@@ -93,24 +93,24 @@ fun DashboardScreen(
                     MeetupSection(group)
                 }
             }
-            AnimatedVisibility(
-                visible = expanded,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.4f))
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember { MutableInteractionSource() }
-                        ) {
-                            expanded = false
-                        }
-                )
-            }
             if (expanded) {
+                AnimatedVisibility(
+                    visible = expanded,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.4f))
+                            .clickable(
+                                indication = null,
+                                interactionSource = remember { MutableInteractionSource() }
+                            ) {
+                                expanded = false
+                            }
+                    )
+                }
                 DashboardMenu(
                     onDashboardClick = {
                         expanded = false
@@ -132,6 +132,9 @@ fun DashboardScreen(
                     },
                     onGalleryClick = {
                         expanded = false
+                        navController.navigate(
+                            PublicScreen.Gallery.createRoute(groupId)
+                        )
                     },
                     onMembersClick = {
                         expanded = false

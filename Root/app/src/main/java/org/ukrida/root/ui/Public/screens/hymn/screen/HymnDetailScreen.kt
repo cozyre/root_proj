@@ -131,6 +131,9 @@ fun HymnDetailScreen(
                         },
                         onGalleryClick = {
                             expanded = false
+                            navController.navigate(
+                                PublicScreen.Gallery.createRoute(groupId)
+                            )
                         },
                         onMembersClick = {
                             expanded = false
