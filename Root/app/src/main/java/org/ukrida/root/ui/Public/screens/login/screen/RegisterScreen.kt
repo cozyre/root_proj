@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -36,16 +38,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ukrida.root.ui.Public.screens.login.viewmodel.RegisterViewModel
+import org.ukrida.root.utils.Resource
 
 @Composable
 fun RegisterScreen(
-    onBackLogin: () -> Unit
+    viewModel: RegisterViewModel = viewModel(),
+    onRegisterSuccess: () -> Unit,
+    onNavigateToLogin: () -> Unit
 ) {
-    val viewModel: RegisterViewModel = viewModel()
     val state by viewModel.uiState.collectAsState()
-    LaunchedEffect(state.registerSuccess){
-        if(state.registerSuccess){
-            onBackLogin()
+
+    // Navigate to login on success
+    LaunchedEffect(state) {
+        if (state is Resource.Success) {
+            onRegisterSuccess()
         }
     }
 
@@ -79,16 +85,11 @@ fun RegisterScreen(
                 color = Color.White,
                 modifier = Modifier
                     .align(Alignment.TopStart)
-                    .padding(
-                        start = 40.dp,
-                        top = 63.dp
-                    )
+                    .padding(start = 40.dp, top = 63.dp)
             )
         }
-        Column(
-            modifier = Modifier.padding(24.dp)
-        ) {
 
+        Column(modifier = Modifier.padding(24.dp)) {
             Text(
                 "REGISTER",
                 color = cream,
@@ -124,16 +125,12 @@ fun RegisterScreen(
             }
 
             Spacer(Modifier.height(24.dp))
-            state.error?.let {
-
+            //Show error
+            (state as? Resource.Error)?.let { error ->
                 Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = it,
-                    color = Color.Red
-                )
-
+                Text(text = error.message, color = Color.Red)
             }
+
             Spacer(Modifier.height(24.dp))
             Button(
                 onClick = {
@@ -154,17 +151,18 @@ fun RegisterScreen(
                     containerColor = olive
                 )
             ) {
-                Text("REGISTER")
+                if (state is Resource.Loading) {
+                    CircularProgressIndicator(modifier = Modifier.size(20.dp), color = Color.White)
+                } else {
+                    Text("REGISTER")
+                }
             }
 
             Spacer(Modifier.height(20.dp))
 
             val loginText = buildAnnotatedString {
-
                 append("Already have account? ")
-
                 pushStringAnnotation("LOGIN","LOGIN")
-
                 withStyle(
                     SpanStyle(
                         color = Color.White,
@@ -173,7 +171,6 @@ fun RegisterScreen(
                 ) {
                     append("Login now")
                 }
-
                 pop()
             }
 
@@ -184,13 +181,12 @@ fun RegisterScreen(
                     color = Color.LightGray
                 )
             ){ offset ->
-
                 loginText.getStringAnnotations(
                     "LOGIN",
                     offset,
                     offset
                 ).firstOrNull()?.let{
-                    onBackLogin()
+                    onNavigateToLogin()
                 }
 
             }
