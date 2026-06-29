@@ -23,7 +23,7 @@ sealed class PublicScreen(val route: String) {
     object Hymn : PublicScreen("hymn/{groupId}") {
         fun createRoute(groupId: Int) = "hymn/$groupId"
     }
-    object HymnDetail : PublicScreen("hymn_detail/{songId}") {
-        fun createRoute(songId: Int) = "hymn_detail/$songId"
+    object HymnDetail : PublicScreen("hymn_detail/{groupId}/{songId}") {
+        fun createRoute(groupId: Int,songId: Int) = "hymn_detail/$groupId/$songId"
     }
 }

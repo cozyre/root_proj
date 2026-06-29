@@ -112,11 +112,11 @@ fun HymnScreen(
             songs.forEach { song ->
                 HymnCard(
                     song = song,
-//                    onClick = {
-//                        navController.navigate(
-//                            PublicScreen.HymnDetail.createRoute(song.id)
-//                        )
-//                    }
+                    onClick = {
+                        navController.navigate(
+                            PublicScreen.HymnDetail.createRoute(groupId,song.id)
+                        )
+                    }
                 )
             }
         }
@@ -141,6 +141,9 @@ fun HymnScreen(
             DashboardMenu(
                 onDashboardClick = {
                     expanded = false
+                    navController.navigate(
+                        PublicScreen.Dashboard.createRoute(groupId)
+                    )
                 },
                 onItineraryClick = {
                     expanded = false
