@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ukrida.root.ui.admin.components.PriceTripCard
 import org.ukrida.root.ui.admin.components.TopBar
-import org.ukrida.root.ui.admin.screens.dashboard.components.ApprovalCard
+import org.ukrida.root.ui.admin.components.ApprovalCard
 import org.ukrida.root.ui.admin.screens.dashboard.viewmodel.DashboardViewModel
 import org.ukrida.root.ui.theme.BackgroundDark
 import org.ukrida.root.ui.theme.BodyColor

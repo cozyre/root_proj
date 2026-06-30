@@ -9,6 +9,8 @@ object DummyAccountData {
         isPaid = false
     )
     val accountStatuses = listOf(
+
+        // Pending
         AccountStatus(
             accountId = 1,
             groupName = "ROOT Bandung 2025",
@@ -26,21 +28,15 @@ object DummyAccountData {
             isPaid = false
         ),
         AccountStatus(
-            accountId = 1,
-            groupName = "ROOT Bandung 2025",
-            statusJoin = "pending",
-            joinDate = "2025-06-20",
-            approvedDate = null,
-            isPaid = false
-        ),
-        AccountStatus(
             accountId = 10,
-            groupName = "ROOT Yogyakarta 2025",
+            groupName = "ROOT Jakarta 2025",
             statusJoin = "pending",
-            joinDate = "2025-06-21",
+            joinDate = "2025-06-22",
             approvedDate = null,
             isPaid = false
         ),
+
+        // Approved
         AccountStatus(
             accountId = 20,
             groupName = "ROOT Tour Rohani Batch 1",
@@ -48,6 +44,40 @@ object DummyAccountData {
             joinDate = "2026-06-20",
             approvedDate = "2026-06-22",
             isPaid = true
+        ),
+        AccountStatus(
+            accountId = 21,
+            groupName = "ROOT Surabaya 2026",
+            statusJoin = "approved",
+            joinDate = "2026-06-15",
+            approvedDate = "2026-06-16",
+            isPaid = true
+        ),
+        AccountStatus(
+            accountId = 22,
+            groupName = "ROOT Bali Retreat 2026",
+            statusJoin = "approved",
+            joinDate = "2026-06-10",
+            approvedDate = "2026-06-11",
+            isPaid = true
+        ),
+
+        // Rejected
+        AccountStatus(
+            accountId = 30,
+            groupName = "ROOT Bandung 2026",
+            statusJoin = "rejected",
+            joinDate = "2026-06-12",
+            approvedDate = null,
+            isPaid = false
+        ),
+        AccountStatus(
+            accountId = 31,
+            groupName = "ROOT Yogyakarta 2026",
+            statusJoin = "rejected",
+            joinDate = "2026-06-14",
+            approvedDate = null,
+            isPaid = false
         )
     )
 

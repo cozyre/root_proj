@@ -15,3 +15,10 @@ data class LeaderUiModel(
     val name: String,
     val photoUrl: String?
 )
+
+data class ApprovalUiModel(
+    val accountId: Int,
+    val userName: String,
+    val groupName: String,
+    val status: String
+)

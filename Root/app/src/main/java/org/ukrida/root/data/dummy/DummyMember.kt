@@ -214,7 +214,72 @@ object DummyMemberData {
             role = "coordinator",
             statusJoin = "approved",
             joinDate = "2025-06-16"
+        ),
+        MemberDetail(
+            id = 20,
+            username = "christopherl",
+            firstName = "Christopher",
+            lastName = "Lim",
+            email = "christopher@example.com",
+            phone = "081311122233",
+            profilePhotoUrl = null,
+            role = "participant",
+            statusJoin = "approved",
+            joinDate = "2026-06-20"
+        ),
+
+        MemberDetail(
+            id = 21,
+            username = "andreww",
+            firstName = "Andrew",
+            lastName = "Wijaya",
+            email = "andrew@example.com",
+            phone = "081322244455",
+            profilePhotoUrl = null,
+            role = "participant",
+            statusJoin = "approved",
+            joinDate = "2026-06-15"
+        ),
+
+        MemberDetail(
+            id = 22,
+            username = "stevenk",
+            firstName = "Steven",
+            lastName = "Kurniawan",
+            email = "steven@example.com",
+            phone = "081333355566",
+            profilePhotoUrl = null,
+            role = "participant",
+            statusJoin = "approved",
+            joinDate = "2026-06-10"
+        ),
+
+        MemberDetail(
+            id = 30,
+            username = "richardt",
+            firstName = "Richard",
+            lastName = "Tan",
+            email = "richard@example.com",
+            phone = "081344466677",
+            profilePhotoUrl = null,
+            role = "participant",
+            statusJoin = "rejected",
+            joinDate = "2026-06-12"
+        ),
+
+        MemberDetail(
+            id = 31,
+            username = "adrians",
+            firstName = "Adrian",
+            lastName = "Saputra",
+            email = "adrian@example.com",
+            phone = "081355577788",
+            profilePhotoUrl = null,
+            role = "participant",
+            statusJoin = "rejected",
+            joinDate = "2026-06-14"
         )
+
     )
 
     val currentMember = memberDetails.first()
