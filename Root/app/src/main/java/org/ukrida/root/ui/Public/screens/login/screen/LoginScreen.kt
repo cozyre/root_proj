@@ -11,11 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
@@ -26,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,22 +44,24 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import org.ukrida.root.ui.Public.screens.login.viewmodel.LoginViewModel
+import org.ukrida.root.utils.Resource
 
 @Composable
 fun LoginScreen(
+    viewModel: LoginViewModel = viewModel(),
     onRegisterClick: () -> Unit,
     onLoginSuccess: () -> Unit) {
-
-    val viewModel: LoginViewModel = viewModel()
     val state by viewModel.uiState.collectAsState()
-    LaunchedEffect(state.loginSuccess) {
+    val scope = rememberCoroutineScope()
 
-        if (state.loginSuccess) {
+    LaunchedEffect(state) {
+        if (state is Resource.Success) {
             onLoginSuccess()
         }
-
     }
+
     var identifier by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var selectedRole by remember { mutableStateOf("User") }
@@ -124,21 +129,21 @@ fun LoginScreen(
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         FilterChip(
-                            selected = selectedRole == "User",
+                            selected = selectedRole == "user",
                             onClick = {
-                                selectedRole = "User"
+                                selectedRole = "user"
                             },
                             label = {
-                                Text("User")
+                                Text("user")
                             }
                         )
                         FilterChip(
-                            selected = selectedRole == "Admin",
+                            selected = selectedRole == "admin",
                             onClick = {
-                                selectedRole = "Admin"
+                                selectedRole = "admin"
                             },
                             label = {
-                                Text("Admin")
+                                Text("admin")
                             }
                         )
                     }
@@ -176,23 +181,28 @@ fun LoginScreen(
                         visualTransformation = PasswordVisualTransformation(),
                         modifier = Modifier.fillMaxWidth()
                     )
-                    state.error?.let {
+
+                    if (state is Resource.Error) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = it,
+                            text = (state as Resource.Error).message,
                             color = Color.Red,
                             fontSize = 14.sp
                         )
                     }
+
                     Spacer(modifier = Modifier.height(32.dp))
                     Button(
                         onClick = {
-                            viewModel.login(
-                                identifier,
-                                password,
-                                selectedRole
-                            )
+                            scope.launch {
+                                viewModel.login(
+                                    identifier,
+                                    password,
+                                    selectedRole
+                                )
+                            }
                         },
+                        enabled = state !is Resource.Loading,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(55.dp),
@@ -201,10 +211,18 @@ fun LoginScreen(
                         ),
                         shape = RoundedCornerShape(20.dp)
                     ) {
-                        Text(
-                            "LOGIN",
-                            fontSize = 18.sp
-                        )
+                        if (state is Resource.Loading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                color = Color.White,
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Text(
+                                "LOGIN",
+                                fontSize = 18.sp
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     ClickableText(

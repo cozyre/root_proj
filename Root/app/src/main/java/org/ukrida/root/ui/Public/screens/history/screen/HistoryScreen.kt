@@ -27,9 +27,9 @@ import org.ukrida.root.ui.Public.screens.history.components.HistorySection
 
 @Composable
 fun HistoryScreen(
+    viewModel: HistoryViewModel = viewModel(),
     navController: NavHostController
 ) {
-    val viewModel: HistoryViewModel = viewModel()
     val historyGroups by viewModel.historyGroups.collectAsState()
     Scaffold(
         containerColor = Color(0xFF2A2522),

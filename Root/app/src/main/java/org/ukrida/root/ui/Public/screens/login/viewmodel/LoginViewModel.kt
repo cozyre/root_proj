@@ -3,57 +3,53 @@ package org.ukrida.root.ui.Public.screens.login.viewmodel
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.ukrida.root.ui.Public.screens.login.state.LoginUiState
+import org.ukrida.root.data.model.AuthData
+import org.ukrida.root.data.repository.AuthRepository
+import org.ukrida.root.utils.Resource
+import org.ukrida.root.utils.SessionManager
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(
+    private val authRepository: AuthRepository,
+    private val sessionManager: SessionManager
+) : ViewModel() {
 
-    private val _uiState =
-        MutableStateFlow(LoginUiState())
+    private val _uiState = MutableStateFlow<Resource<AuthData>?>(null)
+    val uiState = _uiState.asStateFlow()
 
-    val uiState =
-        _uiState.asStateFlow()
+    suspend fun login(identifier: String, password: String, selectedRole: String) {
+        _uiState.value = Resource.Loading()
 
-    fun login(
-        identifier: String,
-        password: String,
-        role: String
-    ) {
+//        val result = authRepository.login(identifier, password)
+        when (val result = authRepository.login(identifier, password)) {
+            is Resource.Success -> {
+                val backendRole = result.data.user.role
 
-        if(identifier.isBlank()){
+                // Validate role match
+                if ((selectedRole == "user") && (backendRole == "admin")) {
+                    _uiState.value = Resource.Error(
+                        "Role mismatch. You selected '$selectedRole' but your account is '$backendRole'"
+                    )
+                    return
+                }
+                else if((selectedRole == "admin") && (backendRole != "admin")){
+                    _uiState.value = Resource.Error(
+                        "Role mismatch. You selected '$selectedRole' but your account is '$backendRole'"
+                    )
+                    return
+                }
 
-            _uiState.value =
-                _uiState.value.copy(
-                    error = "Username atau Email wajib diisi."
-                )
+                // Save token and role
+                sessionManager.saveToken(result.data.token)
+                sessionManager.saveRole(backendRole)
 
-            return
+                _uiState.value = Resource.Success(result.data)
+            }
+            is Resource.Error -> {
+                _uiState.value = Resource.Error(result.message)
+            }
+            is Resource.Loading -> {
+                // Already set above
+            }
         }
-
-        if(password.isBlank()){
-
-            _uiState.value =
-                _uiState.value.copy(
-                    error = "Password wajib diisi."
-                )
-
-            return
-        }
-
-        // ===========================
-        // TODO Backend Integration
-        //
-        // repository.login(
-        //      identifier,
-        //      password,
-        //      role
-        // )
-        // ===========================
-
-        _uiState.value =
-            _uiState.value.copy(
-                loginSuccess = true
-            )
-
     }
-
 }
