@@ -1,0 +1,24 @@
+package org.ukrida.root.ui.user.screens.dailybread.components
+
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import org.ukrida.root.data.model.Devotion
+
+@Composable
+fun DevotionContent(
+    devotion: Devotion
+) {
+
+    Text(
+        text = devotion.content,
+        modifier = Modifier.padding(horizontal = 20.dp),
+        style = MaterialTheme.typography.bodyLarge,
+        color = Color.White
+    )
+
+}
