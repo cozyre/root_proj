@@ -52,8 +52,6 @@ fun MainScreen(activity: MainActivity) {
     val appContainer = remember { AppContainer() }
     val navController = rememberNavController()
 
-
-
     // AppViewModel keeps token refresh running while screen exists
     val appViewModel = remember {
         AppViewModel(sessionManager = sessionManager)
