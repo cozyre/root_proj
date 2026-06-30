@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.ukrida.root.data.dummy.DummyMemberData
+import org.ukrida.root.data.fake.FakeAccountRepository
 import org.ukrida.root.data.fake.FakeGroupRepository
 import org.ukrida.root.data.fake.FakeMemberRepository
 import org.ukrida.root.data.model.Group
@@ -34,7 +35,9 @@ data class OnGoingDetailUiState(
     val tripState: TripState? = null,
     val members: List<MemberUiModel> = emptyList(),
     val documentations: List<DocumentationUiModel> = emptyList(),
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val mentor: LeaderUiModel? = null,
+    val coordinator: LeaderUiModel? = null
 )
 
 class OnGoingDetailViewModel(
@@ -43,6 +46,7 @@ class OnGoingDetailViewModel(
 
     private val groupRepository = FakeGroupRepository()
     private val memberRepository = FakeMemberRepository()
+    private val accountRepository = FakeAccountRepository()
 
     private val _uiState = MutableStateFlow(OnGoingDetailUiState())
     val uiState: StateFlow<OnGoingDetailUiState> = _uiState.asStateFlow()
@@ -64,6 +68,10 @@ class OnGoingDetailViewModel(
             val groupDeferred = async {
                 groupRepository.getTourById(tripId)
             }
+            val detailDeferred = async {
+                accountRepository.getGroupDetail(tripId)
+            }
+            val detailResult = detailDeferred.await()
 
             val groupResult = groupDeferred.await()
 
@@ -71,22 +79,31 @@ class OnGoingDetailViewModel(
             val memberUiList = DummyMemberData.members
                 .map { it.toUiModel() }
 
-            // Handle group result
+            val detail = detailResult.getOrNull()
+
             groupResult
                 .onSuccess { group ->
+
                     val tripState = group.toTripState()
 
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         tripState = tripState,
-                        members = memberUiList
-                    )
-                }
-                .onFailure { error ->
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        errorMessage = error.message ?: "Gagal memuat data trip",
-                        members = emptyList()
+                        members = memberUiList,
+
+                        mentor = detail?.mentor?.let {
+                            LeaderUiModel(
+                                name = it.name,
+                                photoUrl = it.photo
+                            )
+                        },
+
+                        coordinator = detail?.coordinator?.let {
+                            LeaderUiModel(
+                                name = it.name,
+                                photoUrl = it.photo
+                            )
+                        }
                     )
                 }
 

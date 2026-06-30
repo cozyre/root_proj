@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.androidx.ui)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.material3)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

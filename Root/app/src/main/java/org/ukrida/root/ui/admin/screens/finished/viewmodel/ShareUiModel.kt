@@ -10,3 +10,8 @@ data class DocumentationUiModel(
     val id: String,
     val imageUrl: String?
 )
+
+data class LeaderUiModel(
+    val name: String,
+    val photoUrl: String?
+)

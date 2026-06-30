@@ -18,7 +18,7 @@ object DummyMemberData {
             firstName = "John",
             lastName = "Doe",
             profilePhotoUrl = null,
-            role = "leader"
+            role = "mentor"
         ),
         Member(
             id = 3,
@@ -43,7 +43,52 @@ object DummyMemberData {
             lastName = "Lee",
             profilePhotoUrl = null,
             role = "participant"
+        ),
+        Member(
+            id = 6,
+            username = "mariaangelica",
+            firstName = "Maria",
+            lastName = "Angelica",
+            profilePhotoUrl = null,
+            role = "coordinator"
+        ),
+        Member(
+            id = 7,
+            username = "daniels",
+            firstName = "Daniel",
+            lastName = "Santoso",
+            profilePhotoUrl = null,
+            role = "mentor"
+        ),
+
+        Member(
+            id = 8,
+            username = "samuelw",
+            firstName = "Samuel",
+            lastName = "Wijaya",
+            profilePhotoUrl = null,
+            role = "mentor"
+        ),
+
+        Member(
+            id = 9,
+            username = "jonathant",
+            firstName = "Jonathan",
+            lastName = "Tan",
+            profilePhotoUrl = null,
+            role = "coordinator"
+        ),
+
+        Member(
+            id = 10,
+            username = "kevinh",
+            firstName = "Kevin",
+            lastName = "Hartono",
+            profilePhotoUrl = null,
+            role = "coordinator"
         )
+
+
     )
 
     val memberDetails = listOf(
@@ -67,7 +112,7 @@ object DummyMemberData {
             email = "john@example.com",
             phone = "081298765432",
             profilePhotoUrl = null,
-            role = "leader",
+            role = "Mentor",
             statusJoin = "approved",
             joinDate = "2025-06-10"
         ),
@@ -106,6 +151,69 @@ object DummyMemberData {
             role = "participant",
             statusJoin = "pending",
             joinDate = "2025-06-25"
+        ),
+        MemberDetail(
+            id = 6,
+            username = "mariaangelica",
+            firstName = "Maria",
+            lastName = "Angelica",
+            email = "maria@example.com",
+            phone = "081377788899",
+            profilePhotoUrl = null,
+            role = "coordinator",
+            statusJoin = "approved",
+            joinDate = "2025-06-12"
+        ),
+        MemberDetail(
+            id = 7,
+            username = "daniels",
+            firstName = "Daniel",
+            lastName = "Santoso",
+            email = "daniel@example.com",
+            phone = "081355511122",
+            profilePhotoUrl = null,
+            role = "mentor",
+            statusJoin = "approved",
+            joinDate = "2025-06-11"
+        ),
+
+        MemberDetail(
+            id = 8,
+            username = "samuelw",
+            firstName = "Samuel",
+            lastName = "Wijaya",
+            email = "samuel@example.com",
+            phone = "081366677788",
+            profilePhotoUrl = null,
+            role = "mentor",
+            statusJoin = "approved",
+            joinDate = "2025-06-13"
+        ),
+
+        MemberDetail(
+            id = 9,
+            username = "jonathant",
+            firstName = "Jonathan",
+            lastName = "Tan",
+            email = "jonathan@example.com",
+            phone = "081377744455",
+            profilePhotoUrl = null,
+            role = "coordinator",
+            statusJoin = "approved",
+            joinDate = "2025-06-14"
+        ),
+
+        MemberDetail(
+            id = 10,
+            username = "kevinh",
+            firstName = "Kevin",
+            lastName = "Hartono",
+            email = "kevin@example.com",
+            phone = "081388899900",
+            profilePhotoUrl = null,
+            role = "coordinator",
+            statusJoin = "approved",
+            joinDate = "2025-06-16"
         )
     )
 

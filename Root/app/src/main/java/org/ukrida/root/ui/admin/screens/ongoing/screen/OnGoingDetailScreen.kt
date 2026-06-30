@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import org.ukrida.root.ui.admin.components.DocumentationGridItem
 import org.ukrida.root.ui.admin.components.ImagePlaceholder
+import org.ukrida.root.ui.admin.components.LeaderItem
 import org.ukrida.root.ui.admin.components.MemberGridItem
 import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.navigation.Screen
@@ -30,6 +31,7 @@ import org.ukrida.root.ui.theme.BackgroundDark
 import org.ukrida.root.ui.theme.DrawerBackground
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnGoingDetailScreen(
     navController: NavController,
@@ -58,6 +60,9 @@ fun OnGoingDetailScreen(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> /* TODO: update foto utama */ }
     )
+    var showEditSheet by remember {
+        mutableStateOf(false)
+    }
 
     Scaffold(
         containerColor = BackgroundDark,
@@ -140,7 +145,7 @@ fun OnGoingDetailScreen(
                         title = currentTitle,
                         description = currentDescription,
                         dateRange = currentDateRange,
-                        onEditClick = { /* TODO: edit trip info */ }
+                        onEditClick = { showEditSheet = true }
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -167,6 +172,23 @@ fun OnGoingDetailScreen(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
+                    uiState.mentor?.let {
+                        LeaderItem(
+                            role = "MENTOR",
+                            name = it.name
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    uiState.coordinator?.let {
+                        LeaderItem(
+                            role = "COORDINATOR",
+                            name = it.name
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(30.dp))
                     val memberList =
                         if (showAllMembers)
                             uiState.members
@@ -321,5 +343,29 @@ fun OnGoingDetailScreen(
                 TextButton(onClick = { showDeleteDocDialog = false }) { Text("Batal") }
             }
         )
+    }
+    if (showEditSheet) {
+
+        val sheetState = rememberModalBottomSheetState(
+            skipPartiallyExpanded = true
+        )
+
+        ModalBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = {
+                showEditSheet = false
+            },
+            containerColor = DrawerBackground
+        ) {
+            EditTripBottomSheet(
+                currentTitle = currentTitle,
+                currentDescription = currentDescription,
+                currentMentor = uiState.mentor?.name ?: "",
+                currentCoordinator = uiState.coordinator?.name ?: "",
+                onClose = {
+                    showEditSheet = false
+                }
+            )
+        }
     }
 }
