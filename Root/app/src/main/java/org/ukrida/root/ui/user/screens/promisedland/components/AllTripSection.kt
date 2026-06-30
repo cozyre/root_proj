@@ -17,7 +17,7 @@ import java.time.Year
 
 @Composable
 fun AllTripSection(
-    allTrips: List<Group>,
+    allTrips: List<Group>?,
     onTripClick: (Int) -> Unit
 ) {
     Column(
@@ -31,7 +31,7 @@ fun AllTripSection(
             color = Color(0xFFE8D8C9)
         )
         Spacer(modifier = Modifier.height(20.dp))
-        if (allTrips.isEmpty()) {
+        if (allTrips.isNullOrEmpty()) {
             Text(
                 text = "No trips available.",
                 style = MaterialTheme.typography.bodyLarge,

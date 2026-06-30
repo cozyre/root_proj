@@ -58,6 +58,8 @@ match (true) {
         => $authCtrl->register($body()),
     $method === 'POST' && $route === 'auth/login'
         => $authCtrl->login($body()),
+        $method === 'POST' && $route === 'auth/refresh'
+    => $authCtrl->refresh($auth->requireAuth()),
 
     // Groups
     $method === 'GET' && $route === 'group/index'

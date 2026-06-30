@@ -209,7 +209,7 @@ fun TripScreen(
                 Text(
                     text = "FINISHED TRIP",
                     style = MaterialTheme.typography.titleLarge,
-                    color = TitleColor
+                    color = H1Color
                 )
 
                 Spacer(

@@ -1,76 +1,83 @@
 package org.ukrida.root.ui.user.screens.group.viewmodel
 
+import android.accounts.Account
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.ukrida.root.data.model.Group
+import kotlinx.coroutines.launch
+import org.ukrida.root.data.model.GroupWithDetails
+import org.ukrida.root.data.repository.AccountRepository
+import org.ukrida.root.data.repository.GroupRepository
+import org.ukrida.root.utils.Resource
 
-class GroupViewModel : ViewModel() {
+class GroupViewModel(
+    private val groupRepository: GroupRepository,
+    private val accountRepository: AccountRepository
+) : ViewModel() {
 
-    private val _groups = MutableStateFlow<List<Group>>(emptyList())
-    val groups = _groups.asStateFlow()
+    private val _groups = MutableStateFlow<Resource<List<GroupWithDetails>>>(Resource.Loading())
+    val groups: StateFlow<Resource<List<GroupWithDetails>>> = _groups
 
     init {
         loadGroups()
     }
 
     fun loadGroups() {
-        // TODO Backend Integration
-        // repository.getMyGroups()
-        loadDummy()
+        viewModelScope.launch {
+            loadMyTours()
+        }
     }
 
-    private fun loadDummy() {
+    private suspend fun loadMyTours() {
+        _groups.value = Resource.Loading()
 
-        _groups.value = listOf(
+        val toursResult = groupRepository.getAllTours()
+        if (toursResult.isFailure) {
+            _groups.value = Resource.Error(toursResult.exceptionOrNull()?.message ?: "Failed to load tours")
+            return
+        }
 
-            Group(
-                id = 1,
-                name = "Holy Land",
-                description = "Experience the places where Jesus walked.",
-                location = "Jerusalem",
-                dresscode = "Casual",
-                status = "Completed",
-                startDate = "2026-10-01",
-                endDate = "2026-10-12",
-                meetupTime = "08:00",
-                meetupAddress = "Soekarno Hatta Airport",
-                joinDate = "2026-07-15",
-                statusJoin = "Approved"
-            ),
+        val tours = toursResult.getOrNull() ?: emptyList()
 
-            Group(
-                id = 2,
-                name = "Jordan Pilgrimage",
-                description = "Visit the Jordan River and Mount Nebo.",
-                location = "Jordan",
-                dresscode = "Casual",
-                status = "Completed",
-                startDate = "2026-11-05",
-                endDate = "2026-11-12",
-                meetupTime = "09:00",
-                meetupAddress = "Soekarno Hatta Airport",
-                joinDate = "2026-08-01",
-                statusJoin = "Rejected"
-            ),
+        val combined = coroutineScope {
+            tours.map { tour ->
+                async {
+                    accountRepository.getOrderStatus(tour.id).mapCatching { detail ->
+                        GroupWithDetails(
+                            id = tour.id,
+                            name = tour.name,
+                            description = tour.description,
+                            startDate = tour.startDate,
+                            endDate = tour.endDate,
+                            location = tour.location,
+                            dresscode = tour.dresscode,
+                            meetupTime = tour.meetupTime,
+                            meetupAddress = tour.meetupAddress,
+                            status = tour.status,
+                            statusJoin = detail.statusJoin,
+                            joinDate = tour.joinDate
+                        )
+                    }
+                }
+            }.awaitAll()
+        }.mapNotNull { result ->
+            result.getOrNull().also { detail ->
+                result.exceptionOrNull()?.let {
+                    Log.w("GroupViewModel", "Failed to load details: ${it.message}")
+                }
+            }
+        }
 
-            Group(
-                id = 3,
-                name = "Egypt Pilgrimage",
-                description = "Journey through biblical Egypt.",
-                location = "Egypt",
-                dresscode = "Casual",
-                status = "Completed",
-                startDate = "2026-12-01",
-                endDate = "2026-12-10",
-                meetupTime = "08:30",
-                meetupAddress = "Soekarno Hatta Airport",
-                joinDate = "2026-09-10",
-                statusJoin = "Pending"
-            )
-
-        )
-
+        _groups.value = if (combined.isNotEmpty()) {
+            Resource.Success(combined)
+        } else {
+            Resource.Error("No groups found")
+        }
     }
-
 }

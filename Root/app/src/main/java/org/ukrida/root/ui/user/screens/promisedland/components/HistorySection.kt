@@ -17,7 +17,7 @@ import org.ukrida.root.data.model.Group
 
 @Composable
 fun HistorySection(
-    historyGroups: List<Group>,
+    historyGroups: List<Group>?,
     onSeeMoreClick: () -> Unit,
     onHistoryClick: (Int) -> Unit
 ) {
@@ -35,7 +35,7 @@ fun HistorySection(
             style = MaterialTheme.typography.bodyLarge,
             color = Color.White.copy(alpha = .8f)
         )
-        if (historyGroups.isEmpty()) {
+        if (historyGroups.isNullOrEmpty()) {
             Text(
                 text = "No trips available.",
                 style = MaterialTheme.typography.bodyLarge,
@@ -50,7 +50,7 @@ fun HistorySection(
                     HistoryCard(
                         group = group,
                         onClick = {
-                            onHistoryClick?.invoke(group.id)
+                            onHistoryClick.invoke(group.id)
                         }
                     )
                 }

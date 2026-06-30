@@ -24,11 +24,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.ukrida.root.R
 import org.ukrida.root.data.model.Group
+import org.ukrida.root.data.model.GroupWithDetails
 import org.ukrida.root.utils.GroupStatus
 
 @Composable
 fun GroupCard(
-    group: Group,
+    group: GroupWithDetails,
     onClick: () -> Unit = {}
 ) {
     val enabled = group.statusJoin == GroupStatus.APPROVED
@@ -64,7 +65,7 @@ fun GroupCard(
                 contentScale = ContentScale.Crop
             )
             StatusBadge(
-                status = group.statusJoin ?: "Pending",
+                status = group.statusJoin,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(14.dp)

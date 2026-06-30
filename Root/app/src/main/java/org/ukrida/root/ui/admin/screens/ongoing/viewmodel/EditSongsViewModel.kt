@@ -1,91 +1,114 @@
 package org.ukrida.root.ui.admin.screens.ongoing.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import org.ukrida.root.ui.admin.screens.ongoing.model.SongItem
+import kotlinx.coroutines.launch
+import org.ukrida.root.data.fake.FakeSongRepository
+import org.ukrida.root.data.model.SongBrowseItem
+import org.ukrida.root.data.model.SongSummary
+
+data class SongItemUiState(
+    val id: Int,
+    val day: Int,
+    val selectedSongId: Int? = null,
+    val selectedSongTitle: String = ""
+)
 
 class EditSongsViewModel(
-    savedStateHandle: SavedStateHandle
+    val tripId: Int
 ) : ViewModel() {
 
-    /** ID trip yang sedang diedit — diambil dari argumen navigasi */
-    val tripId: String = savedStateHandle["tripId"] ?: ""
+    private val repository = FakeSongRepository()
 
-    // ── Daftar lagu yang tersedia untuk dipilih (bisa diganti dari repository) ──
-    val availableSongs: List<String> = listOf(
-        "Amazing Grace",
-        "How Great Thou Art",
-        "Blessed Assurance",
-        "Great Is Thy Faithfulness",
-        "In Christ Alone",
-        "10,000 Reasons",
-        "Cornerstone",
-        "What A Beautiful Name",
-        "Build My Life",
-        "Good Grace"
-    )
+    private val _songList = MutableStateFlow<List<SongItemUiState>>(emptyList())
+    val songList: StateFlow<List<SongItemUiState>> = _songList.asStateFlow()
 
-    // ── Daftar hari yang tersedia ────────────────────────────────────────────────
-    private val _availableDays = MutableStateFlow(listOf(1, 2, 3, 4))
-    val availableDays: StateFlow<List<Int>> = _availableDays.asStateFlow()
-
-    // ── Hari yang sedang dipilih ─────────────────────────────────────────────────
     private val _selectedDay = MutableStateFlow(1)
     val selectedDay: StateFlow<Int> = _selectedDay.asStateFlow()
 
-    // ── Semua item lagu (semua hari) ─────────────────────────────────────────────
-    private val _songList = MutableStateFlow<List<SongItem>>(
-        // Data dummy awal — ganti dengan load dari repository
-        listOf(
-            SongItem(id = 1, day = 1),
-            SongItem(id = 2, day = 1),
-            SongItem(id = 3, day = 1),
-            SongItem(id = 4, day = 1),
-            SongItem(id = 5, day = 2),
-            SongItem(id = 6, day = 2),
-        )
-    )
-    val songList: StateFlow<List<SongItem>> = _songList.asStateFlow()
+    private val _availableDays = MutableStateFlow<List<Int>>(emptyList())
+    val availableDays: StateFlow<List<Int>> = _availableDays.asStateFlow()
 
-    private var nextId = _songList.value.maxOfOrNull { it.id }?.plus(1) ?: 1
+    // Bank lagu untuk dropdown
+    private val _availableSongs = MutableStateFlow<List<SongBrowseItem>>(emptyList())
+    val availableSongs: StateFlow<List<SongBrowseItem>> = _availableSongs.asStateFlow()
 
-    // ── Actions ──────────────────────────────────────────────────────────────────
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
-    /** Ganti hari yang sedang ditampilkan */
-    fun selectDay(day: Int) {
-        _selectedDay.update { day }
+    init {
+        loadData()
     }
 
-    /**
-     * Pilih lagu untuk item tertentu.
-     *
-     * @param itemId       ID item yang diperbarui
-     * @param selectedSong Nama lagu yang dipilih dari dropdown
-     */
-    fun selectSong(itemId: Int, selectedSong: String) {
-        _songList.update { list ->
-            list.map { if (it.id == itemId) it.copy(selectedSong = selectedSong) else it }
+    private fun loadData() {
+        viewModelScope.launch {
+            _isLoading.value = true
+
+            // Load bank lagu global
+            repository.browseSongs().onSuccess { songs ->
+                _availableSongs.value = songs
+            }
+
+            // Load lagu yang sudah ada di grup (per hari)
+            // Untuk sekarang dummy: semua lagu di day 1
+            repository.getSongs(tripId).onSuccess { summaries ->
+                val uiList = summaries.mapIndexed { index, summary ->
+                    SongItemUiState(
+                        id = summary.id,
+                        day = 1, // default day 1, nanti bisa dikembangkan per date
+                        selectedSongId = summary.id,
+                        selectedSongTitle = summary.title
+                    )
+                }
+                _songList.value = uiList
+                _availableDays.value = listOf(1) // bisa dikembangkan dari itinerary dates
+            }
+
+            _isLoading.value = false
         }
     }
 
-    /** Hapus item lagu berdasarkan ID */
-    fun deleteItem(itemId: Int) {
-        _songList.update { list -> list.filter { it.id != itemId } }
+    fun selectDay(day: Int) {
+        _selectedDay.value = day
     }
 
-    /** Tambah baris lagu baru untuk hari yang sedang dipilih */
+    fun selectSong(itemId: Int, song: SongBrowseItem) {
+        _songList.value = _songList.value.map { item ->
+            if (item.id == itemId) item.copy(
+                selectedSongId = song.id,
+                selectedSongTitle = song.title
+            ) else item
+        }
+    }
+
     fun addItem() {
-        val newItem = SongItem(id = nextId, day = _selectedDay.value)
-        nextId++
-        _songList.update { it + newItem }
+        val newId = (_songList.value.maxOfOrNull { it.id } ?: 0) + 1
+        val newItem = SongItemUiState(
+            id = newId,
+            day = _selectedDay.value
+        )
+        _songList.value = _songList.value + newItem
     }
 
-    /** Simpan / submit perubahan (implementasikan sesuai repository) */
+    fun deleteItem(itemId: Int) {
+        _songList.value = _songList.value.filter { it.id != itemId }
+    }
+
     fun submitSongs() {
-        // TODO: panggil repository untuk menyimpan _songList ke server / database
+        // TODO: kirim ke API
+    }
+
+    companion object {
+        fun factory(tripId: Int): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return EditSongsViewModel(tripId) as T
+                }
+            }
     }
 }

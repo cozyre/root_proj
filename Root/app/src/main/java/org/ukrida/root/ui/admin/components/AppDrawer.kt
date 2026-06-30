@@ -13,11 +13,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.ukrida.root.ui.theme.*
+import kotlin.Unit
 
 @Composable
 fun AppDrawer(
     onItemClick: (String) -> Unit,
-    onCloseDrawer: () -> Unit
+    onCloseDrawer: () -> Unit,
+    onLogout: () -> Unit
 ) {
 
     val menuItems = listOf(
@@ -97,7 +99,9 @@ fun AppDrawer(
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = {},
+                onClick = {
+                    onLogout()
+                },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MainButton

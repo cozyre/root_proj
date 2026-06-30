@@ -38,9 +38,10 @@ class LoginViewModel(
                     return
                 }
 
-                // Save token and role
+                // Save token, role, and time
                 sessionManager.saveToken(result.data.token)
                 sessionManager.saveRole(backendRole)
+                sessionManager.saveLoginTime()
 
                 _uiState.value = Resource.Success(result.data)
             }

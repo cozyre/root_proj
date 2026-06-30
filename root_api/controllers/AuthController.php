@@ -113,6 +113,25 @@ class AuthController {
         return "{$header}.{$payload}.{$signature}";
     }
 
+    // POST ?route=auth/refresh
+    public function refresh(array $authUser): void {
+        // User already authenticated by middleware
+        // Reissue a fresh token
+        $user = $this->userModel->findById((int)$authUser['id']);
+        
+        if (!$user) {
+            $this->error(401, 'User not found');
+            return;
+        }
+        
+        $newToken = $this->generateJWT($user);
+        
+        $this->success(200, [
+            'token' => $newToken,
+            'user'  => $user,
+        ], 'Token refreshed');
+    }
+
     private function success(int $code, $data, string $message = ''): void {
         http_response_code($code);
         echo json_encode(['success' => true, 'data' => $data, 'message' => $message]);

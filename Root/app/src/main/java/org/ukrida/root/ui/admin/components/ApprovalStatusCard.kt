@@ -1,4 +1,4 @@
-package org.ukrida.root.ui.admin.screens.dashboard.components
+package org.ukrida.root.ui.admin.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -6,28 +6,46 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.ukrida.root.ui.theme.*
+import org.ukrida.root.ui.theme.ApproveButton
+import org.ukrida.root.ui.theme.ApproveText
+import org.ukrida.root.ui.theme.BodyColor
+import org.ukrida.root.ui.theme.DrawerBackground
+import org.ukrida.root.ui.theme.H1Color
+import org.ukrida.root.ui.theme.RejectButton
+import org.ukrida.root.ui.theme.RejectText
 
 @Composable
-fun ApprovalCard(
+fun ApprovalStatusCard(
     userName: String,
     groupName: String,
-    onApprove: () -> Unit = {},
-    onReject: () -> Unit = {}
+    status: String
 ) {
+
+    val backgroundColor = when (status.lowercase()) {
+        "approved" -> ApproveButton
+        "rejected" -> RejectButton
+        else -> DrawerBackground
+    }
+
+    val textColor = when (status.lowercase()) {
+        "approved" -> ApproveText
+        "rejected" -> RejectText
+        else -> H1Color
+    }
+
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
-        // Placeholder Profile Picture
         Box(
             modifier = Modifier
                 .size(42.dp)
@@ -60,41 +78,22 @@ fun ApprovalCard(
             )
         }
 
-        Button(
-            onClick = onApprove,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = ApproveButton
-            ),
-            contentPadding = PaddingValues(0.dp),
+        Box(
             modifier = Modifier
-                .height(30.dp)
-                .width(60.dp),
-            shape = RoundedCornerShape(50.dp)
+                .background(
+                    color = backgroundColor,
+                    shape = RoundedCornerShape(50.dp)
+                )
+                .padding(
+                    horizontal = 12.dp,
+                    vertical = 6.dp
+                )
         ) {
-            Text(
-                text = "APPROVE",
-                color = ApproveText,
-                fontSize = 8.sp
-            )
-        }
 
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Button(
-            onClick = onReject,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = RejectButton
-            ),
-            contentPadding = PaddingValues(0.dp),
-            modifier = Modifier
-                .height(30.dp)
-                .width(60.dp),
-            shape = RoundedCornerShape(50.dp)
-        ) {
             Text(
-                text = "REJECT",
-                color = RejectText,
-                fontSize = 8.sp
+                text = status.uppercase(),
+                color = textColor,
+                fontSize = 10.sp
             )
         }
     }

@@ -12,10 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.ukrida.root.data.model.Group
+import org.ukrida.root.utils.Resource
 
 @Composable
 fun RecommendationSection(
-    groups: List<Group>,
+    groups: List<Group>?,
     onTripClick: (Int) -> Unit = {}
 ) {
     Column(
@@ -29,7 +30,7 @@ fun RecommendationSection(
             color = Color(0xFFE8D8C9)
         )
         Spacer(modifier = Modifier.height(18.dp))
-        groups.forEach { group ->
+        groups?.forEach { group ->
             RecommendationCard(
                 group = group,
                 onClick = {

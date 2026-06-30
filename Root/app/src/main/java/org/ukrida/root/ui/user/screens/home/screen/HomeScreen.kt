@@ -27,36 +27,39 @@ import org.ukrida.root.ui.user.screens.home.components.MissionSection
 import org.ukrida.root.ui.user.screens.home.components.RecommendationSection
 import org.ukrida.root.ui.user.screens.home.components.VisionSection
 import org.ukrida.root.ui.user.screens.home.viewmodel.HomeViewModel
+import org.ukrida.root.utils.Resource
 
 @Composable
 fun HomeScreen(
+    viewModel: HomeViewModel = viewModel(),
     navController: NavHostController
 ) {
-    val viewModel: HomeViewModel = viewModel()
-    val groups by viewModel.groups.collectAsState()
+    val groupState by viewModel.groups.collectAsState()
+    val groups = (groupState as? Resource.Success)?.data
+
     Scaffold(
         containerColor = Color(0xFF2A2522),
-        bottomBar = {
-            PublicBottomNavigation(
-                currentDestination = PublicDestination.HOME,
-                onNavigate = { destination ->
-                    when (destination) {
-                        PublicDestination.HOME -> {
-                            // Tidak perlu apa-apa
-                        }
-                        PublicDestination.PROMISED_LAND -> {
-                            navController.navigate(PublicScreen.PromisedLand.route)
-                        }
-                        PublicDestination.GROUP -> {
-                            navController.navigate(PublicScreen.Group.route)
-                        }
-                        PublicDestination.PROFILE -> {
-                            navController.navigate(PublicScreen.Profile.route)
-                        }
-                    }
-                }
-            )
-        }
+//        bottomBar = {
+//            PublicBottomNavigation(
+//                currentDestination = PublicDestination.HOME,
+//                onNavigate = { destination ->
+//                    when (destination) {
+//                        PublicDestination.HOME -> {
+//                            // Tidak perlu apa-apa
+//                        }
+//                        PublicDestination.PROMISED_LAND -> {
+//                            navController.navigate(PublicScreen.PromisedLand.route)
+//                        }
+//                        PublicDestination.GROUP -> {
+//                            navController.navigate(PublicScreen.Group.route)
+//                        }
+//                        PublicDestination.PROFILE -> {
+//                            navController.navigate(PublicScreen.Profile.route)
+//                        }
+//                    }
+//                }
+//            )
+//        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -65,7 +68,7 @@ fun HomeScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            PublicTopBar(title = "HOME")
+//            PublicTopBar(title = "HOME")
             Spacer(modifier = Modifier.height(20.dp))
             HeroSection()
             Spacer(modifier = Modifier.height(50.dp))
@@ -74,7 +77,7 @@ fun HomeScreen(
             MissionSection()
             Spacer(modifier = Modifier.height(60.dp))
             RecommendationSection(
-                groups = groups,
+                groups = groups?.take(4),
                 onTripClick = { groupId ->
                     navController.navigate(
                         PublicScreen.Order.createRoute(groupId)

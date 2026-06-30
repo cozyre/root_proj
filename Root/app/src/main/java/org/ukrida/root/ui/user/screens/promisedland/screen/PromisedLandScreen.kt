@@ -24,41 +24,46 @@ import org.ukrida.root.ui.user.navigation.PublicScreen
 import org.ukrida.root.ui.user.screens.promisedland.components.AllTripSection
 import org.ukrida.root.ui.user.screens.promisedland.components.HistorySection
 import org.ukrida.root.ui.user.screens.promisedland.viewmodel.PromisedLandViewModel
+import org.ukrida.root.utils.Resource
 
 @Composable
 fun PromisedLandScreen(
+    viewModel: PromisedLandViewModel = viewModel(),
     navController: NavHostController
 ) {
-    val viewModel: PromisedLandViewModel = viewModel()
-    val historyGroups by viewModel.historyGroups.collectAsState()
-    val allTrips by viewModel.allTrips.collectAsState()
+    val historyGroupState by viewModel.historyGroups.collectAsState()
+    val allTripState by viewModel.allTrips.collectAsState()
+
+    val historyGroups = (historyGroupState as? Resource.Success)?.data
+    val allTrips = (allTripState as? Resource.Success)?.data
+
     Scaffold(
         containerColor = Color(0xFF2A2522),
-        bottomBar = {
-            PublicBottomNavigation(
-                currentDestination = PublicDestination.PROMISED_LAND,
-                onNavigate = { destination ->
-                    when (destination) {
-
-                        PublicDestination.HOME -> {
-                            navController.navigate(PublicScreen.Home.route)
-                        }
-
-                        PublicDestination.PROMISED_LAND -> {
-                            // Sudah berada di Promised Land
-                        }
-
-                        PublicDestination.GROUP -> {
-                            navController.navigate(PublicScreen.Group.route)
-                        }
-
-                        PublicDestination.PROFILE -> {
-                            navController.navigate(PublicScreen.Profile.route)
-                        }
-                    }
-                }
-            )
-        }
+//        bottomBar = {
+//            PublicBottomNavigation(
+//                currentDestination = PublicDestination.PROMISED_LAND,
+//                onNavigate = { destination ->
+//                    when (destination) {
+//
+//                        PublicDestination.HOME -> {
+//                            navController.navigate(PublicScreen.Home.route)
+//                        }
+//
+//                        PublicDestination.PROMISED_LAND -> {
+//                            // Sudah berada di Promised Land
+//                        }
+//
+//                        PublicDestination.GROUP -> {
+//                            navController.navigate(PublicScreen.Group.route)
+//                        }
+//
+//                        PublicDestination.PROFILE -> {
+//                            navController.navigate(PublicScreen.Profile.route)
+//                        }
+//                    }
+//                }
+//            )
+//        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -67,7 +72,7 @@ fun PromisedLandScreen(
                 .background(Color(0xFF2A2522))
                 .verticalScroll(rememberScrollState())
         ) {
-            PublicTopBar(title = "PROMISED LAND")
+//            PublicTopBar(title = "PROMISED LAND")
             Spacer(modifier = Modifier.height(12.dp))
             HistorySection(
                 historyGroups = historyGroups,

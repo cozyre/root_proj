@@ -35,8 +35,8 @@ fun AuthNavigation(
             LoginScreen(
                 viewModel = loginViewModel,
                 onLoginSuccess = {
-                    onLoginSuccess()
                     navController.popBackStack()
+                    onLoginSuccess()
                 },
                 onRegisterClick = {
                     navController.navigate("register")

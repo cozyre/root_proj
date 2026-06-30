@@ -1,4 +1,4 @@
-package org.ukrida.root.ui.public.screens
+package org.ukrida.root.ui.user.screens
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
@@ -17,7 +17,7 @@ import org.ukrida.root.ui.theme.BackgroundDark
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PublicRootScreen(appContainer: AppContainer) {
+fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
 
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()

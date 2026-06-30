@@ -11,11 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.ukrida.root.data.model.Group
+import org.ukrida.root.data.model.GroupDetail
+import org.ukrida.root.data.model.GroupWithDetails
 import org.ukrida.root.utils.GroupStatus
 
 @Composable
 fun GroupSection(
-    groups: List<Group>,
+    groups: List<GroupWithDetails>?,
     onGroupClick: (Int) -> Unit = {}
 ) {
     Column(
@@ -33,7 +35,7 @@ fun GroupSection(
             color = Color.White.copy(alpha = .8f)
         )
         Spacer(modifier = Modifier.height(24.dp))
-        groups.forEach { group ->
+        groups?.forEach { group ->
             GroupCard(
                 group = group,
                 onClick = {

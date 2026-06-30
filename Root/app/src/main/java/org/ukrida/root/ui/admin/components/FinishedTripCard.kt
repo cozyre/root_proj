@@ -121,7 +121,7 @@ fun FinishedTripCard(
                     )
 
                     Text(
-                        text = "$start - $end",
+                        text = "${group.startDate ?: "-"} - ${group.endDate ?: "-"}",
                         style = MaterialTheme.typography.titleMedium,
                         color = H1Color
                     )

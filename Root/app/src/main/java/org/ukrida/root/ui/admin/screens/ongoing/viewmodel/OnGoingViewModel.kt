@@ -1,4 +1,4 @@
-package org.ukrida.root.ui.admin.screens.finished.viewmodel
+package org.ukrida.root.ui.admin.screens.ongoing.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,26 +9,25 @@ import kotlinx.coroutines.launch
 import org.ukrida.root.data.fake.FakeGroupRepository
 import org.ukrida.root.data.model.Group
 
-data class FinishedTripUiState(
+data class OnGoingUiState(
     val isLoading: Boolean = false,
     val groups: List<Group> = emptyList(),
     val errorMessage: String? = null
 )
 
-class FinishedTripViewModel : ViewModel() {
+class OnGoingViewModel : ViewModel() {
 
     private val repository = FakeGroupRepository()
 
-    private val _uiState = MutableStateFlow(FinishedTripUiState())
-    val uiState: StateFlow<FinishedTripUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(OnGoingUiState())
+    val uiState: StateFlow<OnGoingUiState> = _uiState.asStateFlow()
 
     init {
-        loadFinishedTrips()
+        loadOngoingTours()
     }
 
-    fun loadFinishedTrips() {
+    fun loadOngoingTours() {
         viewModelScope.launch {
-
             _uiState.value = _uiState.value.copy(
                 isLoading = true,
                 errorMessage = null
@@ -36,14 +35,13 @@ class FinishedTripViewModel : ViewModel() {
 
             repository.getAllTours()
                 .onSuccess { allGroups ->
-
-                    val completedGroups = allGroups.filter {
-                        it.status.equals("completed", ignoreCase = true)
+                    val ongoingGroups = allGroups.filter {
+                        it.status.equals("active", ignoreCase = true) ||
+                                it.status.equals("upcoming", ignoreCase = true)
                     }
-
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        groups = completedGroups
+                        groups = ongoingGroups
                     )
                 }
                 .onFailure { error ->

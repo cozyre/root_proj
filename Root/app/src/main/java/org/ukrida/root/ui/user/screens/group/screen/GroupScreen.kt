@@ -23,31 +23,33 @@ import org.ukrida.root.ui.user.components.PublicTopBar
 import org.ukrida.root.ui.user.navigation.PublicScreen
 import org.ukrida.root.ui.user.screens.group.components.GroupSection
 import org.ukrida.root.ui.user.screens.group.viewmodel.GroupViewModel
+import org.ukrida.root.utils.Resource
 
 @Composable
 fun GroupScreen(
+    viewModel: GroupViewModel = viewModel(),
     navController: NavHostController
 ) {
-    val viewModel: GroupViewModel = viewModel()
-    val groups by viewModel.groups.collectAsState()
+    val groupState by viewModel.groups.collectAsState()
+    val groups = (groupState as? Resource.Success)?.data
     Scaffold(
         containerColor = Color(0xFF2A2522),
-        bottomBar = {
-            PublicBottomNavigation(
-                currentDestination = PublicDestination.GROUP,
-                onNavigate = { destination ->
-                    when (destination) {
-                        PublicDestination.HOME ->
-                            navController.navigate(PublicScreen.Home.route)
-                        PublicDestination.PROMISED_LAND ->
-                            navController.navigate(PublicScreen.PromisedLand.route)
-                        PublicDestination.GROUP -> {}
-                        PublicDestination.PROFILE ->
-                            navController.navigate(PublicScreen.Profile.route)
-                    }
-                }
-            )
-        }
+//        bottomBar = {
+//            PublicBottomNavigation(
+//                currentDestination = PublicDestination.GROUP,
+//                onNavigate = { destination ->
+//                    when (destination) {
+//                        PublicDestination.HOME ->
+//                            navController.navigate(PublicScreen.Home.route)
+//                        PublicDestination.PROMISED_LAND ->
+//                            navController.navigate(PublicScreen.PromisedLand.route)
+//                        PublicDestination.GROUP -> {}
+//                        PublicDestination.PROFILE ->
+//                            navController.navigate(PublicScreen.Profile.route)
+//                    }
+//                }
+//            )
+//        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -56,9 +58,9 @@ fun GroupScreen(
                 .background(Color(0xFF2A2522))
                 .verticalScroll(rememberScrollState())
         ) {
-            PublicTopBar(
-                title = "GROUP"
-            )
+//            PublicTopBar(
+//                title = "GROUP"
+//            )
             Spacer(modifier = Modifier.height(20.dp))
             GroupSection(
                 groups = groups,
