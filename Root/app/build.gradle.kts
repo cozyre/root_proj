@@ -54,8 +54,11 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.material3)
+<<<<<<< HEAD
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+=======
+>>>>>>> parent of 8383887 (Merge branch 'dev' into Michael-AdminView)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

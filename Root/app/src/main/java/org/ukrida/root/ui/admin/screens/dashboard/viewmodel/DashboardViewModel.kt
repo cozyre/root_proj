@@ -1,83 +1,105 @@
 package org.ukrida.root.ui.admin.screens.dashboard.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.ukrida.root.data.fake.FakeAccountRepository
+import org.ukrida.root.data.fake.FakeGroupRepository
+import org.ukrida.root.data.fake.FakeMemberRepository
 import org.ukrida.root.data.model.Group
-import org.ukrida.root.data.model.PendingAccount
-import org.ukrida.root.data.repository.AdminRepository
-import org.ukrida.root.data.repository.GroupRepository
 import org.ukrida.root.utils.Resource
 
-class DashboardViewModel(
-    private val adminRepository: AdminRepository,
-    private val groupRepository: GroupRepository
-) : ViewModel() {
+data class ApprovalItem(
+    val accountId: Int,
+    val userName: String,
+    val groupName: String
+)
 
-    // Pending approvals
-    private val _pendingApprovals = MutableStateFlow<Resource<List<PendingAccount>>>(Resource.Loading())
-    val pendingApprovals: StateFlow<Resource<List<PendingAccount>>> = _pendingApprovals
+class DashboardViewModel : ViewModel() {
 
-    // Latest tour
-    private val _latestTour = MutableStateFlow<Resource<Group>>(Resource.Loading())
-    val latestTour: StateFlow<Resource<Group>> = _latestTour
+    private val accountRepository = FakeAccountRepository()
+    private val memberRepository = FakeMemberRepository()
+    private val groupRepository = FakeGroupRepository()
+
+    var approvals by mutableStateOf<List<ApprovalItem>>(emptyList())
+        private set
+
+    var latestTour by mutableStateOf<Group?>(null)
+        private set
+
+    var isLoading by mutableStateOf(false)
+        private set
 
     init {
         loadDashboard()
     }
 
     private fun loadDashboard() {
+
         viewModelScope.launch {
-            loadPendingApprovals()
+
+            isLoading = true
+
+            loadApprovals()
             loadLatestTour()
+
+            isLoading = false
         }
     }
 
-    private suspend fun loadPendingApprovals() {
-        _pendingApprovals.value = Resource.Loading()
+    private suspend fun loadApprovals() {
 
-        val result = adminRepository.getPendingAccounts()
+        val statusResult =
+            accountRepository.getAllStatuses()
 
-        if (result.isSuccess) {
-            val pending = result.getOrNull() ?: emptyList()
+        if (statusResult.isSuccess) {
 
-            _pendingApprovals.value = Resource.Success(pending)
-        } else {
-            _pendingApprovals.value = Resource.Error(
-                result.exceptionOrNull()?.message ?: "Failed to load pending approvals"
-            )
+            val pendingAccounts =
+                statusResult.getOrNull()
+                    ?.filter {
+                        it.statusJoin == "pending"
+                    }
+                    ?: emptyList()
+
+            approvals = pendingAccounts.mapNotNull { status ->
+
+                when (
+                    val member =
+                        memberRepository.getMemberDetail(
+                            userId = status.accountId,
+                            groupId = 0
+                        )
+                ) {
+
+                    is Resource.Success -> {
+
+                        ApprovalItem(
+                            accountId = status.accountId,
+                            userName = "${member.data.firstName} ${member.data.lastName}",
+                            groupName = status.groupName
+                        )
+                    }
+
+                    else -> null
+                }
+            }
+                .take(3)
         }
     }
 
     private suspend fun loadLatestTour() {
-        _latestTour.value = Resource.Loading()
 
-        val result = groupRepository.getAllTours()
+        val result =
+            groupRepository.getAllTours()
 
         if (result.isSuccess) {
-            val tours = result.getOrNull() ?: emptyList()
-            val latest = tours.maxByOrNull { it.id }
 
-            if (latest != null) {
-                _latestTour.value = Resource.Success(latest)
-            } else {
-                _latestTour.value = Resource.Error("No tours available")
-            }
-        } else {
-            _latestTour.value = Resource.Error(
-                result.exceptionOrNull()?.message ?: "Failed to load latest tour"
-            )
+            latestTour =
+                result.getOrNull()
+                    ?.maxByOrNull { it.id }
         }
-    }
-
-    // Reload methods for pull-to-refresh or manual refresh
-    fun refreshApprovals() {
-        viewModelScope.launch { loadPendingApprovals() }
-    }
-
-    fun refreshLatestTour() {
-        viewModelScope.launch { loadLatestTour() }
     }
 }

@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import org.ukrida.root.ui.public.login.components.AuthNavigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -26,22 +25,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
-import org.ukrida.root.data.AppContainer
 import org.ukrida.root.ui.admin.navigation.AppNavigation
 import org.ukrida.root.ui.admin.screens.RootScreen
 import org.ukrida.root.ui.theme.Inter
-import org.ukrida.root.ui.Public.screens.PublicRootScreen
-import org.ukrida.root.utils.SessionManager
+import org.ukrida.root.ui.admin.screens.RootScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,61 +40,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RootTheme {
-                Surface(modifier = Modifier.fillMaxSize()){
-                    MainScreen(context = this)
-                }
+                RootScreen()
+
             }
-        }
-    }
-}
-
-@Composable
-fun MainScreen(context: MainActivity) {
-    val sessionManager = remember { SessionManager(context) }
-    val appContainer = remember { AppContainer() }
-    val navController = rememberNavController()
-
-    var currentRoute by remember { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(Unit) {
-        // Check if user is already logged in
-        if (sessionManager.isLoggedIn()) {
-            val role = sessionManager.getRole()
-            currentRoute = when (role) {
-                "admin" -> "admin_root"
-                else -> "public_root"  // "user", "mentor", "koordinator" all use PublicRootScreen for now
-            }
-        } else {
-            currentRoute = "auth"
-        }
-    }
-
-    when (currentRoute) {
-        "auth" -> {
-            AuthNavigation(
-                navController = navController,
-                sessionManager = sessionManager,
-                onLoginSuccess = {
-                    val role = sessionManager.getRole()
-                    currentRoute = when (role) {
-                        "admin" -> "admin_root"
-                        else -> "public_root"
-                    }
-                }
-            )
-        }
-
-        "admin_root" -> {
-            RootScreen(appContainer = appContainer)
-        }
-
-        "public_root" -> {
-            PublicRootScreen(appContainer = appContainer)
-        }
-
-        null -> {
-            // Loading state while checking session
-            // Could show a splash screen here
         }
     }
 }

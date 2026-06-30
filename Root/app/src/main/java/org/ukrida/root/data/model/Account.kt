@@ -41,21 +41,5 @@ data class GroupDetail(
     val coordinator: GroupPerson
 )
 
-/** Represents a pending order item (admin dashboard) */
-data class PendingAccount(
-    val id: Int,
-    @SerializedName("user_id") val userId: Int,
-    @SerializedName("group_id") val groupId: Int,
-    @SerializedName("status_join") val statusJoin: String,  // Always "pending"
-    @SerializedName("join_date") val joinDate: String,
-    @SerializedName("first_name") val firstName: String,
-    @SerializedName("last_name") val lastName: String,
-    @SerializedName("profile_photo_url") val profilePhotoUrl: String?,
-    @SerializedName("group_name") val groupName: String
-) {
-    val fullName: String get() = "$firstName $lastName"
-}
-
-
 // Reuse the standard envelope from ApiResponse.kt
 // ApiResponse<T> { status: String, data: T?, message: String? }

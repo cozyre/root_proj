@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 23, 2026 at 05:18 AM
+-- Generation Time: Jun 21, 2026 at 07:54 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -205,8 +205,6 @@ CREATE TABLE `users` (
   `last_name` varchar(100) NOT NULL,
   `profile_photo_url` text DEFAULT NULL,
   `phone` varchar(20) DEFAULT NULL,
-  `bio` text DEFAULT NULL,
-  `hide_phone` tinyint(1) NOT NULL DEFAULT 0,
   `role` enum('user','admin','mentor','koordinator') NOT NULL DEFAULT 'user',
   `fcm_token` varchar(255) DEFAULT NULL,
   `email_verified_at` datetime DEFAULT NULL,
@@ -219,9 +217,9 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `first_name`, `last_name`, `profile_photo_url`, `phone`, `bio`, `hide_phone`, `role`, `fcm_token`, `email_verified_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'admin', 'admin@email.com', '$2y$10$qeNaVD.wNnCKIIg/ImacuuPlWuLqwBenhWGVxLsO/bCNeLfbrHaSO', 'admin', '', NULL, '+12345678', NULL, 0, 'admin', NULL, NULL, '2026-06-19 07:32:48', '2026-06-19 07:32:48', NULL),
-(2, 'johndoe', 'john@test.com', '$2y$10$HvlpRUtbQJ64UCVlrHUFv.yh2MaiChL3sNEoDs62zqsCIKdj7yWRO', 'John', 'Doe', NULL, '081234567890', NULL, 0, 'user', NULL, NULL, '2026-06-19 14:14:14', '2026-06-19 14:14:14', NULL);
+INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `first_name`, `last_name`, `profile_photo_url`, `phone`, `role`, `fcm_token`, `email_verified_at`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 'admin', 'admin@email.com', '$2y$10$qeNaVD.wNnCKIIg/ImacuuPlWuLqwBenhWGVxLsO/bCNeLfbrHaSO', 'admin', '', NULL, '+12345678', 'admin', NULL, NULL, '2026-06-19 07:32:48', '2026-06-19 07:32:48', NULL),
+(2, 'johndoe', 'john@test.com', '$2y$10$HvlpRUtbQJ64UCVlrHUFv.yh2MaiChL3sNEoDs62zqsCIKdj7yWRO', 'John', 'Doe', NULL, '081234567890', 'user', NULL, NULL, '2026-06-19 14:14:14', '2026-06-19 14:14:14', NULL);
 
 --
 -- Indexes for dumped tables

@@ -8,7 +8,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
-import org.ukrida.root.data.AppContainer
 import org.ukrida.root.ui.admin.navigation.AppNavigation
 import org.ukrida.root.ui.admin.components.AppDrawer
 import org.ukrida.root.ui.admin.navigation.AppNavigation
@@ -16,7 +15,7 @@ import org.ukrida.root.ui.theme.BackgroundDark
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RootScreen(appContainer: AppContainer) {
+fun RootScreen() {
 
     val drawerState =
         rememberDrawerState(
@@ -70,8 +69,7 @@ fun RootScreen(appContainer: AppContainer) {
                     scope.launch {
                         drawerState.open()
                     }
-                },
-                appContainer = appContainer
+                }
             )
         }
     }
