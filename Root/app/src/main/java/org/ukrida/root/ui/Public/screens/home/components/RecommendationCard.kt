@@ -62,7 +62,7 @@ fun RecommendationCard(
             Text(
                 text = group.name,
                 style = MaterialTheme.typography.titleLarge,
-                color = Color.White
+                color = Color(0xFFE8D8C9)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -75,7 +75,7 @@ fun RecommendationCard(
             Text(
                 text = "Rp. 42.000.000",
                 style = MaterialTheme.typography.titleLarge,
-                color = Color.White,
+                color = Color(0xFFE8D8C9),
                 modifier = Modifier.align(Alignment.End)
             )
 

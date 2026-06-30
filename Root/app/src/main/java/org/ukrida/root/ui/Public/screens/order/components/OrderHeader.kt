@@ -41,7 +41,7 @@ fun OrderHeader(
         Text(
             text = group.name,
             style = MaterialTheme.typography.headlineSmall,
-            color = Color.White
+            color = Color(0xFFE8D8C9)
         )
 
         Spacer(modifier = Modifier.height(10.dp))

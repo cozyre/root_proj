@@ -35,7 +35,7 @@ fun MissionSection() {
             modifier = Modifier.fillMaxWidth(),
             style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center,
-            color = Color.White
+            color = Color(0xFFE8D8C9)
         )
         Spacer(modifier = Modifier.height(20.dp))
         LazyVerticalGrid(

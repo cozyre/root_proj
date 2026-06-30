@@ -51,7 +51,7 @@ fun HistoryHeader(
             text = group.name,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
-            color = Color.White
+            color = Color(0xFFE8D8C9)
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
@@ -65,7 +65,7 @@ fun HistoryHeader(
                 Icon(
                     imageVector = Icons.Outlined.LocationOn,
                     contentDescription = null,
-                    tint = Color.White
+                    tint = Color(0xFFE8D8C9)
                 )
             },
             text = group.location ?: ""
@@ -76,7 +76,7 @@ fun HistoryHeader(
                 Icon(
                     imageVector = Icons.Outlined.CalendarMonth,
                     contentDescription = null,
-                    tint = Color.White
+                    tint = Color(0xFFE8D8C9)
                 )
             },
             text = "${group.startDate ?: "-"} - ${group.endDate ?: "-"}"

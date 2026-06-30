@@ -26,7 +26,7 @@ fun VisionSection() {
         Text(
             text = "VISION",
             style = MaterialTheme.typography.titleLarge,
-            color = Color.White
+            color = Color(0xFFE8D8C9)
         )
 
         Spacer(modifier = Modifier.height(12.dp))

@@ -28,18 +28,15 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp
     ),
-
-    // TITLE
+    //H1
     titleLarge = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp
     ),
-
-    // H1
+    //TITLE
     headlineLarge = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Bold,
         fontSize = 32.sp
-    )
-)
+    ))
