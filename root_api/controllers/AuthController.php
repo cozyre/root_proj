@@ -8,9 +8,8 @@ class AuthController {
         $this->userModel = new User($db);
     }
 
-    // POST /api/auth/register
+    // POST ?route=auth/register
     public function register(array $body): void {
-        // --- Validate required fields ---
         $required = ['first_name', 'last_name', 'username', 'email', 'password', 'password_confirmation'];
         foreach ($required as $field) {
             if (empty($body[$field])) {
@@ -19,31 +18,26 @@ class AuthController {
             }
         }
 
-        // --- Validate email format ---
         if (!filter_var($body['email'], FILTER_VALIDATE_EMAIL)) {
             $this->error(400, 'Invalid email format');
             return;
         }
 
-        // --- Validate password match ---
         if ($body['password'] !== $body['password_confirmation']) {
             $this->error(400, 'Passwords do not match');
             return;
         }
 
-        // --- Validate password length ---
         if (strlen($body['password']) < 8) {
             $this->error(400, 'Password must be at least 8 characters');
             return;
         }
 
-        // --- Validate username (alphanumeric + underscore only) ---
         if (!preg_match('/^[a-zA-Z0-9_]+$/', $body['username'])) {
             $this->error(400, 'Username may only contain letters, numbers, and underscores');
             return;
         }
 
-        // --- Check uniqueness ---
         if ($this->userModel->emailExists($body['email'])) {
             $this->error(409, 'Email is already registered');
             return;
@@ -54,7 +48,6 @@ class AuthController {
             return;
         }
 
-        // --- Create user ---
         $userId = $this->userModel->create([
             'username'   => $body['username'],
             'email'      => $body['email'],
@@ -73,9 +66,8 @@ class AuthController {
         $this->success(201, $user, 'Account created successfully');
     }
 
-    // POST /api/auth/login
+    // POST ?route=auth/login
     public function login(array $body): void {
-        // --- Validate required fields ---
         if (empty($body['identifier'])) {
             $this->error(400, 'Email or username is required');
             return;
@@ -85,19 +77,14 @@ class AuthController {
             return;
         }
 
-        // --- Find user ---
         $user = $this->userModel->findByIdentifier($body['identifier']);
 
-        // Use generic message to avoid leaking whether email/username exists
         if (!$user || !password_verify($body['password'], $user['password_hash'])) {
             $this->error(401, 'Invalid credentials');
             return;
         }
 
-        // --- Generate JWT ---
         $token = $this->generateJWT($user);
-
-        // Return safe user data (no password hash)
         unset($user['password_hash']);
 
         $this->success(200, [
@@ -106,29 +93,26 @@ class AuthController {
         ], 'Login successful');
     }
 
-    // --- JWT Generator ---
-    // Simple HS256 JWT (no external library needed)
+    // HS256 JWT — FIX: added 'id' alongside 'sub' so controllers can use $user['id']
     private function generateJWT(array $user): string {
         $secret = $_ENV['JWT_SECRET'] ?? 'CHANGE_THIS_SECRET_KEY_IN_PRODUCTION';
 
-        $header = base64_encode(json_encode(['alg' => 'HS256', 'typ' => 'JWT']));
-        $payload = base64_encode(json_encode([
+        $encode = fn($s) => rtrim(strtr(base64_encode($s), '+/', '-_'), '=');
+
+        $header  = $encode(json_encode(['alg' => 'HS256', 'typ' => 'JWT']));
+        $payload = $encode(json_encode([
             'sub'  => $user['id'],
+            'id'   => $user['id'],   // convenience alias — controllers read $user['id']
             'role' => $user['role'],
             'iat'  => time(),
-            'exp'  => time() + (60 * 60 * 24 * 7), // 7 days
+            'exp'  => time() + (60 * 60 * 24 * 7),
         ]));
 
-        $signature = hash_hmac('sha256', "{$header}.{$payload}", $secret, true);
-        $signature = base64_encode($signature);
+        $signature = $encode(hash_hmac('sha256', "{$header}.{$payload}", $secret, true));
 
-        // URL-safe base64
-        $encode = fn($s) => rtrim(strtr($s, '+/', '-_'), '=');
-
-        return $encode($header) . '.' . $encode($payload) . '.' . $encode($signature);
+        return "{$header}.{$payload}.{$signature}";
     }
 
-    // --- Response helpers ---
     private function success(int $code, $data, string $message = ''): void {
         http_response_code($code);
         echo json_encode(['success' => true, 'data' => $data, 'message' => $message]);
