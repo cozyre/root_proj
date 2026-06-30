@@ -19,6 +19,7 @@ import org.ukrida.root.ui.admin.navigation.Screen
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.FinishedTripViewModel
 import org.ukrida.root.ui.theme.BackgroundDark
 import org.ukrida.root.ui.theme.BodyColor
+import org.ukrida.root.ui.theme.H1Color
 import org.ukrida.root.ui.theme.TitleColor
 
 @Composable
@@ -78,7 +79,20 @@ fun FinishedTripScreen(
                         Text(
                             text = "FINISHED TRIP",
                             style = MaterialTheme.typography.titleLarge,
-                            color = TitleColor
+                            color = H1Color
+                        )
+
+                        Spacer(
+                            modifier = Modifier.height(16.dp)
+                        )
+
+                        Text(
+                            text = "Revisit the journeys you have completed " +
+                                    "and relive your memorable experiences. " +
+                                    "View past trip details, schedules, and " +
+                                    "highlights from every trip you have joined.",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = BodyColor
                         )
 
                         Spacer(modifier = Modifier.height(24.dp))

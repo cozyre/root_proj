@@ -27,6 +27,7 @@ import org.ukrida.root.ui.admin.navigation.Screen
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.OnGoingViewModel
 import org.ukrida.root.ui.theme.BackgroundDark
 import org.ukrida.root.ui.theme.BodyColor
+import org.ukrida.root.ui.theme.H1Color
 import org.ukrida.root.ui.theme.TitleColor
 
 @Composable
@@ -83,7 +84,19 @@ fun OnGoingScreen(
                         Text(
                             text = "ONGOING TRIP",
                             style = MaterialTheme.typography.titleLarge,
-                            color = TitleColor
+                            color = H1Color
+                        )
+
+                        Spacer(
+                            modifier = Modifier.height(16.dp)
+                        )
+                        Text(
+                            text = "View trips that are currently in progress " +
+                                    "and still open for registration. Check " +
+                                    "the travel schedule, explore trip details, " +
+                                    "and secure your spot before availability runs out.",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = BodyColor
                         )
 
                         Spacer(modifier = Modifier.height(24.dp))
@@ -92,6 +105,10 @@ fun OnGoingScreen(
                     items(uiState.groups) { group ->
                         PriceTripCard(
                             group = group,
+                            showRemoveButton = true,
+                            onRemoveClick = {
+                                // aksi hapus
+                            },
                             onClick = {
                                 val route = Screen.OngoingDetail.route
                                     .replace("{tripId}", group.id.toString())
