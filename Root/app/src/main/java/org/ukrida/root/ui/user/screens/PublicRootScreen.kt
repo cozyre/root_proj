@@ -75,7 +75,8 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
         PublicNavigation(
             navController = navController,
             modifier = Modifier.padding(padding),
-            appContainer = appContainer
+            appContainer = appContainer,
+            onLogout
         )
     }
 }

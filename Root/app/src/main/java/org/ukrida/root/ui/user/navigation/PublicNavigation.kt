@@ -31,10 +31,16 @@ import org.ukrida.root.data.AppContainer
 import org.ukrida.root.ui.user.navigation.PublicScreen
 import org.ukrida.root.ui.user.screens.group.viewmodel.GroupViewModel
 import org.ukrida.root.ui.user.screens.group.viewmodel.GroupViewModelFactory
+import org.ukrida.root.ui.user.screens.history.screen.HistoryViewModelFactory
+import org.ukrida.root.ui.user.screens.history.viewmodel.HistoryViewModel
 import org.ukrida.root.ui.user.screens.home.viewmodel.HomeViewModel
 import org.ukrida.root.ui.user.screens.home.viewmodel.HomeViewModelFactory
+import org.ukrida.root.ui.user.screens.profile.screen.ProfileScreen
+import org.ukrida.root.ui.user.screens.profile.viewmodel.ProfileViewModel
+import org.ukrida.root.ui.user.screens.profile.viewmodel.ProfileViewModelFactory
 import org.ukrida.root.ui.user.screens.promisedland.viewmodel.PromisedLandViewModel
 import org.ukrida.root.ui.user.screens.promisedland.viewmodel.PromisedLandViewModelFactory
+import org.ukrida.root.utils.SessionManager
 
 //import org.ukrida.root.ui.user.screens.profile.screen.ProfileScreen
 
@@ -42,7 +48,8 @@ import org.ukrida.root.ui.user.screens.promisedland.viewmodel.PromisedLandViewMo
 fun PublicNavigation(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    appContainer: AppContainer
+    appContainer: AppContainer,
+    onLogout: () -> Unit
 ) {
 
     NavHost(
@@ -104,9 +111,25 @@ fun PublicNavigation(
         }
 
         composable(PublicScreen.History.route) {
+            val factory = remember{
+                HistoryViewModelFactory(appContainer.groupRepository)
+            }
+            val viewModel: HistoryViewModel = viewModel(factory = factory)
             HistoryScreen(
+                viewModel = viewModel,
+                navController = navController
+            )
+        }
+
+        composable(PublicScreen.Profile.route) {
+            val factory = remember{
+                ProfileViewModelFactory(appContainer.profileRepository)
+            }
+            val viewModel: ProfileViewModel = viewModel(factory = factory)
+            ProfileScreen(
+                viewModel = viewModel,
                 navController = navController,
-//                appContainer = appContainer
+                onLogout = onLogout
             )
         }
 
@@ -324,13 +347,6 @@ fun PublicNavigation(
 //            OrderScreen(
 //                navController = navController,
 //                groupId = groupId,
-//                appContainer = appContainer
-//            )
-//        }
-
-//        composable(PublicScreen.Profile.route) {
-//            ProfileScreen(
-//                navController = navController,
 //                appContainer = appContainer
 //            )
 //        }

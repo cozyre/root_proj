@@ -1,4 +1,4 @@
-package org.ukrida.root.ui.public.login.components
+package org.ukrida.root.ui.user.login.components
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel

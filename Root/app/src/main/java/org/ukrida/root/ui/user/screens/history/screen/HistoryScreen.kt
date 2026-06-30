@@ -23,32 +23,34 @@ import org.ukrida.root.ui.user.components.PublicTopBar
 import org.ukrida.root.ui.user.navigation.PublicScreen
 import org.ukrida.root.ui.user.screens.history.components.HistorySection
 import org.ukrida.root.ui.user.screens.history.viewmodel.HistoryViewModel
+import org.ukrida.root.utils.Resource
 
 @Composable
 fun HistoryScreen(
     viewModel: HistoryViewModel = viewModel(),
     navController: NavHostController
 ) {
-    val historyGroups by viewModel.historyGroups.collectAsState()
+    val historyGroupState by viewModel.historyGroups.collectAsState()
+    val historyGroups = (historyGroupState as? Resource.Success)?.data
     Scaffold(
         containerColor = Color(0xFF2A2522),
-        bottomBar = {
-            PublicBottomNavigation(
-                currentDestination = PublicDestination.PROMISED_LAND,
-                onNavigate = { destination ->
-                    when(destination){
-                        PublicDestination.HOME ->
-                            navController.navigate(PublicScreen.Home.route)
-                        PublicDestination.PROMISED_LAND ->
-                            navController.popBackStack()
-                        PublicDestination.GROUP ->
-                            navController.navigate(PublicScreen.Group.route)
-                        PublicDestination.PROFILE ->
-                            navController.navigate(PublicScreen.Profile.route)
-                    }
-                }
-            )
-        }
+//        bottomBar = {
+//            PublicBottomNavigation(
+//                currentDestination = PublicDestination.PROMISED_LAND,
+//                onNavigate = { destination ->
+//                    when(destination){
+//                        PublicDestination.HOME ->
+//                            navController.navigate(PublicScreen.Home.route)
+//                        PublicDestination.PROMISED_LAND ->
+//                            navController.popBackStack()
+//                        PublicDestination.GROUP ->
+//                            navController.navigate(PublicScreen.Group.route)
+//                        PublicDestination.PROFILE ->
+//                            navController.navigate(PublicScreen.Profile.route)
+//                    }
+//                }
+//            )
+//        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -57,9 +59,9 @@ fun HistoryScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            PublicTopBar(
-                title = "HISTORY"
-            )
+//            PublicTopBar(
+//                title = "HISTORY"
+//            )
             Spacer(modifier = Modifier.height(20.dp))
             HistorySection(
                 historyGroups = historyGroups,

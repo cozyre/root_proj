@@ -15,7 +15,7 @@ import org.ukrida.root.ui.user.screens.promisedland.components.HistoryCard
 
 @Composable
 fun HistorySection(
-    historyGroups: List<Group>,
+    historyGroups: List<Group>?,
     onHistoryClick: ((Int) -> Unit)? = null
 ) {
     Column(
@@ -35,7 +35,7 @@ fun HistorySection(
             color = Color.White.copy(alpha = .8f)
         )
         Spacer(modifier = Modifier.height(24.dp))
-        historyGroups.forEach { group ->
+        historyGroups?.forEach { group ->
             HistoryCard(
                 group = group,
                 onClick = {

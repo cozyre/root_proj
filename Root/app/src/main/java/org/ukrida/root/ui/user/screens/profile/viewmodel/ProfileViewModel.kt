@@ -1,141 +1,93 @@
 package org.ukrida.root.ui.user.screens.profile.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import org.ukrida.root.data.model.Profile
+import org.ukrida.root.data.repository.ProfileRepository
+import org.ukrida.root.utils.Resource
 
-class ProfileViewModel : ViewModel() {
+class ProfileViewModel(
+    private val profileRepository: ProfileRepository
+) : ViewModel() {
 
-    // ---------------- Profile ----------------
+    // ─── Profile Data ────────────────────────────────────────────────────────
 
-    private val _profile = MutableStateFlow<Profile?>(null)
-    val profile = _profile.asStateFlow()
+    private val _profile = MutableStateFlow<Resource<Profile>>(Resource.Loading())
+    val profile: StateFlow<Resource<Profile>> = _profile.asStateFlow()
 
-    // ---------------- Form ----------------
+    // ─── Update State (separate tracking for update operation) ────────────────
 
-    private val _firstName = MutableStateFlow("")
-    val firstName = _firstName.asStateFlow()
+    private val _updateState = MutableStateFlow<Resource<Unit>>(Resource.Loading())
+    val updateState: StateFlow<Resource<Unit>> = _updateState.asStateFlow()
 
-    private val _lastName = MutableStateFlow("")
-    val lastName = _lastName.asStateFlow()
-
-    private val _username = MutableStateFlow("")
-    val username = _username.asStateFlow()
-
-    private val _email = MutableStateFlow("")
-    val email = _email.asStateFlow()
-
-    private val _phone = MutableStateFlow("")
-    val phone = _phone.asStateFlow()
-
-    private val _bio = MutableStateFlow("")
-    val bio = _bio.asStateFlow()
-
-    private val _hidePhone = MutableStateFlow(false)
-    val hidePhone = _hidePhone.asStateFlow()
-
-    // ---------------- Loading ----------------
-
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading = _isLoading.asStateFlow()
-
-    private val _isSaving = MutableStateFlow(false)
-    val isSaving = _isSaving.asStateFlow()
-
-    // ---------------- Setter ----------------
-
-    fun onFirstNameChange(value: String) {
-        _firstName.value = value
+    init {
+        loadProfile()
     }
 
-    fun onLastNameChange(value: String) {
-        _lastName.value = value
-    }
-
-    fun onUsernameChange(value: String) {
-        _username.value = value
-    }
-
-    fun onPhoneChange(value: String) {
-        _phone.value = value
-    }
-
-    fun onBioChange(value: String) {
-        _bio.value = value
-    }
-
-    fun onHidePhoneChange(value: Boolean) {
-        _hidePhone.value = value
-    }
-
-    // ---------------- Load ----------------
+    // ─── Load Profile ────────────────────────────────────────────────────────
 
     fun loadProfile() {
-
-        // TODO Backend Integration
-        // repository.getProfile()
-
-        loadDummy()
-
+        viewModelScope.launch {
+            _profile.value = Resource.Loading()
+            _profile.value = profileRepository.getProfile()
+        }
     }
 
-    // ---------------- Save ----------------
+    // ─── Update Profile ──────────────────────────────────────────────────────
 
-    fun saveProfile() {
+    /**
+     * Update user profile. On success, refreshes the profile from server
+     * so the user sees the latest data immediately.
+     * _updateState tracks if the operation succeeded or failed.
+     */
+    fun updateProfile(
+        firstName: String,
+        lastName: String,
+        username: String,
+        phone: String?,
+        bio: String?,
+        hidePhone: Boolean
+    ) {
+        viewModelScope.launch {
+            _updateState.value = Resource.Loading()
 
-        // TODO Backend Integration
-        // repository.updateProfile(
-        //     firstName.value,
-        //     lastName.value,
-        //     username.value,
-        //     phone.value,
-        //     bio.value,
-        //     hidePhone.value
-        // )
+            val result = profileRepository.updateProfile(
+                firstName, lastName, username, phone, bio, hidePhone
+            )
 
+            when (result) {
+                is Resource.Success -> {
+                    // Immediately update profile with returned data
+                    _profile.value = Resource.Success(result.data)
+                    // Signal success
+                    _updateState.value = Resource.Success(Unit)
+                    // Refresh to ensure consistency with server
+                    loadProfile()
+                }
+
+                is Resource.Error -> {
+                    // Signal error, profile remains unchanged
+                    _updateState.value = Resource.Error(result.message)
+                }
+
+                is Resource.Loading -> {
+                    // Already set above, shouldn't reach here
+                }
+            }
+        }
     }
 
-    // ---------------- Dummy ----------------
+    // ─── Reset Update State ──────────────────────────────────────────────────
 
-    private fun loadDummy() {
-
-        val dummy = Profile(
-
-            id = 1,
-
-            username = "josh",
-
-            firstName = "Josh",
-
-            lastName = "Valentino",
-
-            email = "josh@email.com",
-
-            phone = "08123456789",
-
-            profilePhotoUrl = null,
-
-            bio = "Informatics student at UKRIDA who enjoys mobile development and UI design.",
-
-            hidePhone = false,
-
-            role = "Member",
-
-            createdAt = ""
-
-        )
-
-        _profile.value = dummy
-
-        _firstName.value = dummy.firstName
-        _lastName.value = dummy.lastName
-        _username.value = dummy.username
-        _email.value = dummy.email
-        _phone.value = dummy.phone ?: ""
-        _bio.value = dummy.bio ?: ""
-        _hidePhone.value = dummy.hidePhone
-
+    /**
+     * Call this after the user has seen the update result (success/error).
+     * Clears the update state so the UI stops showing the result message.
+     */
+    fun clearUpdateState() {
+        _updateState.value = Resource.Loading()
     }
-
 }
