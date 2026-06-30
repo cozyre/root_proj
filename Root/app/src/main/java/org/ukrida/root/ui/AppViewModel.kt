@@ -65,4 +65,8 @@ class AppViewModel(private val sessionManager: SessionManager) : ViewModel() {
             Log.e(TAG, "Token refresh error: ${e.message}")
         }
     }
+
+    fun logout() {
+        sessionManager.logout()
+    }
 }

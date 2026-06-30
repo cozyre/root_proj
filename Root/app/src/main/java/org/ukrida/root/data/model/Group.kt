@@ -30,9 +30,7 @@ data class GroupWithDetails(
     @SerializedName("meetup_address") val meetupAddress: String?,
     val status: String,
     @SerializedName("status_join") val statusJoin: String,  // from Group (pending/approved/rejected)
-    @SerializedName("join_date") val joinDate: String?,
-    val mentor: GroupPerson,    // from GroupDetail
-    val coordinator: GroupPerson  // from GroupDetail
+    @SerializedName("join_date") val joinDate: String?
 )
 
 data class GroupResponse(

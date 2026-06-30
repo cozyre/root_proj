@@ -59,6 +59,10 @@ fun MainScreen(activity: MainActivity) {
 
     var currentRoute by remember { mutableStateOf<String?>(null) }
     var isLogoutTriggered by remember { mutableStateOf(false) }
+    val onLogout = {
+        appViewModel.logout()
+        currentRoute = "auth"
+    }
 
     // ─── Initial Navigation ──────────────────────────────────────────
 
@@ -112,11 +116,11 @@ fun MainScreen(activity: MainActivity) {
         }
 
         "admin_root" -> {
-            RootScreen(appContainer = appContainer)
+            RootScreen(appContainer = appContainer, onLogout)
         }
 
         "public_root" -> {
-            PublicRootScreen(appContainer = appContainer)
+            PublicRootScreen(appContainer = appContainer, onLogout)
         }
 
         null -> {

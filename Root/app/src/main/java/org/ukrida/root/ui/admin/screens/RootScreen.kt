@@ -16,7 +16,7 @@ import org.ukrida.root.ui.theme.BackgroundDark
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RootScreen(appContainer: AppContainer) {
+fun RootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
 
     val drawerState =
         rememberDrawerState(
@@ -50,7 +50,8 @@ fun RootScreen(appContainer: AppContainer) {
                     scope.launch {
                         drawerState.close()
                     }
-                }
+                },
+                onLogout = onLogout
             )
         }
     ) {

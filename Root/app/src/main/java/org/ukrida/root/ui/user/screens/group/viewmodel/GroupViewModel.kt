@@ -37,7 +37,7 @@ class GroupViewModel(
     private suspend fun loadMyTours() {
         _groups.value = Resource.Loading()
 
-        val toursResult = groupRepository.getPastTours()
+        val toursResult = groupRepository.getAllTours()
         if (toursResult.isFailure) {
             _groups.value = Resource.Error(toursResult.exceptionOrNull()?.message ?: "Failed to load tours")
             return
@@ -48,7 +48,7 @@ class GroupViewModel(
         val combined = coroutineScope {
             tours.map { tour ->
                 async {
-                    accountRepository.getGroupDetail(tour.id).mapCatching { detail ->
+                    accountRepository.getOrderStatus(tour.id).mapCatching { detail ->
                         GroupWithDetails(
                             id = tour.id,
                             name = tour.name,
@@ -60,10 +60,8 @@ class GroupViewModel(
                             meetupTime = tour.meetupTime,
                             meetupAddress = tour.meetupAddress,
                             status = tour.status,
-                            statusJoin = tour.statusJoin ?: "unknown",
-                            joinDate = tour.joinDate,
-                            mentor = detail.mentor,
-                            coordinator = detail.coordinator
+                            statusJoin = detail.statusJoin,
+                            joinDate = tour.joinDate
                         )
                     }
                 }
