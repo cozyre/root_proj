@@ -22,7 +22,6 @@
     import org.ukrida.root.ui.Public.screens.members.screen.MemberDetailScreen
     import org.ukrida.root.ui.Public.screens.members.screen.MemberScreen
     import org.ukrida.root.ui.Public.screens.order.screen.OrderScreen
-    import org.ukrida.root.ui.Public.screens.profile.screen.ProfileScreen
     import org.ukrida.root.ui.Public.screens.promisedland.screen.PromisedLandScreen
 
     @Composable
@@ -270,15 +269,6 @@
                     groupId = groupId,
                     userId = userId
                 )
-            }
-            composable(
-                route = PublicScreen.Profile.route
-            ) {
-
-                ProfileScreen(
-                    navController = navController
-                )
-
             }
         }
     }
