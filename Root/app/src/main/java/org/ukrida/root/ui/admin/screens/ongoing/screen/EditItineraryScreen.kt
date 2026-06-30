@@ -17,9 +17,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.screens.ongoing.components.TimelineBar
-import org.ukrida.root.ui.admin.screens.ongoing.model.ItineraryItem
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.EditItineraryViewModel
+import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.ItineraryItemUiState
 import org.ukrida.root.ui.theme.*
 
 @Composable
@@ -30,19 +31,18 @@ fun EditItineraryScreen(
 ) {
     val itineraryItems by viewModel.itineraryList.collectAsState()
     val selectedDay by viewModel.selectedDay.collectAsState()
+    val availableDays by viewModel.availableDays.collectAsState()
 
-    // Filter item sesuai hari yang dipilih
-    val filteredItems = itineraryItems.filter { it.day == selectedDay }
-
-    // Daftar hari yang tersedia dari data
-    val availableDays = itineraryItems.map { it.day }.distinct().sorted()
+    val filteredItems = itineraryItems.filter {
+        it.day == selectedDay
+    }
 
     var showDayDropdown by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = BackgroundDark,
         topBar = {
-            OnGoingTopBar(
+            TopBar(
                 title = "EDIT ITINERARY",
                 onMenuClick = onMenuClick
             )
@@ -54,24 +54,17 @@ fun EditItineraryScreen(
                 .fillMaxSize()
                 .padding(horizontal = 24.dp)
         ) {
-
             Spacer(modifier = Modifier.height(8.dp))
 
-            // < Back
             TextButton(
                 onClick = { navController.popBackStack() },
                 contentPadding = PaddingValues(0.dp)
             ) {
-                Text(
-                    text = "< Back",
-                    color = TitleColor,
-                    fontSize = 14.sp
-                )
+                Text(text = "< Back", color = TitleColor, fontSize = 14.sp)
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Timeline Bar
             TimelineBar(onStageClick = { stage ->
                 when (stage) {
                     "General Information" -> navController.navigate("ongoing_detail/${viewModel.tripId}")
@@ -82,13 +75,10 @@ fun EditItineraryScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // DAY X Dropdown
             Box {
                 OutlinedButton(
                     onClick = { showDayDropdown = true },
-                    modifier = Modifier
-                        .width(110.dp)
-                        .height(30.dp),
+                    modifier = Modifier.width(110.dp).height(30.dp),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
                         containerColor = MainButton,
@@ -129,7 +119,6 @@ fun EditItineraryScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Label ITINERARY
             Text(
                 text = "ITINERARY",
                 style = MaterialTheme.typography.titleLarge,
@@ -138,7 +127,6 @@ fun EditItineraryScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // List itinerary + ADD MORE
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.weight(1f)
@@ -155,13 +143,9 @@ fun EditItineraryScreen(
 
                 item {
                     Spacer(modifier = Modifier.height(4.dp))
-
-                    // ADD MORE button — outline style
                     OutlinedButton(
                         onClick = { viewModel.addItem() },
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .height(28.dp),
+                        modifier = Modifier.wrapContentWidth().height(28.dp),
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.outlinedButtonColors(
                             containerColor = MainButton,
@@ -181,16 +165,11 @@ fun EditItineraryScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // SUBMIT button
             Button(
                 onClick = { navController.popBackStack() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(32.dp),
+                modifier = Modifier.fillMaxWidth().height(32.dp),
                 shape = RoundedCornerShape(26.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MainButton
-                )
+                colors = ButtonDefaults.buttonColors(containerColor = MainButton)
             ) {
                 Text(
                     text = "SUBMIT",
@@ -205,9 +184,10 @@ fun EditItineraryScreen(
     }
 }
 
+// ↓ Ganti parameter dari ItineraryItem → ItineraryItemUiState
 @Composable
 fun ItineraryEditCard(
-    item: ItineraryItem,
+    item: ItineraryItemUiState,
     onStartTimeChange: (String) -> Unit,
     onEndTimeChange: (String) -> Unit,
     onActivityChange: (String) -> Unit,
@@ -217,7 +197,6 @@ fun ItineraryEditCard(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ) {
-        // Card utama
         Card(
             colors = CardDefaults.cardColors(containerColor = Color.Transparent),
             shape = RoundedCornerShape(16.dp),
@@ -231,20 +210,15 @@ fun ItineraryEditCard(
                 )
         ) {
             Column(modifier = Modifier.padding(12.dp)) {
-
-                // Row: XX:XX - XX:XX + textarea
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(4.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.Top,
-
+                    verticalAlignment = Alignment.Top
                 ) {
-                    // Kolom kiri: start time - end time (pill style)
                     Column(
                         verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        // Start time pill
                         OutlinedTextField(
                             value = item.startTime,
                             onValueChange = onStartTimeChange,
@@ -267,9 +241,8 @@ fun ItineraryEditCard(
 
                         Text("-", color = Color.White, fontSize = 14.sp)
 
-                        // End time pill
                         OutlinedTextField(
-                            value = item.endTime,
+                            value = item.endTime,  // sudah String (bukan nullable) di UiState
                             onValueChange = onEndTimeChange,
                             modifier = Modifier.width(72.dp),
                             singleLine = true,
@@ -289,14 +262,11 @@ fun ItineraryEditCard(
                         )
                     }
 
-                    // Kolom kanan: textarea activity
                     OutlinedTextField(
-                        value = item.activity,
+                        value = item.activity,  // dari description, sudah di-map di ViewModel
                         onValueChange = onActivityChange,
                         placeholder = { Text("type here", color = Color(0xFF6B5C4E)) },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(110.dp),
+                        modifier = Modifier.weight(1f).height(110.dp),
                         shape = RoundedCornerShape(12.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = Color.White,
@@ -314,15 +284,11 @@ fun ItineraryEditCard(
 
         Spacer(modifier = Modifier.width(10.dp))
 
-        // Tombol delete merah (di luar card)
         IconButton(
             onClick = onDelete,
             modifier = Modifier
                 .size(18.dp)
-                .background(
-                    color = Color(0xFFA63232),
-                    shape = RoundedCornerShape(8.dp)
-                )
+                .background(color = Color(0xFFA63232), shape = RoundedCornerShape(8.dp))
         ) {
             Icon(
                 imageVector = Icons.Default.Delete,

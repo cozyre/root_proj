@@ -7,13 +7,13 @@ sealed class Screen(val route: String) {
     object OngoingTrip : Screen("ongoing_trip")
     object NewTrip : Screen("new_trip")
     object FinishedTrip : Screen("finished_trip")
+    object FinishedDetail : Screen(
+        "finished_detail/{tripId}"
+    )
     object OngoingDetail : Screen("ongoing_detail/{tripId}")
     object EditItinerary : Screen("edit_itinerary/{tripId}")
     object EditSongs : Screen("edit_songs/{tripId}")
     object EditDailyBread : Screen("daily_bread/{tripId}")
     object Trip : Screen("trip")
     object CreateTrip : Screen("create_trip")
-
-    object FinishedDetail :
-        Screen("finished_detail")
 }
