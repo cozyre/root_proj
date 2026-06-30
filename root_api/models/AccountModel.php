@@ -67,4 +67,45 @@ class AccountModel {
         $stmt->execute(['user_id' => $userId, 'group_id' => $groupId]);
         return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     }
+
+    /**
+     * Get all pending orders (admin view).
+     * Optionally filter by group_id.
+     * Returns user + group details for each pending account.
+     */
+        public function getPending(?int $groupId = null): array {
+        if ($groupId) {
+            $stmt = $this->db->prepare(
+                "SELECT a.id, a.user_id, a.group_id, a.status_join, a.join_date,
+                        u.first_name, u.last_name, u.profile_photo_url,
+                        g.name AS group_name
+                 FROM accounts a
+                 JOIN users u ON u.id = a.user_id
+                 JOIN groups g ON g.id = a.group_id
+                 WHERE a.status_join = 'pending'
+                   AND a.group_id = :group_id
+                   AND a.deleted_at IS NULL
+                   AND u.deleted_at IS NULL
+                   AND g.deleted_at IS NULL
+                 ORDER BY a.join_date ASC"
+            );
+            $stmt->execute(['group_id' => $groupId]);
+        } else {
+            $stmt = $this->db->prepare(
+                "SELECT a.id, a.user_id, a.group_id, a.status_join, a.join_date,
+                        u.first_name, u.last_name, u.profile_photo_url,
+                        g.name AS group_name
+                 FROM accounts a
+                 JOIN users u ON u.id = a.user_id
+                 JOIN groups g ON g.id = a.group_id
+                 WHERE a.status_join = 'pending'
+                   AND a.deleted_at IS NULL
+                   AND u.deleted_at IS NULL
+                   AND g.deleted_at IS NULL
+                 ORDER BY a.join_date ASC"
+            );
+            $stmt->execute();
+        }
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

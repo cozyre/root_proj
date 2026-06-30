@@ -10,57 +10,52 @@ class AccountController {
     }
 
     // POST ?route=account/order
-    // Body: { "group_id": 1 }
-    // Auth: required (any role)
     public function order(): void {
-        $user = $this->auth->requireAuth();
-
-        $body = json_decode(file_get_contents('php://input'), true) ?? [];
+        $user    = $this->auth->requireAuth();
+        $body    = json_decode(file_get_contents('php://input'), true) ?? [];
         $groupId = isset($body['group_id']) ? (int) $body['group_id'] : 0;
 
         if (!$groupId) {
-            $this->error(400, 'group_id is required');
+            $this->fail(400, 'group_id is required');
             return;
         }
 
-        // Prevent duplicate orders
         $existing = $this->model->findByUserAndGroup($user['id'], $groupId);
         if ($existing) {
-            $this->error(409, 'You have already ordered this trip. Current status: ' . $existing['status_join']);
+            $this->fail(409, 'You have already ordered this trip. Current status: ' . $existing['status_join']);
             return;
         }
 
         $id = $this->model->create($user['id'], $groupId);
         if (!$id) {
-            $this->error(500, 'Failed to create order');
+            $this->fail(500, 'Failed to create order');
             return;
         }
 
-        $this->success(201, [
-            'account_id' => $id,
+        $this->ok([
+            'account_id'  => $id,
             'status_join' => 'pending',
-            'is_paid'    => false,
-        ], 'Order submitted. Waiting for admin approval.');
+            'is_paid'     => false,
+        ], 'Order submitted. Waiting for admin approval.', 201);
     }
 
     // GET ?route=account/status&group_id=1
-    // Auth: required (any role)
     public function status(): void {
-        $user = $this->auth->requireAuth();
-
+        $user    = $this->auth->requireAuth();
         $groupId = isset($_GET['group_id']) ? (int) $_GET['group_id'] : 0;
+
         if (!$groupId) {
-            $this->error(400, 'group_id is required');
+            $this->fail(400, 'group_id is required');
             return;
         }
 
         $record = $this->model->getStatus($user['id'], $groupId);
         if (!$record) {
-            $this->error(404, 'No order found for this group');
+            $this->fail(404, 'No order found for this group');
             return;
         }
 
-        $this->success(200, [
+        $this->ok([
             'account_id'    => (int) $record['id'],
             'group_name'    => $record['group_name'],
             'status_join'   => $record['status_join'],
@@ -71,34 +66,32 @@ class AccountController {
     }
 
     // GET ?route=account/groupDetail&group_id=1
-    // Auth: required — only approved members can access
     public function groupDetail(): void {
-        $user = $this->auth->requireAuth();
-
+        $user    = $this->auth->requireAuth();
         $groupId = isset($_GET['group_id']) ? (int) $_GET['group_id'] : 0;
+
         if (!$groupId) {
-            $this->error(400, 'group_id is required');
+            $this->fail(400, 'group_id is required');
             return;
         }
 
         $detail = $this->model->getGroupDetail($user['id'], $groupId);
         if (!$detail) {
-            // Deliberately vague — don't leak whether group exists or user is just not approved
-            $this->error(403, 'Access denied or group not found');
+            $this->fail(403, 'Access denied or group not found');
             return;
         }
 
-        $this->success(200, [
-            'id'          => (int) $detail['id'],
-            'name'        => $detail['name'],
-            'description' => $detail['description'],
-            'start_date'  => $detail['start_date'],
-            'end_date'    => $detail['end_date'],
-            'location'    => $detail['location'],
-            'dresscode'   => $detail['dresscode'],
-            'meetup_time' => $detail['meetup_time'],
+        $this->ok([
+            'id'             => (int) $detail['id'],
+            'name'           => $detail['name'],
+            'description'    => $detail['description'],
+            'start_date'     => $detail['start_date'],
+            'end_date'       => $detail['end_date'],
+            'location'       => $detail['location'],
+            'dresscode'      => $detail['dresscode'],
+            'meetup_time'    => $detail['meetup_time'],
             'meetup_address' => $detail['meetup_address'],
-            'status'      => $detail['status'],
+            'status'         => $detail['status'],
             'mentor' => [
                 'name'  => trim($detail['mentor_first_name'] . ' ' . $detail['mentor_last_name']),
                 'photo' => $detail['mentor_photo'],
@@ -110,15 +103,13 @@ class AccountController {
         ]);
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
-
-    private function success(int $code, $data, string $message = ''): void {
+    private function ok($data, string $message = '', int $code = 200): void {
         http_response_code($code);
-        echo json_encode(['status' => 'success', 'data' => $data, 'message' => $message]);
+        echo json_encode(['success' => true, 'data' => $data, 'message' => $message]);
     }
 
-    private function error(int $code, string $message): void {
+    private function fail(int $code, string $message): void {
         http_response_code($code);
-        echo json_encode(['status' => 'error', 'data' => null, 'message' => $message]);
+        echo json_encode(['success' => false, 'data' => null, 'message' => $message]);
     }
 }

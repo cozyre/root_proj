@@ -1,0 +1,176 @@
+package org.ukrida.root.ui.Public.screens.members.screen
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import org.ukrida.root.ui.Public.navigation.PublicScreen
+import org.ukrida.root.ui.Public.screens.dashboard.components.DashboardMenu
+import org.ukrida.root.ui.Public.screens.dashboard.components.DashboardTopBar
+import org.ukrida.root.ui.Public.screens.members.components.MemberBackButton
+import org.ukrida.root.ui.Public.screens.members.components.MemberDetailHeader
+import org.ukrida.root.ui.Public.screens.members.components.MemberInfoItem
+import org.ukrida.root.ui.Public.screens.members.viewmodel.MemberDetailViewModel
+
+@Composable
+fun MemberDetailScreen(
+    navController: NavHostController,
+    groupId: Int,
+    userId: Int
+) {
+    val viewModel: MemberDetailViewModel = viewModel()
+    val member by viewModel.member.collectAsState()
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+    LaunchedEffect(userId) {
+        viewModel.loadMember(
+            userId = userId,
+            groupId = groupId
+        )
+    }
+    Scaffold(
+        containerColor = Color(0xFF2A2522)
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFF2A2522))
+                .padding(padding)
+        ) {
+            member?.let { member ->
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    DashboardTopBar(
+                        title = "MEMBER",
+                        expanded = expanded,
+                        onExpandClick = {
+                            expanded = !expanded
+                        }
+                    )
+                    MemberBackButton(
+                        onBackClick = {
+                            navController.popBackStack()
+                        }
+                    )
+                    MemberDetailHeader(
+                        member = member
+                    )
+                    Spacer(
+                        modifier = Modifier.height(32.dp)
+                    )
+                    Column(
+                        modifier = Modifier.padding(horizontal = 20.dp)
+                    ) {
+                        MemberInfoItem(
+                            label = "EMAIL",
+                            value = member.email ?: "-"
+                        )
+                        MemberInfoItem(
+                            label = "PHONE",
+                            value = member.phone ?: "-"
+                        )
+                        MemberInfoItem(
+                            label = "ROLE",
+                            value = member.role
+                        )
+                        MemberInfoItem(
+                            label = "STATUS",
+                            value = member.statusJoin
+                        )
+                        MemberInfoItem(
+                            label = "JOIN DATE",
+                            value = member.joinDate
+                        )
+                        MemberInfoItem(
+                            label = "BIO",
+                            value = "No bio available."
+                        )
+                        // TODO Backend Integration
+                        // Replace BIO with member.bio when backend provides it.
+                        Spacer(
+                            modifier = Modifier.height(32.dp)
+                        )
+                    }
+                }
+            }
+            AnimatedVisibility(
+                visible = expanded,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.4f))
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember {
+                                MutableInteractionSource()
+                            }
+                        ) {
+                            expanded = false
+                        }
+                )
+            }
+            if (expanded) {
+                DashboardMenu(
+                    onDashboardClick = {
+                        expanded = false
+                        navController.navigate(
+                            PublicScreen.Dashboard.createRoute(groupId)
+                        )
+                    },
+                    onItineraryClick = {
+                        expanded = false
+                        navController.navigate(
+                            PublicScreen.Itinerary.createRoute(groupId)
+                        )
+                    },
+                    onHymnClick = {
+                        expanded = false
+                        navController.navigate(
+                            PublicScreen.Hymn.createRoute(groupId)
+                        )
+                    },
+                    onDailyBreadClick = {
+                        expanded = false
+                        navController.navigate(
+                            PublicScreen.DailyBread.createRoute(groupId)
+                        )
+                    },
+                    onJournalClick = {
+                        expanded = false
+                        navController.navigate(
+                            PublicScreen.Journal.createRoute(groupId)
+                        )
+                    },
+                    onGalleryClick = {
+                        expanded = false
+                        navController.navigate(
+                            PublicScreen.Gallery.createRoute(groupId)
+                        )
+                    },
+                    onMembersClick = {
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
