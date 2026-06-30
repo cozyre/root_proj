@@ -55,6 +55,7 @@ fun AppNavigation(
 
             val viewModel: DashboardViewModel = viewModel(factory = factory)
             DashboardScreen(
+                viewModel = viewModel,
                 onMenuClick = onMenuClick,
                 onApprovalClick = { navController.navigate(Screen.Approval.route) },
                 onSongClick = { navController.navigate(Screen.HymnForHim.route) },

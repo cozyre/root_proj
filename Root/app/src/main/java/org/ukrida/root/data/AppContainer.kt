@@ -1,6 +1,7 @@
 package org.ukrida.root.data
 
 import org.ukrida.root.data.remote.RetrofitClient
+import org.ukrida.root.data.repository.AccountRepository
 import org.ukrida.root.data.repository.AdminRepository
 import org.ukrida.root.data.repository.AuthRepository
 import org.ukrida.root.data.repository.DevotionRepository
@@ -11,6 +12,7 @@ import org.ukrida.root.data.repository.JournalRepository
 import org.ukrida.root.data.repository.MemberRepository
 import org.ukrida.root.data.repository.ProfileRepository
 import org.ukrida.root.data.repository.SongRepository
+import kotlin.getValue
 
 class AppContainer {
 
@@ -25,7 +27,7 @@ class AppContainer {
     }
 
     val accountRepository by lazy {
-        GroupRepository(api)
+        AccountRepository(api)
     }
 
     val authRepository by lazy {

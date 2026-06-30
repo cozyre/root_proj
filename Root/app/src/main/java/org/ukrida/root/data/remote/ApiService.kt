@@ -20,6 +20,11 @@ interface ApiService {
     @POST("index.php?route=auth/register")
     suspend fun register(@Body body: RegisterRequest): ApiResponse<User>
 
+    @POST("index.php")
+    suspend fun refreshToken(
+        @Query("route") route: String = "auth/refresh"
+    ): Response<ApiResponse<Map<String, Any>>>
+
     // Groups -----------------------------------------------------------------
     @GET("index.php")
     suspend fun getAllTours(

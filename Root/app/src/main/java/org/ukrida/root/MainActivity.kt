@@ -4,53 +4,41 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import org.ukrida.root.ui.public.login.components.AuthNavigation
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import org.ukrida.root.ui.theme.RootTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.ukrida.root.data.remote.RetrofitClient
-import org.ukrida.root.data.repository.AuthRepository
-import org.ukrida.root.utils.Resource
-import android.util.Log
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlexDirection.Companion.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
-import org.ukrida.root.data.AppContainer
-import org.ukrida.root.ui.admin.navigation.AppNavigation
-import org.ukrida.root.ui.admin.screens.RootScreen
-import org.ukrida.root.ui.theme.Inter
-import org.ukrida.root.ui.Public.screens.PublicRootScreen
+import org.ukrida.root.data.remote.RetrofitClient
+import org.ukrida.root.ui.theme.RootTheme
+import org.ukrida.root.ui.AppViewModel
 import org.ukrida.root.utils.SessionManager
+import kotlinx.coroutines.delay
+import android.util.Log
+import org.ukrida.root.data.AppContainer
+import org.ukrida.root.ui.admin.screens.RootScreen
+import org.ukrida.root.ui.public.login.components.AuthNavigation
+import org.ukrida.root.ui.user.screens.PublicRootScreen
+import androidx.compose.ui.platform.LocalContext
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Initialize RetrofitClient BEFORE setContent
+        RetrofitClient.initialize(this)
+
         enableEdgeToEdge()
         setContent {
             RootTheme {
-                Surface(modifier = Modifier.fillMaxSize()){
-                    MainScreen(context = this)
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    MainScreen(activity = this@MainActivity)
                 }
             }
         }
@@ -58,25 +46,55 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(context: MainActivity) {
+fun MainScreen(activity: MainActivity) {
+    val context = LocalContext.current
     val sessionManager = remember { SessionManager(context) }
     val appContainer = remember { AppContainer() }
     val navController = rememberNavController()
 
+
+
+    // AppViewModel keeps token refresh running while screen exists
+    val appViewModel = remember {
+        AppViewModel(sessionManager = sessionManager)
+    }
+
     var currentRoute by remember { mutableStateOf<String?>(null) }
+    var isLogoutTriggered by remember { mutableStateOf(false) }
+
+    // ─── Initial Navigation ──────────────────────────────────────────
 
     LaunchedEffect(Unit) {
-        // Check if user is already logged in
         if (sessionManager.isLoggedIn()) {
             val role = sessionManager.getRole()
             currentRoute = when (role) {
                 "admin" -> "admin_root"
-                else -> "public_root"  // "user", "mentor", "koordinator" all use PublicRootScreen for now
+                else -> "public_root"
             }
+            Log.d("MainScreen", "User logged in with role: $role")
         } else {
             currentRoute = "auth"
+            Log.d("MainScreen", "User not logged in, showing auth")
         }
     }
+
+    // ─── Monitor Session (Detect Logout from Interceptor) ────────────
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(1000)  // Check every second
+
+            // If session becomes invalid and we're not already showing auth
+            if (!sessionManager.isLoggedIn() && currentRoute != "auth" && !isLogoutTriggered) {
+                Log.d("MainScreen", "Session expired, logging out")
+                isLogoutTriggered = true
+                currentRoute = "auth"
+                break
+            }
+        }
+    }
+
+    // ─── Navigation State ────────────────────────────────────────────
 
     when (currentRoute) {
         "auth" -> {
@@ -85,10 +103,12 @@ fun MainScreen(context: MainActivity) {
                 sessionManager = sessionManager,
                 onLoginSuccess = {
                     val role = sessionManager.getRole()
+                    isLogoutTriggered = false
                     currentRoute = when (role) {
                         "admin" -> "admin_root"
                         else -> "public_root"
                     }
+                    Log.d("MainScreen", "Login successful, navigating to: $currentRoute")
                 }
             )
         }
@@ -103,7 +123,11 @@ fun MainScreen(context: MainActivity) {
 
         null -> {
             // Loading state while checking session
-            // Could show a splash screen here
         }
+    }
+
+    // Keep AppViewModel reference alive
+    LaunchedEffect(appViewModel) {
+        // ViewModel exists and keeps refresh schedule running
     }
 }
