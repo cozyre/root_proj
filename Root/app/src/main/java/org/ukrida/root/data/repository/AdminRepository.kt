@@ -13,12 +13,20 @@ import org.ukrida.root.data.model.AdminSongRequest
 import org.ukrida.root.data.model.AdminTripRequest
 import org.ukrida.root.data.model.AdminTripResult
 import org.ukrida.root.data.model.AdminTripUpdateRequest
+import org.ukrida.root.data.model.ApiResponse
 import org.ukrida.root.data.model.CompletedTrip
+import org.ukrida.root.data.model.PendingAccount
 import org.ukrida.root.data.model.Song
 import org.ukrida.root.data.remote.ApiService
 import org.ukrida.root.utils.Resource
+import retrofit2.Response
 
 class AdminRepository(private val api: ApiService) {
+
+    suspend fun getPendingAccounts(groupId: Int? = null): Result<List<PendingAccount>> = safeCallList {
+        api.getPendingAccounts(groupId = groupId)
+    }
+
 
     // ─── Trips ───────────────────────────────────────────────────────────────
 
@@ -157,4 +165,18 @@ class AdminRepository(private val api: ApiService) {
             Resource.Error("Network error: ${e.message}")
         }
     }
+
+    private suspend fun <T> safeCallList(call: suspend () -> Response<ApiResponse<List<T>>>): Result<List<T>> {
+        return try {
+            val res = call()
+            if (res.isSuccessful && res.body()?.success == true) {
+                Result.success(res.body()?.data ?: emptyList())
+            } else {
+                Result.failure(Exception(res.body()?.message ?: "Error fetching pending accounts"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
 }

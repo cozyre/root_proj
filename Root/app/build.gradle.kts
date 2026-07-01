@@ -51,6 +51,16 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp.logging)
+    implementation("androidx.navigation:navigation-compose:2.9.0")
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.compose.foundation.layout)
+    implementation(libs.androidx.compose.runtime)
+    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.activity:activity-compose:1.9.0") // Or your project's current stable version
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -59,4 +69,8 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    implementation("androidx.navigation:navigation-compose:2.9.8")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material-icons-extended")
 }

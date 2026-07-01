@@ -2,17 +2,20 @@
 
 require_once __DIR__ . '/../models/AdminModel.php';
 require_once __DIR__ . '/../middleware/AuthMiddleware.php';
+require_once __DIR__ . '/../models/AccountModel.php';
 
 class AdminController {
 
+    private AccountModel $accountModel;
     private AdminModel    $model;
     private AuthMiddleware $auth;
 
     // Must match the upload path in GroupImageController
     private const GALLERY_DIR = __DIR__ . '/../../uploads/gallery/';
 
-    public function __construct(AdminModel $model, AuthMiddleware $auth) {
+    public function __construct(AdminModel $model, AccountModel $accountModel,AuthMiddleware $auth) {
         $this->model = $model;
+        $this->accountModel = $accountModel;
         $this->auth  = $auth;
     }
 
@@ -267,6 +270,17 @@ class AdminController {
         $this->model->updateDevotion($id, $data);
         $this->ok($this->model->getDevotionById($id), 'Devotion updated');
     }
+
+    public function pendingAccounts(): void {
+        $user = $this->auth->requireRole('admin');
+        
+        $groupId = isset($_GET['group_id']) ? (int) $_GET['group_id'] : null;
+        
+        $pending = $this->accountModel->getPending($groupId);
+        
+        $this->ok($pending);
+    }
+
 
     // ─── Private helpers ─────────────────────────────────────────────────────
 

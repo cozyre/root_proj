@@ -20,6 +20,11 @@ interface ApiService {
     @POST("index.php?route=auth/register")
     suspend fun register(@Body body: RegisterRequest): ApiResponse<User>
 
+    @POST("index.php")
+    suspend fun refreshToken(
+        @Query("route") route: String = "auth/refresh"
+    ): Response<ApiResponse<Map<String, Any>>>
+
     // Groups -----------------------------------------------------------------
     @GET("index.php")
     suspend fun getAllTours(
@@ -198,6 +203,13 @@ interface ApiService {
     ): Response<ApiResponse<Profile>>
 
     //Admin -----------------------------------------------------------------
+
+    @GET("index.php")
+    suspend fun getPendingAccounts(
+        @Query("route") route: String = "admin/accounts/pending",
+        @Query("group_id") groupId: Int? = null
+    ): Response<ApiResponse<List<PendingAccount>>>
+
 
     // Admin — Trips ─────────────────────────────────────────────────────────
     /** GET ?route=admin/trips  →  list of completed/archived trips */
