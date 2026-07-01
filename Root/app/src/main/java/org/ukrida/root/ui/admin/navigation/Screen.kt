@@ -15,5 +15,12 @@ sealed class Screen(val route: String) {
     object EditSongs : Screen("edit_songs/{tripId}")
     object EditDailyBread : Screen("daily_bread/{tripId}")
     object Trip : Screen("trip")
-    object CreateTrip : Screen("create_trip")
+
+    object CreateTrip : Screen("new_trip")
+
+    object NewItinerary : Screen("new_itinerary")
+    object AddSong : Screen("add_song")
+
+    object EditSong : Screen("edit_song/{songId}") {
+    }
 }

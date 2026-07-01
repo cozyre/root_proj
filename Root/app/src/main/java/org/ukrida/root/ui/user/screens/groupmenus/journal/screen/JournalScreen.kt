@@ -27,6 +27,7 @@ import org.ukrida.root.ui.user.components.DashboardTopBar
 import org.ukrida.root.ui.user.screens.groupmenus.journal.components.CreateJournalButton
 import org.ukrida.root.ui.user.screens.groupmenus.journal.components.JournalCard
 import org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel.JournalViewModel
+
 // TODO Backend Integration
 // Flow:
 //
@@ -40,7 +41,7 @@ fun JournalScreen(
     navController: NavHostController,
     groupId: Int
 ) {
-    val viewModel: org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel.JournalViewModel = viewModel()
+    val viewModel: JournalViewModel = viewModel()
     val journals by viewModel.journals.collectAsState()
 
     var expanded by remember {
@@ -107,7 +108,7 @@ fun JournalScreen(
                         modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
-                        _root_ide_package_.org.ukrida.root.ui.user.screens.groupmenus.journal.components.CreateJournalButton(
+                        CreateJournalButton(
                             onClick = {
                                 navController.navigate(
                                     PublicScreen.JournalEditor.createRoute(groupId)
@@ -131,7 +132,7 @@ fun JournalScreen(
                         )
                     } else {
                         journals.forEach { journal ->
-                            _root_ide_package_.org.ukrida.root.ui.user.screens.groupmenus.journal.components.JournalCard(
+                            JournalCard(
                                 journal = journal,
                                 onClick = {
                                     navController.navigate(

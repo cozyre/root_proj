@@ -17,9 +17,12 @@ import org.ukrida.root.ui.admin.screens.dashboard.viewmodel.DashboardViewModel
 import org.ukrida.root.ui.admin.screens.dashboard.viewmodel.DashboardViewModelFactory
 import org.ukrida.root.ui.admin.screens.finished.screen.FinishedTripDetailScreen
 import org.ukrida.root.ui.admin.screens.hymn.screen.HymnForHimScreen
-import org.ukrida.root.ui.admin.screens.newtrip.screen.NewTripScreen
 import org.ukrida.root.ui.admin.screens.finished.screen.FinishedTripScreen
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.FinishedTripDetailViewModel
+import org.ukrida.root.ui.admin.screens.hymn.screen.AddSongScreen
+import org.ukrida.root.ui.admin.screens.hymn.screen.EditSongScreen
+import org.ukrida.root.ui.admin.screens.hymn.viewmodel.EditSongViewModel
+import org.ukrida.root.ui.admin.screens.newtrip.screen.NewItineraryScreen
 import org.ukrida.root.ui.admin.screens.ongoing.screen.EditDailyBreadScreen
 import org.ukrida.root.ui.admin.screens.ongoing.screen.EditItineraryScreen
 import org.ukrida.root.ui.admin.screens.ongoing.screen.EditSongsScreen
@@ -29,7 +32,9 @@ import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.EditDailyBreadViewMode
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.EditItineraryViewModel
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.EditSongsViewModel
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.OnGoingDetailViewModel
+import org.ukrida.root.ui.admin.screens.trip.screen.NewTripScreen
 import org.ukrida.root.ui.admin.screens.trip.screen.TripScreen
+import org.ukrida.root.ui.admin.screens.trip.viewmodel.NewTripViewModel
 
 
 @Composable
@@ -173,8 +178,37 @@ fun AppNavigation(
             )
         }
 
-        composable(Screen.NewTrip.route) {
-            NewTripScreen(onMenuClick = onMenuClick)
+        composable(
+            route = Screen.CreateTrip.route
+        ) {
+
+            val viewModel: NewTripViewModel = viewModel(
+                factory = NewTripViewModel.Factory
+            )
+
+            NewTripScreen(
+                onMenuClick = {
+                    onMenuClick
+                },
+
+                onBackClick = {
+                    navController.popBackStack()
+                },
+
+
+                viewModel = viewModel
+            )
+        }
+        composable(
+            route = Screen.NewItinerary.route
+        ) {
+
+            NewItineraryScreen(
+                onMenuClick = onMenuClick,
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable(Screen.FinishedTrip.route) {
