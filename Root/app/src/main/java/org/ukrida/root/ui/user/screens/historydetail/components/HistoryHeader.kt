@@ -22,11 +22,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import org.ukrida.root.R
-import org.ukrida.root.data.model.Group
+import org.ukrida.root.data.model.GroupDetail
 
 @Composable
 fun HistoryHeader(
-    group: Group
+    group: GroupDetail
 ) {
 
     Column(

@@ -1,18 +1,25 @@
 package org.ukrida.root.ui.user.screens.historydetail.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.ukrida.root.data.model.Group
+import kotlinx.coroutines.launch
+import org.ukrida.root.data.model.GroupDetail
 import org.ukrida.root.data.model.GroupImage
 import org.ukrida.root.data.model.Member
 import org.ukrida.root.data.repository.AccountRepository
+import org.ukrida.root.data.repository.GalleryRepository
+import org.ukrida.root.data.repository.MemberRepository
+import org.ukrida.root.utils.Resource
 
 class HistoryDetailViewModel(
-    private val accountRepository: AccountRepository
+    private val accountRepository: AccountRepository,
+    private val galleryRepository: GalleryRepository,
+    private val memberRepository: MemberRepository
 ) : ViewModel() {
 
-    private val _group = MutableStateFlow<Group?>(null)
+    private val _group = MutableStateFlow<GroupDetail?>(null)
     val group = _group.asStateFlow()
 
     private val _members = MutableStateFlow<List<Member>>(emptyList())
@@ -21,211 +28,44 @@ class HistoryDetailViewModel(
     private val _gallery = MutableStateFlow<List<GroupImage>>(emptyList())
     val gallery = _gallery.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage = _errorMessage.asStateFlow()
+
     fun loadHistoryDetail(groupId: Int) {
-        loadDummy(groupId)
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+
+            // Fetch Group Details
+            val groupResult = accountRepository.getGroupDetail(groupId)
+            groupResult.onSuccess {
+                _group.value = it
+            }.onFailure {
+                _errorMessage.value = it.message ?: "Failed to load group details"
+            }
+
+            // Fetch Members
+            when (val membersRes = memberRepository.listMembers(groupId)) {
+                is Resource.Success -> _members.value = membersRes.data
+                is Resource.Error -> {
+                    if (_errorMessage.value == null) _errorMessage.value = membersRes.message
+                }
+                else -> {}
+            }
+
+            // Fetch Gallery Images
+            when (val galleryRes = galleryRepository.listImages(groupId)) {
+                is Resource.Success -> _gallery.value = galleryRes.data
+                is Resource.Error -> {
+                    if (_errorMessage.value == null) _errorMessage.value = galleryRes.message
+                }
+                else -> {}
+            }
+
+            _isLoading.value = false
+        }
     }
-
-    private fun loadDummy(groupId: Int) {
-        _group.value = getDummyGroup(groupId)
-        _members.value = getDummyMembers()
-        _gallery.value = getDummyGallery()
-    }
-    private fun getDummyGroup(groupId: Int): Group {
-
-        val groups = listOf(
-
-            Group(
-                id = 1,
-                name = "Holy Land",
-                description = "Experience the places where Jesus walked.",
-                location = "Jerusalem",
-                dresscode = "Casual",
-                status = "Completed",
-                startDate = "2026-10-01",
-                endDate = "2026-10-12",
-                meetupTime = "08:00",
-                meetupAddress = "Soekarno Hatta Airport",
-                joinDate = "2026-07-15",
-                statusJoin = "Approved"
-            ),
-
-            Group(
-                id = 2,
-                name = "Jordan Pilgrimage",
-                description = "Visit the Jordan River and Mount Nebo.",
-                location = "Jordan",
-                dresscode = "Casual",
-                status = "Completed",
-                startDate = "2026-11-05",
-                endDate = "2026-11-12",
-                meetupTime = "09:00",
-                meetupAddress = "Soekarno Hatta Airport",
-                joinDate = "2026-08-01",
-                statusJoin = "Approved"
-            )
-
-        )
-
-        return groups.firstOrNull { it.id == groupId }
-            ?: groups.first()
-    }
-    private fun getDummyMembers() = listOf(
-
-        Member(
-            id = 1,
-            username = "josh",
-            firstName = "Josh",
-            lastName = "Valentino",
-            profilePhotoUrl = null,
-            role = "Leader"
-        ),
-
-        Member(
-            id = 2,
-            username = "claudio",
-            firstName = "Claudio",
-            lastName = "Jose",
-            profilePhotoUrl = null,
-            role = "Member"
-        ),
-
-        Member(
-            id = 3,
-            username = "richard",
-            firstName = "Richard",
-            lastName = "Sutisna",
-            profilePhotoUrl = null,
-            role = "Member"
-        ),
-        Member(
-            id = 4,
-            username = "josh",
-            firstName = "Josh",
-            lastName = "Valentino",
-            profilePhotoUrl = null,
-            role = "Leader"
-        ),
-
-        Member(
-            id = 5,
-            username = "claudio",
-            firstName = "Claudio",
-            lastName = "Jose",
-            profilePhotoUrl = null,
-            role = "Member"
-        ),
-
-        Member(
-            id = 6,
-            username = "richard",
-            firstName = "Richard",
-            lastName = "Sutisna",
-            profilePhotoUrl = null,
-            role = "Member"
-        ),
-        Member(
-            id = 7,
-            username = "josh",
-            firstName = "Josh",
-            lastName = "Valentino",
-            profilePhotoUrl = null,
-            role = "Leader"
-        ),
-        Member(
-            id = 8,
-            username = "claudio",
-            firstName = "Claudio",
-            lastName = "Jose",
-            profilePhotoUrl = null,
-            role = "Member"
-        ),
-
-        Member(
-            id = 9,
-            username = "richard",
-            firstName = "Richard",
-            lastName = "Sutisna",
-            profilePhotoUrl = null,
-            role = "Member"
-        )
-    )
-    private fun getDummyGallery() = listOf(
-
-        GroupImage(
-            id = 1,
-            groupId = 1,
-            imageUrl = "",
-            caption = "Pyramid",
-            imageType = "cover",
-            sortOrder = 1,
-            createdAt = ""
-        ),
-
-        GroupImage(
-            id = 2,
-            groupId = 1,
-            imageUrl = "",
-            caption = "Jerusalem",
-            imageType = "gallery",
-            sortOrder = 2,
-            createdAt = ""
-        ),
-        GroupImage(
-            id = 3,
-            groupId = 1,
-            imageUrl = "",
-            caption = "Pyramid",
-            imageType = "cover",
-            sortOrder = 1,
-            createdAt = ""
-        ),
-
-        GroupImage(
-            id = 4,
-            groupId = 1,
-            imageUrl = "",
-            caption = "Jerusalem",
-            imageType = "gallery",
-            sortOrder = 2,
-            createdAt = ""
-        ),
-        GroupImage(
-            id = 5,
-            groupId = 1,
-            imageUrl = "",
-            caption = "Pyramid",
-            imageType = "cover",
-            sortOrder = 1,
-            createdAt = ""
-        ),
-
-        GroupImage(
-            id = 6,
-            groupId = 1,
-            imageUrl = "",
-            caption = "Jerusalem",
-            imageType = "gallery",
-            sortOrder = 2,
-            createdAt = ""
-        ),
-        GroupImage(
-            id = 7,
-            groupId = 1,
-            imageUrl = "",
-            caption = "Pyramid",
-            imageType = "cover",
-            sortOrder = 1,
-            createdAt = ""
-        ),
-
-        GroupImage(
-            id = 8,
-            groupId = 1,
-            imageUrl = "",
-            caption = "Jerusalem",
-            imageType = "gallery",
-            sortOrder = 2,
-            createdAt = ""
-        )
-    )
 }

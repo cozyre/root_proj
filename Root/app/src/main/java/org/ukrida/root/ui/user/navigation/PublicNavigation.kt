@@ -42,7 +42,6 @@ import org.ukrida.root.ui.user.screens.history.screen.HistoryScreen
 import org.ukrida.root.ui.user.screens.history.viewmodel.HistoryViewModel
 import org.ukrida.root.ui.user.screens.history.viewmodel.HistoryViewModelFactory
 import org.ukrida.root.ui.user.screens.historydetail.screen.HistoryDetailScreen
-import org.ukrida.root.ui.user.screens.historydetail.viewmodel.HistoryDetailViewModel
 import org.ukrida.root.ui.user.screens.members.screen.MemberDetailScreen
 import org.ukrida.root.ui.user.screens.members.screen.MemberScreen
 import org.ukrida.root.ui.user.screens.members.viewmodel.MemberDetailViewModel

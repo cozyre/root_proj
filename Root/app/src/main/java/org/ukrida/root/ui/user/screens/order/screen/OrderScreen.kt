@@ -35,7 +35,7 @@ import org.ukrida.root.utils.Resource
 
 @Composable
 fun OrderScreen(
-    viewModel: OrderViewModel = viewModel(),
+    viewModel: OrderViewModel,
     navController: NavHostController,
     groupId: Int
 ) {
@@ -108,6 +108,7 @@ fun OrderScreen(
                             null -> "ORDER"
                             "pending" -> "PENDING"
                             "approved" -> "JOIN"
+                            "rejected" -> "TRY LATER"
                             else -> "ORDER"
                         }
 

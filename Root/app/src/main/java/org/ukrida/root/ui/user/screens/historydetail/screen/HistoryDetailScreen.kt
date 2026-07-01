@@ -29,11 +29,10 @@ import org.ukrida.root.ui.user.screens.historydetail.viewmodel.HistoryDetailView
 
 @Composable
 fun HistoryDetailScreen(
+    viewModel: HistoryDetailViewModel,
     navController: NavHostController,
     groupId: Int
 ) {
-
-    val viewModel: HistoryDetailViewModel = viewModel()
 
     val group by viewModel.group.collectAsState()
     val members by viewModel.members.collectAsState()
@@ -45,23 +44,6 @@ fun HistoryDetailScreen(
 
     Scaffold(
         containerColor = Color(0xFF2A2522),
-        bottomBar = {
-            PublicBottomNavigation(
-                currentDestination = PublicDestination.PROMISED_LAND,
-                onNavigate = { destination ->
-                    when(destination){
-                        PublicDestination.HOME ->
-                            navController.navigate(PublicScreen.Home.route)
-                        PublicDestination.PROMISED_LAND ->
-                            navController.popBackStack()
-                        PublicDestination.GROUP ->
-                            navController.navigate(PublicScreen.Group.route)
-                        PublicDestination.PROFILE ->
-                            navController.navigate(PublicScreen.Profile.route)
-                    }
-                }
-            )
-        }
     ) { padding ->
         Column(
             modifier = Modifier
@@ -71,15 +53,12 @@ fun HistoryDetailScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp)
         ) {
-            PublicTopBar(
-                title = "HISTORY"
-            )
             group?.let {
                 HistoryHeader(group = it)
                 Spacer(Modifier.height(30.dp))
                 GroupMemberSection(
                     members = members,
-                    onMemberClick={},
+                    onMemberClick={ },
                 )
                 Spacer(Modifier.height(30.dp))
                 GallerySection(
