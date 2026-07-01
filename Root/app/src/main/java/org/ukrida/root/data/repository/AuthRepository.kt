@@ -6,6 +6,7 @@ import org.ukrida.root.data.model.RegisterRequest
 import org.ukrida.root.data.model.User
 import org.ukrida.root.data.remote.ApiService
 import org.ukrida.root.utils.Resource
+import org.ukrida.root.utils.SessionManager
 
 class AuthRepository(private val api: ApiService) {
 
