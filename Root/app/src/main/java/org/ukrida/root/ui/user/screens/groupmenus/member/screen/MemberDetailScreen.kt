@@ -30,7 +30,7 @@ fun MemberDetailScreen(
     groupId: Int,
     userId: Int
 ) {
-    val viewModel: org.ukrida.root.ui.user.screens.members.viewmodel.MemberDetailViewModel = viewModel()
+    val viewModel: MemberDetailViewModel = viewModel()
     val member by viewModel.member.collectAsState()
     var expanded by remember {
         mutableStateOf(false)
@@ -63,12 +63,12 @@ fun MemberDetailScreen(
                             expanded = !expanded
                         }
                     )
-                    _root_ide_package_.org.ukrida.root.ui.user.screens.members.components.MemberBackButton(
+                    MemberBackButton(
                         onBackClick = {
                             navController.popBackStack()
                         }
                     )
-                    _root_ide_package_.org.ukrida.root.ui.user.screens.members.components.MemberDetailHeader(
+                    MemberDetailHeader(
                         member = member
                     )
                     Spacer(
@@ -77,27 +77,27 @@ fun MemberDetailScreen(
                     Column(
                         modifier = Modifier.padding(horizontal = 20.dp)
                     ) {
-                        _root_ide_package_.org.ukrida.root.ui.user.screens.members.components.MemberInfoItem(
+                        MemberInfoItem(
                             label = "EMAIL",
                             value = member.email ?: "-"
                         )
-                        _root_ide_package_.org.ukrida.root.ui.user.screens.members.components.MemberInfoItem(
+                        MemberInfoItem(
                             label = "PHONE",
                             value = member.phone ?: "-"
                         )
-                        _root_ide_package_.org.ukrida.root.ui.user.screens.members.components.MemberInfoItem(
+                        MemberInfoItem(
                             label = "ROLE",
                             value = member.role
                         )
-                        _root_ide_package_.org.ukrida.root.ui.user.screens.members.components.MemberInfoItem(
+                        MemberInfoItem(
                             label = "STATUS",
                             value = member.statusJoin
                         )
-                        _root_ide_package_.org.ukrida.root.ui.user.screens.members.components.MemberInfoItem(
+                        MemberInfoItem(
                             label = "JOIN DATE",
                             value = member.joinDate
                         )
-                        _root_ide_package_.org.ukrida.root.ui.user.screens.members.components.MemberInfoItem(
+                        MemberInfoItem(
                             label = "BIO",
                             value = "No bio available."
                         )

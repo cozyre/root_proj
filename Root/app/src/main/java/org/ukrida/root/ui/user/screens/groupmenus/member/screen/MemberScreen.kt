@@ -37,12 +37,13 @@ import org.ukrida.root.ui.user.components.DashboardTopBar
 import org.ukrida.root.ui.user.screens.members.components.MemberCard
 import org.ukrida.root.ui.user.screens.members.viewmodel.MemberViewModel
 
+
 @Composable
 fun MemberScreen(
     navController: NavHostController,
     groupId: Int
 ) {
-    val viewModel: org.ukrida.root.ui.user.screens.members.viewmodel.MemberViewModel = viewModel()
+    val viewModel: MemberViewModel = viewModel()
     val members by viewModel.members.collectAsState()
     var expanded by remember {
         mutableStateOf(false)
@@ -122,7 +123,7 @@ fun MemberScreen(
                         modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
-                        _root_ide_package_.org.ukrida.root.ui.user.screens.members.components.MemberCard(
+                        MemberCard(
                             member = member,
                             onClick = {
                                 navController.navigate(

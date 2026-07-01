@@ -23,7 +23,21 @@ class OrderViewModel(
     val order: StateFlow<Resource<AccountStatus>> = _order
     fun loadOrder(groupId: Int) {
         viewModelScope.launch {
-             groupRepository.getTourById(groupId)
+
+            _group.value = Resource.Loading()
+
+            val result = groupRepository.getTourById(groupId)
+
+            result.fold(
+                onSuccess = { group ->
+                    _group.value = Resource.Success(group)
+                },
+                onFailure = { throwable ->
+                    _group.value = Resource.Error(
+                        throwable.message ?: "Unknown error"
+                    )
+                }
+            )
         }
     }
 
