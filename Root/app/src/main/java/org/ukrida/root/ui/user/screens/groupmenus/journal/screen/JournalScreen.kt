@@ -38,6 +38,7 @@ import org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel.JournalViewM
 // 5. After Save, reload journal list.
 @Composable
 fun JournalScreen(
+    viewModel: JournalViewModel = viewModel(),
     navController: NavHostController,
     groupId: Int
 ) {

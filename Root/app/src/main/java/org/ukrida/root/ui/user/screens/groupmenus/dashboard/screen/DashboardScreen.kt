@@ -34,10 +34,10 @@ import org.ukrida.root.ui.user.screens.groupmenus.dashboard.viewmodel.DashboardV
 
 @Composable
 fun DashboardScreen(
+    viewModel: DashboardViewModel = viewModel(),
     navController: NavHostController,
     groupId: Int
 ) {
-    val viewModel: DashboardViewModel = viewModel()
     val group by viewModel.group.collectAsState()
     LaunchedEffect(groupId) {
         viewModel.loadDashboard(groupId)

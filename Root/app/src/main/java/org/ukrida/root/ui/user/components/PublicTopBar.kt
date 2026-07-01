@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,7 +23,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun PublicTopBar(
     title: String,
-    onNotificationClick: () -> Unit = {}
+    onNotificationClick: () -> Unit = {},
+    onBackClick: (() -> Unit)? = null
 ) {
     val cream = Color(0xFFE5C19A)
     Row(
@@ -32,13 +34,24 @@ fun PublicTopBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = "R",
-            color = cream,
-            fontSize = 34.sp,
-            fontStyle = FontStyle.Italic,
-            fontWeight = FontWeight.Bold
-        )
+        if (onBackClick != null) {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = cream
+                )
+            }
+        } else {
+            Text(
+                text = "R",
+                color = cream,
+                fontSize = 34.sp,
+                fontStyle = FontStyle.Italic,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
         Text(
             text = title,
             color = cream,
@@ -46,6 +59,7 @@ fun PublicTopBar(
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold
         )
+
         IconButton(
             onClick = onNotificationClick
         ) {

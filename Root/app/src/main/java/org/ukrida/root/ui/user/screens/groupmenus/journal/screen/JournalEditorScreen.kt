@@ -33,6 +33,7 @@ import org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel.JournalEdito
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JournalEditorScreen(
+    viewModel: JournalEditorViewModel = viewModel(),
     navController: NavHostController,
     groupId: Int,
     journalId: Int?

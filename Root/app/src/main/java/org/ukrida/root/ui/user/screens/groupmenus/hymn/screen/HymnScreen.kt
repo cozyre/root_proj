@@ -38,10 +38,10 @@ import org.ukrida.root.ui.user.screens.groupmenus.hymn.viewmodel.HymnViewModel
 
 @Composable
 fun HymnScreen(
+    viewModel: HymnViewModel = viewModel(),
     navController: NavHostController,
     groupId: Int
 ) {
-    val viewModel: HymnViewModel = viewModel()
     val songs by viewModel.songs.collectAsState()
     var expanded by remember {
         mutableStateOf(false)

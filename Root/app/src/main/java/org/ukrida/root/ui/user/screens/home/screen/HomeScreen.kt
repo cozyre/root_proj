@@ -17,9 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import org.ukrida.root.ui.user.components.PublicBottomNavigation
-import org.ukrida.root.ui.user.components.PublicDestination
-import org.ukrida.root.ui.user.components.PublicTopBar
 import org.ukrida.root.ui.user.navigation.PublicScreen
 import org.ukrida.root.ui.user.screens.home.components.BookingBanner
 import org.ukrida.root.ui.user.screens.home.components.HeroSection
@@ -39,27 +36,6 @@ fun HomeScreen(
 
     Scaffold(
         containerColor = Color(0xFF2A2522),
-//        bottomBar = {
-//            PublicBottomNavigation(
-//                currentDestination = PublicDestination.HOME,
-//                onNavigate = { destination ->
-//                    when (destination) {
-//                        PublicDestination.HOME -> {
-//                            // Tidak perlu apa-apa
-//                        }
-//                        PublicDestination.PROMISED_LAND -> {
-//                            navController.navigate(PublicScreen.PromisedLand.route)
-//                        }
-//                        PublicDestination.GROUP -> {
-//                            navController.navigate(PublicScreen.Group.route)
-//                        }
-//                        PublicDestination.PROFILE -> {
-//                            navController.navigate(PublicScreen.Profile.route)
-//                        }
-//                    }
-//                }
-//            )
-//        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -68,8 +44,6 @@ fun HomeScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-//            PublicTopBar(title = "HOME")
-            Spacer(modifier = Modifier.height(20.dp))
             HeroSection()
             Spacer(modifier = Modifier.height(50.dp))
             VisionSection()

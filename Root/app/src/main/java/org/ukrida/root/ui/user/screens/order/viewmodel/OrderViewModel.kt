@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.ukrida.root.data.model.AccountStatus
 import org.ukrida.root.data.model.Group
@@ -13,56 +14,63 @@ import org.ukrida.root.data.repository.GroupRepository
 import org.ukrida.root.utils.Resource
 
 class OrderViewModel(
-    private val accountRepository: AccountRepository,
-    private val groupRepository: GroupRepository
+    private val groupRepository: GroupRepository,
+    private val accountRepository: AccountRepository
 ) : ViewModel() {
-    private val _group = MutableStateFlow<Resource<Group>>(Resource.Loading())
-    val group: StateFlow<Resource<Group>> = _group
 
-    private val _order = MutableStateFlow<Resource<AccountStatus>>(Resource.Loading())
-    val order: StateFlow<Resource<AccountStatus>> = _order
+    private val _uiState = MutableStateFlow(OrderUiState())
+    val uiState: StateFlow<OrderUiState> = _uiState.asStateFlow()
+
+    data class OrderUiState(
+        val group: Resource<Group> = Resource.Loading(),
+        val accountStatus: Resource<AccountStatus?> = Resource.Success(null),
+        val orderAction: Resource<Unit>? = null
+    )
+
     fun loadOrder(groupId: Int) {
         viewModelScope.launch {
-             groupRepository.getTourById(groupId)
+            _uiState.update { it.copy(group = Resource.Loading()) }
+            
+            val groupResult = groupRepository.getTourById(groupId)
+            val statusResult = accountRepository.getOrderStatus(groupId)
+
+            if (groupResult.isSuccess) {
+                val groupData = groupResult.getOrNull()!!
+                val statusData = statusResult.getOrNull()
+
+                // Sync statusJoin from AccountStatus to Group model if available
+                val updatedGroup = groupData.copy(
+                    statusJoin = statusData?.statusJoin ?: groupData.statusJoin
+                )
+
+                _uiState.update { 
+                    it.copy(
+                        group = Resource.Success(updatedGroup),
+                        accountStatus = Resource.Success(statusData)
+                    )
+                }
+            } else {
+                val errorMsg = groupResult.exceptionOrNull()?.message ?: "Failed to fetch group details"
+                _uiState.update { it.copy(group = Resource.Error(errorMsg)) }
+            }
         }
     }
 
-    private suspend fun updateOrder(){
-        val result = groupRepository.getTourById(9)
+    fun createOrder(groupId: Int) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(orderAction = Resource.Loading()) }
+            val result = accountRepository.orderTour(groupId)
+            if (result.isSuccess) {
+                _uiState.update { it.copy(orderAction = Resource.Success(Unit)) }
+                loadOrder(groupId) // Refresh to update status to "pending"
+            } else {
+                val errorMsg = result.exceptionOrNull()?.message ?: "Order failed"
+                _uiState.update { it.copy(orderAction = Resource.Error(errorMsg)) }
+            }
+        }
     }
 
-    private fun getDummyGroup(groupId: Int): Group {
-        val groups = listOf(
-            Group(
-                id = 1,
-                name = "Holy Land",
-                description = "Experience the places where Jesus walked.",
-                location = "Jerusalem",
-                dresscode = "Casual",
-                status = "Open",
-                startDate = "2026-10-01",
-                endDate = "2026-10-12",
-                meetupTime = "08:00",
-                meetupAddress = "Soekarno Hatta Airport",
-                joinDate = null,
-                statusJoin = null
-            ),
-            Group(
-                id = 2,
-                name = "Jordan Pilgrimage",
-                description = "Visit the Jordan River and Mount Nebo.",
-                location = "Jordan",
-                dresscode = "Casual",
-                status = "Open",
-                startDate = "2026-11-05",
-                endDate = "2026-11-12",
-                meetupTime = "09:00",
-                meetupAddress = "Soekarno Hatta Airport",
-                joinDate = null,
-                statusJoin = "Pending"
-            )
-        )
-        return groups.firstOrNull { it.id == groupId }
-            ?: groups.first()
+    fun resetOrderAction() {
+        _uiState.update { it.copy(orderAction = null) }
     }
 }
