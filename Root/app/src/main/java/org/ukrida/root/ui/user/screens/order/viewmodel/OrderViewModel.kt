@@ -13,8 +13,8 @@ import org.ukrida.root.data.repository.GroupRepository
 import org.ukrida.root.utils.Resource
 
 class OrderViewModel(
-    private val accountRepository: AccountRepository,
-    private val groupRepository: GroupRepository
+    private val groupRepository: GroupRepository,
+    private val accountRepository: AccountRepository
 ) : ViewModel() {
     private val _group = MutableStateFlow<Resource<Group>>(Resource.Loading())
     val group: StateFlow<Resource<Group>> = _group
