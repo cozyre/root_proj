@@ -3,19 +3,32 @@ package org.ukrida.root.ui.user.screens.order.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.ukrida.root.data.model.AccountStatus
 import org.ukrida.root.data.model.Group
+import org.ukrida.root.data.repository.AccountRepository
+import org.ukrida.root.data.repository.GroupRepository
+import org.ukrida.root.utils.Resource
 
-class OrderViewModel : ViewModel() {
-    private val _group = MutableStateFlow<Group?>(null)
-    val group = _group.asStateFlow()
+class OrderViewModel(
+    private val accountRepository: AccountRepository,
+    private val groupRepository: GroupRepository
+) : ViewModel() {
+    private val _group = MutableStateFlow<Resource<Group>>(Resource.Loading())
+    val group: StateFlow<Resource<Group>> = _group
+
+    private val _order = MutableStateFlow<Resource<AccountStatus>>(Resource.Loading())
+    val order: StateFlow<Resource<AccountStatus>> = _order
     fun loadOrder(groupId: Int) {
         viewModelScope.launch {
-            // TODO:
-            // repository.getTourById(groupId)
-            _group.value = getDummyGroup(groupId)
+             groupRepository.getTourById(groupId)
         }
+    }
+
+    private suspend fun updateOrder(){
+        val result = groupRepository.getTourById(9)
     }
 
     private fun getDummyGroup(groupId: Int): Group {

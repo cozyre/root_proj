@@ -6,32 +6,19 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import org.ukrida.root.ui.user.screens.dailybread.screen.DailyBreadDetailScreen
-import org.ukrida.root.ui.user.screens.dailybread.screen.DailyBreadScreen
-import org.ukrida.root.ui.user.screens.dashboard.screen.DashboardScreen
-import org.ukrida.root.ui.user.screens.gallery.screen.GalleryScreen
+import org.ukrida.root.ui.user.screens.groupmenus.dashboard.screen.DashboardScreen
 import org.ukrida.root.ui.user.screens.group.screen.GroupScreen
 import org.ukrida.root.ui.user.screens.history.screen.HistoryScreen
-import org.ukrida.root.ui.user.screens.historydetail.screen.HistoryDetailScreen
 import org.ukrida.root.ui.user.screens.home.screen.HomeScreen
-import org.ukrida.root.ui.user.screens.hymn.screen.HymnDetailScreen
-import org.ukrida.root.ui.user.screens.hymn.screen.HymnScreen
-import org.ukrida.root.ui.user.screens.itinerary.screen.ItineraryScreen
-import org.ukrida.root.ui.user.screens.journal.screen.JournalEditorScreen
-import org.ukrida.root.ui.user.screens.journal.screen.JournalScreen
-import org.ukrida.root.ui.user.screens.members.screen.MemberDetailScreen
-import org.ukrida.root.ui.user.screens.members.screen.MemberScreen
-import org.ukrida.root.ui.user.screens.order.screen.OrderScreen
 import org.ukrida.root.ui.user.screens.promisedland.screen.PromisedLandScreen
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
 import org.ukrida.root.data.AppContainer
 import org.ukrida.root.ui.user.navigation.PublicScreen
 import org.ukrida.root.ui.user.screens.group.viewmodel.GroupViewModel
 import org.ukrida.root.ui.user.screens.group.viewmodel.GroupViewModelFactory
-import org.ukrida.root.ui.user.screens.history.screen.HistoryViewModelFactory
+import org.ukrida.root.ui.user.screens.history.viewmodel.HistoryViewModelFactory
 import org.ukrida.root.ui.user.screens.history.viewmodel.HistoryViewModel
 import org.ukrida.root.ui.user.screens.home.viewmodel.HomeViewModel
 import org.ukrida.root.ui.user.screens.home.viewmodel.HomeViewModelFactory
@@ -40,7 +27,6 @@ import org.ukrida.root.ui.user.screens.profile.viewmodel.ProfileViewModel
 import org.ukrida.root.ui.user.screens.profile.viewmodel.ProfileViewModelFactory
 import org.ukrida.root.ui.user.screens.promisedland.viewmodel.PromisedLandViewModel
 import org.ukrida.root.ui.user.screens.promisedland.viewmodel.PromisedLandViewModelFactory
-import org.ukrida.root.utils.SessionManager
 
 //import org.ukrida.root.ui.user.screens.profile.screen.ProfileScreen
 

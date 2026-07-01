@@ -15,12 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import org.ukrida.root.ui.user.components.PublicBottomNavigation
-import org.ukrida.root.ui.user.components.PublicDestination
-import org.ukrida.root.ui.user.navigation.PublicScreen
-import org.ukrida.root.ui.user.screens.dashboard.components.DashboardTopBar
 import org.ukrida.root.ui.user.screens.profile.components.*
 import org.ukrida.root.ui.user.screens.profile.viewmodel.ProfileViewModel
 import org.ukrida.root.utils.Resource

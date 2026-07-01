@@ -104,8 +104,8 @@ fun OrderScreen(
 
                 val buttonText = when (tour.statusJoin) {
                     null -> "ORDER"
-                    "Pending" -> "PENDING"
-                    "Approved" -> "JOIN"
+                    "pending" -> "PENDING"
+                    "approved" -> "JOIN"
                     else -> "ORDER"
                 }
 

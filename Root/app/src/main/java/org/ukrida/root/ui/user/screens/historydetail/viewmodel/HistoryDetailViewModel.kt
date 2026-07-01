@@ -6,8 +6,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import org.ukrida.root.data.model.Group
 import org.ukrida.root.data.model.GroupImage
 import org.ukrida.root.data.model.Member
+import org.ukrida.root.data.repository.AccountRepository
 
-class HistoryDetailViewModel : ViewModel() {
+class HistoryDetailViewModel(
+    private val accountRepository: AccountRepository
+) : ViewModel() {
 
     private val _group = MutableStateFlow<Group?>(null)
     val group = _group.asStateFlow()
