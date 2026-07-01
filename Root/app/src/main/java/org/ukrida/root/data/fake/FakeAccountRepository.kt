@@ -1,6 +1,5 @@
 package org.ukrida.root.data.fake
 
-import androidx.room.util.copy
 import kotlinx.coroutines.delay
 import org.ukrida.root.data.dummy.DummyAccountData
 import org.ukrida.root.data.model.AccountStatus

@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import org.ukrida.root.ui.admin.components.TopBar
-import org.ukrida.root.ui.admin.components.TimelineBar
+import org.ukrida.root.ui.admin.screens.ongoing.components.TimelineBar
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.EditDailyBreadViewModel
 import org.ukrida.root.ui.theme.*
 

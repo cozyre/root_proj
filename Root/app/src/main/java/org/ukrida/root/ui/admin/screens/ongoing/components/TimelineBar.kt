@@ -1,4 +1,4 @@
-package org.ukrida.root.ui.admin.components
+package org.ukrida.root.ui.admin.screens.ongoing.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

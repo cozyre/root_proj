@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
+import org.ukrida.root.data.AppContainer
 import org.ukrida.root.ui.admin.navigation.AppNavigation
 import org.ukrida.root.ui.admin.components.AppDrawer
 import org.ukrida.root.ui.admin.navigation.AppNavigation
@@ -70,7 +71,8 @@ fun RootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
                     scope.launch {
                         drawerState.open()
                     }
-                }
+                },
+                appContainer = appContainer
             )
         }
     }

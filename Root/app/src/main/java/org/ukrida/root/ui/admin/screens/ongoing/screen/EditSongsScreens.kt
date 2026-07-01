@@ -5,7 +5,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
@@ -19,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import org.ukrida.root.data.model.SongBrowseItem
 import org.ukrida.root.ui.admin.components.TopBar
-import org.ukrida.root.ui.admin.components.TimelineBar
+import org.ukrida.root.ui.admin.screens.ongoing.components.TimelineBar
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.EditSongsViewModel
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.SongItemUiState
 import org.ukrida.root.ui.theme.*
