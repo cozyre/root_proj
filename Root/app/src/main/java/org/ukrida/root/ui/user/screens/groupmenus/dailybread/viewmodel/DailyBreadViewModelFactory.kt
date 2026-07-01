@@ -3,7 +3,6 @@ package org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.ukrida.root.data.repository.DevotionRepository
-import org.ukrida.root.ui.user.screens.historydetail.viewmodel.HistoryDetailViewModel
 
 class DailyBreadViewModelFactory(
     private val devotionRepository: DevotionRepository

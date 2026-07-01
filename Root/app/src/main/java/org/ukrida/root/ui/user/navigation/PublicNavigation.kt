@@ -33,6 +33,7 @@ import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBrea
 import org.ukrida.root.ui.user.screens.groupmenus.dailybread.screen.DailyBreadDetailScreen
 import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBreadDetailViewModel
 import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBreadViewModelFactory
+import org.ukrida.root.ui.user.screens.groupmenus.itinerary.viewmodel.ItineraryViewModelFactory
 import org.ukrida.root.ui.user.screens.home.screen.HomeScreen
 import org.ukrida.root.ui.user.screens.home.viewmodel.HomeViewModel
 import org.ukrida.root.ui.user.screens.home.viewmodel.HomeViewModelFactory
@@ -198,8 +199,12 @@ fun PublicNavigation(
             )
         ) {
             val groupId = it.arguments?.getInt("groupId") ?: 0
-            // TODO: Create ItineraryViewModelFactory if not exists
+            val factory = remember{
+                ItineraryViewModelFactory(appContainer.itineraryRepository)
+            }
+            val viewModel : ItineraryViewModel = viewModel(factory = factory)
             ItineraryScreen(
+                viewModel = viewModel,
                 navController = navController,
                 groupId = groupId
             )

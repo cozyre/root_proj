@@ -3,7 +3,9 @@ package org.ukrida.root.ui.user.screens.historydetail.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.ukrida.root.data.model.GroupDetail
 import org.ukrida.root.data.model.GroupImage
@@ -19,53 +21,51 @@ class HistoryDetailViewModel(
     private val memberRepository: MemberRepository
 ) : ViewModel() {
 
-    private val _group = MutableStateFlow<GroupDetail?>(null)
-    val group = _group.asStateFlow()
+    private val _uiState = MutableStateFlow(HistoryDetailUiState())
+    val uiState: StateFlow<HistoryDetailUiState> = _uiState.asStateFlow()
 
-    private val _members = MutableStateFlow<List<Member>>(emptyList())
-    val members = _members.asStateFlow()
-
-    private val _gallery = MutableStateFlow<List<GroupImage>>(emptyList())
-    val gallery = _gallery.asStateFlow()
-
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading = _isLoading.asStateFlow()
-
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage = _errorMessage.asStateFlow()
+    data class HistoryDetailUiState(
+        val group: Resource<GroupDetail> = Resource.Loading(),
+        val members: Resource<List<Member>> = Resource.Loading(),
+        val gallery: Resource<List<GroupImage>> = Resource.Loading()
+    )
 
     fun loadHistoryDetail(groupId: Int) {
         viewModelScope.launch {
-            _isLoading.value = true
-            _errorMessage.value = null
+            _uiState.update {
+                it.copy(
+                    group = Resource.Loading(),
+                    members = Resource.Loading(),
+                    gallery = Resource.Loading()
+                )
+            }
 
             // Fetch Group Details
             val groupResult = accountRepository.getGroupDetail(groupId)
-            groupResult.onSuccess {
-                _group.value = it
-            }.onFailure {
-                _errorMessage.value = it.message ?: "Failed to load group details"
-            }
+            
+            // Fetch Members and Gallery
+            val membersRes = memberRepository.listMembers(groupId)
+            val galleryRes = galleryRepository.listImages(groupId)
 
-            // Fetch Members
-            when (val membersRes = memberRepository.listMembers(groupId)) {
-                is Resource.Success -> _members.value = membersRes.data
-                is Resource.Error -> {
-                    if (_errorMessage.value == null) _errorMessage.value = membersRes.message
+            if (groupResult.isSuccess) {
+                val groupData = groupResult.getOrNull()
+                _uiState.update {
+                    it.copy(
+                        group = if (groupData != null) Resource.Success(groupData) else Resource.Error("Group details not found"),
+                        members = membersRes,
+                        gallery = galleryRes
+                    )
                 }
-                else -> {}
-            }
-
-            // Fetch Gallery Images
-            when (val galleryRes = galleryRepository.listImages(groupId)) {
-                is Resource.Success -> _gallery.value = galleryRes.data
-                is Resource.Error -> {
-                    if (_errorMessage.value == null) _errorMessage.value = galleryRes.message
+            } else {
+                val errorMsg = groupResult.exceptionOrNull()?.message ?: "Failed to load group details"
+                _uiState.update {
+                    it.copy(
+                        group = Resource.Error(errorMsg),
+                        members = membersRes,
+                        gallery = galleryRes
+                    )
                 }
-                else -> {}
             }
-
-            _isLoading.value = false
         }
     }
 }

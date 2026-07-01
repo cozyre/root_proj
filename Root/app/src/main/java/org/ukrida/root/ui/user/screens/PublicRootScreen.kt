@@ -43,12 +43,10 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
 
     val (menuExpanded, setMenuExpanded) = remember { mutableStateOf(false) }
 
+    val groupId = navBackStackEntry?.arguments?.getInt("groupId") ?: 0
+//    val groupId = it.arguments?.getInt("groupId") ?: 0
     val isInGroupContext = currentRoute?.startsWith("group/") == true
-    val groupId = if (isInGroupContext) {
-        extractGroupIdFromRoute(currentRoute)
-    } else {
-        null
-    }
+
 
     LaunchedEffect(currentRoute, isInGroupContext, groupId, menuExpanded) {
         println("DEBUG: currentRoute=$currentRoute")
@@ -82,7 +80,7 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
         Scaffold(
             containerColor = BackgroundDark,
             topBar = {
-                if (isInGroupContext && groupId != null) {
+                if (isInGroupContext && groupId != 0) {
                     DashboardTopBar(
                         title = title,
                         expanded = menuExpanded,
@@ -129,7 +127,7 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
         }
 
         // Menu overlay & menu—drawn on top of Scaffold
-        if (isInGroupContext && groupId != null && menuExpanded) {
+        if (isInGroupContext && groupId != 0 && menuExpanded) {
             AnimatedVisibility(
                 visible = menuExpanded,
                 enter = fadeIn(),
@@ -199,24 +197,6 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
                 }
             )
         }
-    }
-}
-
-/**
- * Extract groupId from a route like "group/{groupId}/dashboard"
- * Returns null if not in group context
- */
-private fun extractGroupIdFromRoute(route: String?): Int? {
-    if (route == null) return null
-    val parts = route.split("/")
-    return try {
-        if (parts.size >= 2 && (parts[0] == "group")) {
-            return parts[1].toIntOrNull()
-        } else {
-            return null
-        }
-    } catch (e: Exception) {
-        null
     }
 }
 
