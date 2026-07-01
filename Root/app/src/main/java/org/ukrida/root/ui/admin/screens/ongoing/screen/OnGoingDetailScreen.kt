@@ -23,6 +23,7 @@ import org.ukrida.root.ui.admin.components.DocumentationGridItem
 import org.ukrida.root.ui.admin.components.ImagePlaceholder
 import org.ukrida.root.ui.admin.components.LeaderItem
 import org.ukrida.root.ui.admin.components.MemberGridItem
+import org.ukrida.root.ui.admin.components.TimelineBar
 import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.navigation.Screen
 import org.ukrida.root.ui.admin.screens.ongoing.components.*

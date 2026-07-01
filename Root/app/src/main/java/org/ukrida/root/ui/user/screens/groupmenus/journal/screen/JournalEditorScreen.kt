@@ -23,12 +23,12 @@ import org.ukrida.root.ui.user.screens.groupmenus.journal.components.CustomJourn
 import org.ukrida.root.ui.user.screens.groupmenus.journal.components.JournalBackButton
 import org.ukrida.root.ui.user.screens.groupmenus.journal.components.JournalDatePicker
 import org.ukrida.root.ui.user.screens.groupmenus.journal.components.JournalSaveButton
-import org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel.JournalEditorViewModel
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
+import org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel.JournalEditorViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,6 +38,8 @@ fun JournalEditorScreen(
     groupId: Int,
     journalId: Int?
 ) {
+
+    val viewModel: JournalEditorViewModel = viewModel()
 
     val title by viewModel.title.collectAsState()
     val content by viewModel.content.collectAsState()
