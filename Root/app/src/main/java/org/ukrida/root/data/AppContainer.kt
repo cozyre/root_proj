@@ -3,7 +3,6 @@ package org.ukrida.root.data
 import android.content.Context
 import org.ukrida.root.data.remote.RetrofitClient
 import org.ukrida.root.data.repository.AccountRepository
-import org.ukrida.root.data.repository.AdminRepository
 import org.ukrida.root.data.repository.AuthRepository
 import org.ukrida.root.data.repository.DevotionRepository
 import org.ukrida.root.data.repository.GalleryRepository
@@ -11,7 +10,6 @@ import org.ukrida.root.data.repository.GroupRepository
 import org.ukrida.root.data.repository.ItineraryRepository
 import org.ukrida.root.data.repository.JournalRepository
 import org.ukrida.root.data.repository.MemberRepository
-import org.ukrida.root.data.repository.ProfileRepository
 import org.ukrida.root.data.repository.SongRepository
 import org.ukrida.root.utils.SessionManager
 import kotlin.getValue
@@ -20,9 +18,9 @@ class AppContainer {
 
     private val api = RetrofitClient.instance
 
-    val adminRepository by lazy {
-        AdminRepository(api)
-    }
+//    val adminRepository by lazy {
+//        AdminRepository(api)
+//    }
 
     val groupRepository by lazy {
         GroupRepository(api)
@@ -56,9 +54,9 @@ class AppContainer {
         MemberRepository(api)
     }
 
-    val profileRepository by lazy {
-        ProfileRepository(api)
-    }
+//    val profileRepository by lazy {
+//        ProfileRepository(api)
+//    }
 
     val songRepository by lazy {
         SongRepository(api)

@@ -13,11 +13,8 @@ okhttp = "5.4.0"
 ui = "1.11.3"
 roomKtx = "2.8.4"
 material3 = "1.4.0"
-<<<<<<< HEAD
 runtime = "1.11.3"
 lifecycleViewmodelKtx = "2.9.4"
-=======
->>>>>>> parent of 8383887 (Merge branch 'dev' into Michael-AdminView)
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,12 +37,9 @@ okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor",
 androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
-<<<<<<< HEAD
+
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
-=======
->>>>>>> parent of 8383887 (Merge branch 'dev' into Michael-AdminView)
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

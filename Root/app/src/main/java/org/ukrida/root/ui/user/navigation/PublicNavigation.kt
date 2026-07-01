@@ -53,6 +53,9 @@ import org.ukrida.root.ui.user.screens.order.viewmodel.OrderViewModelFactory
 import org.ukrida.root.ui.user.screens.profile.screen.ProfileScreen
 import org.ukrida.root.ui.user.screens.profile.viewmodel.ProfileViewModel
 import org.ukrida.root.ui.user.screens.profile.viewmodel.ProfileViewModelFactory
+import org.ukrida.root.ui.user.screens.promisedland.viewmodel.PromisedLandViewModel
+import org.ukrida.root.ui.user.screens.promisedland.viewmodel.PromisedLandViewModelFactory
+import org.ukrida.root.ui.user.screens.profile.screen.ProfileScreen
 
 @Composable
 fun PublicNavigation(

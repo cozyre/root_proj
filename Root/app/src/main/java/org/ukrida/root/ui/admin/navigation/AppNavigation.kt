@@ -48,7 +48,6 @@ fun AppNavigation(
 
         composable(Screen.Dashboard.route) {
             DashboardScreen(
-                viewModel = viewModel,
                 onMenuClick = onMenuClick,
 
                 onApprovalClick = {
@@ -194,27 +193,27 @@ fun AppNavigation(
             )
         }
 
-        composable(
-            route = Screen.CreateTrip.route
-        ) {
-
-            val viewModel: NewTripViewModel = viewModel(
-                factory = NewTripViewModel.Factory
-            )
-
-            NewTripScreen(
-                onMenuClick = {
-                    onMenuClick
-                },
-
-                onBackClick = {
-                    navController.popBackStack()
-                },
-
-
-                viewModel = viewModel
-            )
-        }
+//        composable(
+//            route = Screen.CreateTrip.route
+//        ) {
+//
+//            val viewModel: NewTripViewModel = viewModel(
+//                factory = NewTripViewModel.Factory
+//            )
+//
+//            NewTripScreen(
+//                onMenuClick = {
+//                    onMenuClick
+//                },
+//
+//                onBackClick = {
+//                    navController.popBackStack()
+//                },
+//
+//
+//                viewModel = viewModel
+//            )
+//        }
         composable(
             route = Screen.NewItinerary.route
         ) {
