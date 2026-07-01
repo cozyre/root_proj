@@ -15,16 +15,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.ukrida.root.R
 import org.ukrida.root.ui.theme.*
-import org.ukrida.root.data.model.Group
+import org.ukrida.root.data.model.CompletedTrip
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material3.Icon
 import androidx.compose.ui.Alignment
 
 @Composable
 fun FinishedTripCard(
-    group: Group,
+    trip: CompletedTrip,
     onClick: () -> Unit = {}
 ) {
 
@@ -51,53 +51,48 @@ fun FinishedTripCard(
 
             // TITLE
             Text(
-                text = group.name,
+                text = trip.name,
                 style = MaterialTheme.typography.titleLarge,
                 color = H1Color
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // DESCRIPTION
+            // MENTOR / KOORDINATOR
             Text(
-                text = group.description ?: "-",
+                text = "Mentor: ${trip.mentorName} • Koordinator: ${trip.koordinatorName}",
                 style = MaterialTheme.typography.bodyLarge,
                 color = BodyColor
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // LOCATION (opsional tapi bagus ditampilkan)
-            if (!group.location.isNullOrBlank()) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+            // MEMBER COUNT
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
-                    Icon(
-                        imageVector = Icons.Outlined.LocationOn,
-                        contentDescription = null,
-                        tint = BodyColor,
-                        modifier = Modifier.size(18.dp)
-                    )
+                Icon(
+                    imageVector = Icons.Outlined.Group,
+                    contentDescription = null,
+                    tint = BodyColor,
+                    modifier = Modifier.size(18.dp)
+                )
 
-                    Spacer(
-                        modifier = Modifier.width(6.dp)
-                    )
+                Spacer(
+                    modifier = Modifier.width(6.dp)
+                )
 
-                    Text(
-                        text = group.location,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = BodyColor
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "${trip.memberCount} member",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = BodyColor
+                )
             }
 
-            // DURATION
-            val start = group.startDate ?: "-"
-            val end = group.endDate ?: "-"
+            Spacer(modifier = Modifier.height(8.dp))
 
+            // DURATION
             Box(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -121,7 +116,7 @@ fun FinishedTripCard(
                     )
 
                     Text(
-                        text = "${group.startDate ?: "-"} - ${group.endDate ?: "-"}",
+                        text = "${trip.startDate ?: "-"} - ${trip.endDate ?: "-"}",
                         style = MaterialTheme.typography.titleMedium,
                         color = H1Color
                     )
