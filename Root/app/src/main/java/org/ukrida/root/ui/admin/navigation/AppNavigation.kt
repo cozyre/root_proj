@@ -4,22 +4,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
-import org.ukrida.root.data.AppContainer
 import org.ukrida.root.ui.admin.screens.dashboard.screen.DashboardScreen
 import org.ukrida.root.ui.admin.screens.approval.screen.ApprovalScreen
-import org.ukrida.root.ui.admin.screens.dashboard.viewmodel.DashboardViewModel
-import org.ukrida.root.ui.admin.screens.dashboard.viewmodel.DashboardViewModelFactory
 import org.ukrida.root.ui.admin.screens.finished.screen.FinishedTripDetailScreen
 import org.ukrida.root.ui.admin.screens.hymn.screen.HymnForHimScreen
 import org.ukrida.root.ui.admin.screens.newtrip.screen.NewTripScreen
 import org.ukrida.root.ui.admin.screens.finished.screen.FinishedTripScreen
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.FinishedTripDetailViewModel
+import org.ukrida.root.ui.admin.screens.hymn.screen.AddSongScreen
+import org.ukrida.root.ui.admin.screens.hymn.screen.EditSongScreen
+import org.ukrida.root.ui.admin.screens.hymn.viewmodel.EditSongViewModel
 import org.ukrida.root.ui.admin.screens.ongoing.screen.EditDailyBreadScreen
 import org.ukrida.root.ui.admin.screens.ongoing.screen.EditItineraryScreen
 import org.ukrida.root.ui.admin.screens.ongoing.screen.EditSongsScreen
@@ -36,8 +35,7 @@ import org.ukrida.root.ui.admin.screens.trip.screen.TripScreen
 fun AppNavigation(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    onMenuClick: () -> Unit,
-    appContainer: AppContainer
+    onMenuClick: () -> Unit
 ) {
 
     NavHost(
@@ -47,20 +45,21 @@ fun AppNavigation(
     ) {
 
         composable(Screen.Dashboard.route) {
-            val factory = remember {
-                DashboardViewModelFactory(
-                    appContainer.adminRepository,
-                    appContainer.groupRepository
-                )
-            }
-
-            val viewModel: DashboardViewModel = viewModel(factory = factory)
             DashboardScreen(
                 viewModel = viewModel,
                 onMenuClick = onMenuClick,
-                onApprovalClick = { navController.navigate(Screen.Approval.route) },
-                onSongClick = { navController.navigate(Screen.HymnForHim.route) },
-                onRecentClick = { navController.navigate(Screen.OngoingTrip.route) }
+
+                onApprovalClick = {
+                    navController.navigate(Screen.Approval.route)
+                },
+
+                onSongClick = {
+                    navController.navigate(Screen.HymnForHim.route)
+                },
+
+                onRecentClick = {
+                    navController.navigate(Screen.OngoingTrip.route)
+                }
             )
         }
 
@@ -69,7 +68,27 @@ fun AppNavigation(
         }
 
         composable(Screen.HymnForHim.route) {
-            HymnForHimScreen(onMenuClick = onMenuClick)
+            HymnForHimScreen(
+                onMenuClick = onMenuClick,
+                onCreateSongClick = {
+                navController.navigate(
+                    Screen.AddSong.route
+                )
+                },
+                onSongClick = { songId ->
+                    navController.navigate(
+                        "edit_song/$songId"
+                    )
+                }
+                )
+        }
+        composable(Screen.AddSong.route) {
+
+            AddSongScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         composable(Screen.OngoingTrip.route) {
@@ -198,6 +217,28 @@ fun AppNavigation(
             )
 
             FinishedTripDetailScreen(
+                navController = navController,
+                onMenuClick = onMenuClick,
+                viewModel = viewModel
+            )
+        }
+        composable(
+            route = Screen.EditSong.route,
+            arguments = listOf(
+                navArgument("songId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+
+            val songId =
+                backStackEntry.arguments?.getInt("songId") ?: 0
+
+            val viewModel: EditSongViewModel = viewModel(
+                factory = EditSongViewModel.factory(songId)
+            )
+
+            EditSongScreen(
                 navController = navController,
                 onMenuClick = onMenuClick,
                 viewModel = viewModel
