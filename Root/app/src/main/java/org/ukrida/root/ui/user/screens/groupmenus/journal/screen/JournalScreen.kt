@@ -37,10 +37,10 @@ import org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel.JournalViewM
 // 5. After Save, reload journal list.
 @Composable
 fun JournalScreen(
+    viewModel: JournalViewModel = viewModel(),
     navController: NavHostController,
     groupId: Int
 ) {
-    val viewModel: org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel.JournalViewModel = viewModel()
     val journals by viewModel.journals.collectAsState()
 
     var expanded by remember {
@@ -107,7 +107,7 @@ fun JournalScreen(
                         modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.Center
                     ) {
-                        _root_ide_package_.org.ukrida.root.ui.user.screens.groupmenus.journal.components.CreateJournalButton(
+                        CreateJournalButton(
                             onClick = {
                                 navController.navigate(
                                     PublicScreen.JournalEditor.createRoute(groupId)
@@ -131,7 +131,7 @@ fun JournalScreen(
                         )
                     } else {
                         journals.forEach { journal ->
-                            _root_ide_package_.org.ukrida.root.ui.user.screens.groupmenus.journal.components.JournalCard(
+                            JournalCard(
                                 journal = journal,
                                 onClick = {
                                     navController.navigate(

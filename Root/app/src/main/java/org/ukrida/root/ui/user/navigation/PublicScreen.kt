@@ -1,6 +1,12 @@
 package org.ukrida.root.ui.user.navigation
 
+/**
+ * Sealed class for all public navigation routes.
+ * Root-level routes: home, promised_land, history, group, profile
+ * Group-scoped routes: group/{groupId}/dashboard, group/{groupId}/hymn, etc.
+ */
 sealed class PublicScreen(val route: String) {
+    // Root-level destinations
     object Home : PublicScreen("home")
     object PromisedLand : PublicScreen("promised_land")
     object History : PublicScreen("history")
@@ -8,61 +14,55 @@ sealed class PublicScreen(val route: String) {
     object Profile : PublicScreen("profile")
 
     object HistoryDetail : PublicScreen("history_detail/{groupId}") {
-        fun createRoute(groupId: Int) =
-            "history_detail/$groupId"
+        fun createRoute(groupId: Int) = "history_detail/$groupId"
     }
-    object Order {
-        const val route = "order/{groupId}"
+
+    object Order : PublicScreen("order/{groupId}") {
         fun createRoute(groupId: Int) = "order/$groupId"
     }
-    object Dashboard {
-        const val route = "dashboard/{groupId}"
-        fun createRoute(groupId: Int) =
-            "dashboard/$groupId"
+
+    // Group-scoped routes (nested under group/{groupId}/)
+    object Dashboard : PublicScreen("group/{groupId}/dashboard") {
+        fun createRoute(groupId: Int) = "group/$groupId/dashboard"
     }
-    object Hymn : PublicScreen("hymn/{groupId}") {
-        fun createRoute(groupId: Int) = "hymn/$groupId"
+
+    object Itinerary : PublicScreen("group/{groupId}/itinerary") {
+        fun createRoute(groupId: Int) = "group/$groupId/itinerary"
     }
-    object HymnDetail : PublicScreen("hymn_detail/{groupId}/{songId}") {
-        fun createRoute(groupId: Int,songId: Int) = "hymn_detail/$groupId/$songId"
+
+    object Hymn : PublicScreen("group/{groupId}/hymn") {
+        fun createRoute(groupId: Int) = "group/$groupId/hymn"
     }
-    object Gallery : PublicScreen("gallery/{groupId}") {
-        fun createRoute(groupId: Int) = "gallery/$groupId"
+
+    object HymnDetail : PublicScreen("group/{groupId}/hymn_detail/{songId}") {
+        fun createRoute(groupId: Int, songId: Int) = "group/$groupId/hymn_detail/$songId"
     }
-    object Journal : PublicScreen("journal/{groupId}") {
-        fun createRoute(groupId: Int) =
-            "journal/$groupId"
+
+    object Gallery : PublicScreen("group/{groupId}/gallery") {
+        fun createRoute(groupId: Int) = "group/$groupId/gallery"
     }
-    object JournalEditor : PublicScreen("journal_editor/{groupId}/{journalId}") {
-        fun createRoute(
-            groupId: Int,
-            journalId: Int = -1
-        ) = "journal_editor/$groupId/$journalId"
+
+    object Journal : PublicScreen("group/{groupId}/journal") {
+        fun createRoute(groupId: Int) = "group/$groupId/journal"
     }
-    object Itinerary : PublicScreen("itinerary/{groupId}") {
-        fun createRoute(groupId: Int) =
-            "itinerary/$groupId"
+
+    object JournalEditor : PublicScreen("group/{groupId}/journal_editor/{journalId}") {
+        fun createRoute(groupId: Int, journalId: Int = -1) = "group/$groupId/journal_editor/$journalId"
     }
-    object DailyBread : PublicScreen("daily_bread/{groupId}") {
-        fun createRoute(groupId: Int) =
-            "daily_bread/$groupId"
+
+    object DailyBread : PublicScreen("group/{groupId}/daily_bread") {
+        fun createRoute(groupId: Int) = "group/$groupId/daily_bread"
     }
-    object DailyBreadDetail :
-        PublicScreen("daily_bread_detail/{groupId}/{date}") {
-        fun createRoute(
-            groupId: Int,
-            date: String
-        ) = "daily_bread_detail/$groupId/$date"
+
+    object DailyBreadDetail : PublicScreen("group/{groupId}/daily_bread_detail/{date}") {
+        fun createRoute(groupId: Int, date: String) = "group/$groupId/daily_bread_detail/$date"
     }
-    object Members : PublicScreen("members/{groupId}") {
-        fun createRoute(groupId: Int) =
-            "members/$groupId"
+
+    object Members : PublicScreen("group/{groupId}/members") {
+        fun createRoute(groupId: Int) = "group/$groupId/members"
     }
-    object MemberDetail :
-        PublicScreen("member_detail/{groupId}/{userId}") {
-        fun createRoute(
-            groupId: Int,
-            userId: Int
-        ) = "member_detail/$groupId/$userId"
+
+    object MemberDetail : PublicScreen("group/{groupId}/member_detail/{userId}") {
+        fun createRoute(groupId: Int, userId: Int) = "group/$groupId/member_detail/$userId"
     }
 }

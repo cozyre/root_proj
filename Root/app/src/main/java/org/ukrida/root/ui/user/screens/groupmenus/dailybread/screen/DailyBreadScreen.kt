@@ -30,10 +30,10 @@ import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBrea
 
 @Composable
 fun DailyBreadScreen(
+    viewModel: DailyBreadViewModel = viewModel(),
     navController: NavHostController,
     groupId: Int
 ) {
-    val viewModel: DailyBreadViewModel = viewModel()
     val devotions by viewModel.devotions.collectAsState()
     var expanded by remember {
         mutableStateOf(false)

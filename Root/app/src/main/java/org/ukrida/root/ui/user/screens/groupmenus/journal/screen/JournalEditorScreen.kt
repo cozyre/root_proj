@@ -33,12 +33,11 @@ import androidx.compose.material3.rememberDatePickerState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JournalEditorScreen(
+    viewModel: JournalEditorViewModel = viewModel(),
     navController: NavHostController,
     groupId: Int,
     journalId: Int?
 ) {
-
-    val viewModel: org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel.JournalEditorViewModel = viewModel()
 
     val title by viewModel.title.collectAsState()
     val content by viewModel.content.collectAsState()
@@ -81,13 +80,13 @@ fun JournalEditorScreen(
                 Column(
                     modifier = Modifier.padding(horizontal = 20.dp)
                 ) {
-                    _root_ide_package_.org.ukrida.root.ui.user.screens.groupmenus.journal.components.JournalBackButton(
+                    JournalBackButton(
                         onBackClick = {
                             navController.popBackStack()
                         }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    _root_ide_package_.org.ukrida.root.ui.user.screens.groupmenus.journal.components.CustomJournalField(
+                    CustomJournalField(
                         label = "Title",
                         value = title,
                         placeholder = "Enter journal title",
@@ -97,14 +96,14 @@ fun JournalEditorScreen(
                         }
                     )
                     Spacer(modifier = Modifier.height(20.dp))
-                    _root_ide_package_.org.ukrida.root.ui.user.screens.groupmenus.journal.components.JournalDatePicker(
+                    JournalDatePicker(
                         date = journalDate,
                         onClick = {
                             showDatePicker = true
                         }
                     )
                     Spacer(modifier = Modifier.height(20.dp))
-                    _root_ide_package_.org.ukrida.root.ui.user.screens.groupmenus.journal.components.CustomJournalField(
+                    CustomJournalField(
                         label = "Content",
                         value = content,
                         placeholder = "Write your journal...",
@@ -115,7 +114,7 @@ fun JournalEditorScreen(
                         }
                     )
                     Spacer(modifier = Modifier.height(32.dp))
-                    _root_ide_package_.org.ukrida.root.ui.user.screens.groupmenus.journal.components.JournalSaveButton(
+                    JournalSaveButton(
                         isEditMode = isEditMode,
                         onClick = {
                             val success = viewModel.saveJournal()
