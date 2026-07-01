@@ -54,7 +54,7 @@ fun HistoryDetailScreen(
                 .padding(horizontal = 20.dp)
         ) {
             group?.let {
-                HistoryHeader(group = it)
+                HistoryHeader(group = it, navController)
                 Spacer(Modifier.height(30.dp))
                 GroupMemberSection(
                     members = members,

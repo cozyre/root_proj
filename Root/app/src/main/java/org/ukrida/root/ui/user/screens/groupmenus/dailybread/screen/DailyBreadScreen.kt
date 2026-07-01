@@ -30,36 +30,17 @@ import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBrea
 
 @Composable
 fun DailyBreadScreen(
-    viewModel: DailyBreadViewModel = viewModel(),
+    viewModel: DailyBreadViewModel ,
     navController: NavHostController,
     groupId: Int
 ) {
     val devotions by viewModel.devotions.collectAsState()
-    var expanded by remember {
-        mutableStateOf(false)
-    }
+
     LaunchedEffect(groupId) {
         viewModel.loadDevotions(groupId)
     }
     Scaffold(
         containerColor = Color(0xFF2A2522),
-        bottomBar = {
-            PublicBottomNavigation(
-                currentDestination = PublicDestination.GROUP,
-                onNavigate = { destination ->
-                    when(destination){
-                        PublicDestination.HOME ->
-                            navController.navigate(PublicScreen.Home.route)
-                        PublicDestination.PROMISED_LAND ->
-                            navController.navigate(PublicScreen.PromisedLand.route)
-                        PublicDestination.GROUP ->
-                            navController.popBackStack()
-                        PublicDestination.PROFILE ->
-                            navController.navigate(PublicScreen.Profile.route)
-                    }
-                }
-            )
-        }
     ) { padding ->
         Column(
             modifier = Modifier
@@ -67,13 +48,6 @@ fun DailyBreadScreen(
                 .padding(padding)
                 .background(Color(0xFF2A2522))
         ) {
-            DashboardTopBar(
-                title = "DAILY BREAD",
-                expanded = expanded,
-                onExpandClick = {
-                    expanded = !expanded
-                }
-            )
             Column(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -122,68 +96,6 @@ fun DailyBreadScreen(
                     )
                 }
             }
-        }
-        AnimatedVisibility(
-            visible = expanded,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = .4f))
-                    .clickable(
-                        indication = null,
-                        interactionSource = remember {
-                            MutableInteractionSource()
-                        }
-                    ) {
-                        expanded = false
-                    }
-            )
-        }
-        if (expanded) {
-            DashboardMenu(
-                onDashboardClick = {
-                    expanded = false
-                    navController.navigate(
-                        PublicScreen.Dashboard.createRoute(groupId)
-                    )
-                },
-                onItineraryClick = {
-                    expanded = false
-                    navController.navigate(
-                        PublicScreen.Itinerary.createRoute(groupId)
-                    )
-                },
-                onHymnClick = {
-                    expanded = false
-                    navController.navigate(
-                        PublicScreen.Hymn.createRoute(groupId)
-                    )
-                },
-                onDailyBreadClick = {
-                    expanded = false
-                },
-                onJournalClick = {
-                    expanded = false
-                    navController.navigate(
-                        PublicScreen.Journal.createRoute(groupId)
-                    )
-                },
-                onGalleryClick = {
-                    expanded = false
-                    navController.navigate(
-                        PublicScreen.Gallery.createRoute(groupId)
-                    )
-                },
-                onMembersClick = {
-                    expanded = false
-                    navController.navigate(
-                        PublicScreen.Members.createRoute(groupId)
-                    )
-                }
-            )
         }
     }
 }

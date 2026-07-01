@@ -1,23 +1,24 @@
-package org.ukrida.root.ui.user.screens.groupmenus.dashboard.viewmodel
+package org.ukrida.root.ui.user.screens.historydetail.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.ukrida.root.data.repository.AccountRepository
 import org.ukrida.root.data.repository.GalleryRepository
-import org.ukrida.root.data.repository.GroupRepository
-import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBreadViewModel
+import org.ukrida.root.data.repository.MemberRepository
 
-class DashboardViewModelFactory(
+class HistoryDetailViewModelFactory(
     private val accountRepository: AccountRepository,
-    private val galleryRepository: GalleryRepository
-) : ViewModelProvider.Factory {
+    private val galleryRepository: GalleryRepository,
+    private val memberRepository: MemberRepository
+) : ViewModelProvider.Factory{
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
 
-        if (modelClass.isAssignableFrom(DashboardViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(HistoryDetailViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return DashboardViewModel(
+            return HistoryDetailViewModel(
                 accountRepository,
-                galleryRepository
+                galleryRepository,
+                memberRepository
             ) as T
         }
 

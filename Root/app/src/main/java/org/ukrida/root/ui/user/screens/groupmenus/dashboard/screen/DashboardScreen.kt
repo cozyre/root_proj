@@ -34,36 +34,18 @@ import org.ukrida.root.ui.user.screens.groupmenus.dashboard.viewmodel.DashboardV
 
 @Composable
 fun DashboardScreen(
-    viewModel: DashboardViewModel = viewModel(),
+    viewModel: DashboardViewModel,
     navController: NavHostController,
     groupId: Int
 ) {
     val group by viewModel.group.collectAsState()
+    val gallery by viewModel.gallery.collectAsState()
     LaunchedEffect(groupId) {
         viewModel.loadDashboard(groupId)
     }
-    var expanded by remember {
-        mutableStateOf(false)
-    }
+
     Scaffold(
         containerColor = Color(0xFF2A2522),
-        bottomBar = {
-            PublicBottomNavigation(
-                currentDestination = PublicDestination.GROUP,
-                onNavigate = { destination ->
-                    when(destination){
-                        PublicDestination.HOME ->
-                            navController.navigate(PublicScreen.Home.route)
-                        PublicDestination.PROMISED_LAND ->
-                            navController.navigate(PublicScreen.PromisedLand.route)
-                        PublicDestination.GROUP ->
-                            navController.popBackStack()
-                        PublicDestination.PROFILE ->
-                            navController.navigate(PublicScreen.Profile.route)
-                    }
-                }
-            )
-        }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -76,13 +58,6 @@ fun DashboardScreen(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
-                DashboardTopBar(
-                    title = "DASHBOARD",
-                    expanded = expanded,
-                    onExpandClick = {
-                        expanded = !expanded
-                    }
-                )
                 group?.let { group ->
                     DashboardHeader(group)
                     Spacer(modifier = Modifier.height(32.dp))
@@ -92,66 +67,6 @@ fun DashboardScreen(
                     Spacer(modifier = Modifier.height(32.dp))
                     MeetupSection(group)
                 }
-            }
-            if (expanded) {
-                AnimatedVisibility(
-                    visible = expanded,
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.Black.copy(alpha = 0.4f))
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() }
-                            ) {
-                                expanded = false
-                            }
-                    )
-                }
-                DashboardMenu(
-                    onDashboardClick = {
-                        expanded = false
-                    },
-                    onItineraryClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Itinerary.createRoute(groupId)
-                        )
-                    },
-                    onHymnClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Hymn.createRoute(groupId)
-                        )
-                    },
-                    onDailyBreadClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.DailyBread.createRoute(groupId)
-                        )
-                    },
-                    onJournalClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Journal.createRoute(groupId)
-                        )
-                    },
-                    onGalleryClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Gallery.createRoute(groupId)
-                        )
-                    },
-                    onMembersClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Members.createRoute(groupId)
-                        )
-                    }
-                )
             }
         }
     }

@@ -1,62 +1,60 @@
 package org.ukrida.root.ui.user.screens.groupmenus.dashboard.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import org.ukrida.root.data.model.Group
+import org.ukrida.root.data.model.GroupDetail
+import org.ukrida.root.data.model.GroupImage
+import org.ukrida.root.data.model.Member
+import org.ukrida.root.data.repository.AccountRepository
+import org.ukrida.root.data.repository.GalleryRepository
+import org.ukrida.root.data.repository.MemberRepository
+import org.ukrida.root.utils.Resource
 
-class DashboardViewModel : ViewModel() {
+class DashboardViewModel(
+    private val accountRepository: AccountRepository,
+    private val galleryRepository: GalleryRepository
+) : ViewModel() {
 
-    private val _group = MutableStateFlow<Group?>(null)
+    private val _group = MutableStateFlow<GroupDetail?>(null)
     val group = _group.asStateFlow()
 
+    private val _gallery = MutableStateFlow<List<GroupImage>>(emptyList())
+    val gallery = _gallery.asStateFlow()
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage = _errorMessage.asStateFlow()
+
     fun loadDashboard(groupId: Int) {
-        // TODO Backend Integration
-        // repository.getGroupDetail(groupId)
-        loadDummy(groupId)
-    }
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
 
-    private fun loadDummy(groupId: Int) {
+            // Fetch Group Details
+            val groupResult = accountRepository.getGroupDetail(groupId)
+            groupResult.onSuccess {
+                _group.value = it
+            }.onFailure {
+                _errorMessage.value = it.message ?: "Failed to load group details"
+            }
 
-        val groups = listOf(
+            // Fetch Gallery Images
+            when (val galleryRes = galleryRepository.listImages(groupId)) {
+                is Resource.Success -> _gallery.value = galleryRes.data.take(1)
+                is Resource.Error -> {
+                    if (_errorMessage.value == null) _errorMessage.value = galleryRes.message
+                }
+                else -> {}
+            }
 
-            Group(
-                id = 1,
-                name = "Holy Land",
-                description = "Experience the places where Jesus walked.",
-                location = "Jerusalem",
-                dresscode = "Casual",
-                status = "Completed",
-                startDate = "2026-10-01",
-                endDate = "2026-10-12",
-                meetupTime = "08:00",
-                meetupAddress = "Soekarno Hatta Airport",
-                joinDate = "2026-07-15",
-                statusJoin = "Approved"
-            ),
-
-            Group(
-                id = 2,
-                name = "Jordan Pilgrimage",
-                description = "Visit the Jordan River and Mount Nebo.",
-                location = "Jordan",
-                dresscode = "Casual",
-                status = "Completed",
-                startDate = "2026-11-05",
-                endDate = "2026-11-12",
-                meetupTime = "09:00",
-                meetupAddress = "Soekarno Hatta Airport",
-                joinDate = "2026-08-01",
-                statusJoin = "Approved"
-            )
-
-        )
-
-        _group.value =
-            groups.firstOrNull {
-                it.id == groupId
-            } ?: groups.first()
-
+            _isLoading.value = false
+        }
     }
 
 }

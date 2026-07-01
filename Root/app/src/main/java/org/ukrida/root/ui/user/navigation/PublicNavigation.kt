@@ -32,6 +32,7 @@ import org.ukrida.root.ui.user.screens.groupmenus.dailybread.screen.DailyBreadSc
 import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBreadViewModel
 import org.ukrida.root.ui.user.screens.groupmenus.dailybread.screen.DailyBreadDetailScreen
 import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBreadDetailViewModel
+import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBreadViewModelFactory
 import org.ukrida.root.ui.user.screens.home.screen.HomeScreen
 import org.ukrida.root.ui.user.screens.home.viewmodel.HomeViewModel
 import org.ukrida.root.ui.user.screens.home.viewmodel.HomeViewModelFactory
@@ -42,6 +43,8 @@ import org.ukrida.root.ui.user.screens.history.screen.HistoryScreen
 import org.ukrida.root.ui.user.screens.history.viewmodel.HistoryViewModel
 import org.ukrida.root.ui.user.screens.history.viewmodel.HistoryViewModelFactory
 import org.ukrida.root.ui.user.screens.historydetail.screen.HistoryDetailScreen
+import org.ukrida.root.ui.user.screens.historydetail.viewmodel.HistoryDetailViewModel
+import org.ukrida.root.ui.user.screens.historydetail.viewmodel.HistoryDetailViewModelFactory
 import org.ukrida.root.ui.user.screens.members.screen.MemberDetailScreen
 import org.ukrida.root.ui.user.screens.members.screen.MemberScreen
 import org.ukrida.root.ui.user.screens.members.viewmodel.MemberDetailViewModel
@@ -123,8 +126,16 @@ fun PublicNavigation(
             )
         ) {
             val groupId = it.arguments?.getInt("groupId") ?: 0
+            val factory = remember{
+                HistoryDetailViewModelFactory(
+                    appContainer.accountRepository,
+                    appContainer.galleryRepository,
+                    appContainer.memberRepository
+                )
+            }
+            val viewModel: HistoryDetailViewModel = viewModel(factory = factory)
             HistoryDetailScreen(
-                //add viewModel here
+                viewModel = viewModel,
                 navController = navController,
                 groupId = groupId
             )
@@ -170,7 +181,7 @@ fun PublicNavigation(
         ) {
             val groupId = it.arguments?.getInt("groupId") ?: 0
             val factory = remember {
-                DashboardViewModelFactory(appContainer.groupRepository)
+                DashboardViewModelFactory(appContainer.accountRepository, appContainer.galleryRepository)
             }
             val viewModel: DashboardViewModel = viewModel(factory = factory)
             DashboardScreen(
@@ -287,8 +298,10 @@ fun PublicNavigation(
             )
         ) {
             val groupId = it.arguments?.getInt("groupId") ?: 0
-            // TODO: Create DailyBreadViewModelFactory if not exists
-            val viewModel: DailyBreadViewModel = viewModel()
+            val factory = remember{
+                DailyBreadViewModelFactory(appContainer.devotionRepository)
+            }
+            val viewModel: DailyBreadViewModel = viewModel(factory = factory)
             DailyBreadScreen(
                 viewModel = viewModel,
                 navController = navController,
