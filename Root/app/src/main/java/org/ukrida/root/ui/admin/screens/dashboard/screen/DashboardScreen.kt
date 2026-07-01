@@ -12,41 +12,32 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.ukrida.root.data.AppContainer
 import org.ukrida.root.ui.admin.components.PriceTripCard
 import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.components.ApprovalCard
 import org.ukrida.root.ui.admin.screens.dashboard.viewmodel.DashboardViewModel
-import org.ukrida.root.ui.admin.screens.dashboard.viewmodel.DashboardViewModelFactory
 import org.ukrida.root.ui.theme.BackgroundDark
 import org.ukrida.root.ui.theme.BodyColor
 import org.ukrida.root.ui.theme.DrawerBackground
 import org.ukrida.root.ui.theme.H1Color
 import org.ukrida.root.ui.theme.MainButton
 import org.ukrida.root.ui.theme.TitleColor
-import org.ukrida.root.utils.Resource
 
 @Composable
 fun DashboardScreen(
-    viewModel: DashboardViewModel = viewModel(),
     onMenuClick: () -> Unit,
     onApprovalClick: () -> Unit,
     onRecentClick: () -> Unit,
     onSongClick: () -> Unit,
+    viewModel: DashboardViewModel = viewModel()
 ) {
-    val approvalsState by viewModel.pendingApprovals.collectAsState()
-    val latestTourState by viewModel.latestTour.collectAsState()
-
-    val approvals = (approvalsState as? Resource.Success)?.data
-    val latestTour = (latestTourState as? Resource.Success)?.data
+    val approvals = viewModel.approvals
+    val latestTour = viewModel.latestTour
 
     Column(
         modifier = Modifier
@@ -109,14 +100,13 @@ fun DashboardScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                approvals?.take(3)?.forEach { approval ->
+                approvals.forEach { approval ->
                     ApprovalCard(
-                        userName = approval.fullName,
+                        userName = approval.userName,
                         groupName = approval.groupName
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End) {

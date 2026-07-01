@@ -1,7 +1,6 @@
 package org.ukrida.root.data.model
 
 import com.google.gson.annotations.SerializedName
-
 data class Group(
     val id: Int,
     val name: String,

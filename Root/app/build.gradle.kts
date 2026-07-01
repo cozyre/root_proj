@@ -54,7 +54,18 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.material3)
+<<<<<<< HEAD
+<<<<<<< HEAD
     implementation(libs.androidx.compose.runtime)
+    implementation("io.coil-kt:coil-compose:2.7.0")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.activity:activity-compose:1.9.0") // Or your project's current stable version
+
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+=======
+>>>>>>> parent of 8383887 (Merge branch 'dev' into Michael-AdminView)
+=======
+>>>>>>> parent of 8383887 (Merge branch 'dev' into Michael-AdminView)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
