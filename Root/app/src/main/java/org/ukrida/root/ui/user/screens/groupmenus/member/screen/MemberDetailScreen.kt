@@ -1,4 +1,4 @@
-package org.ukrida.root.ui.user.screens.members.screen
+package org.ukrida.root.ui.user.screens.groupmenus.member.screen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -9,32 +9,31 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import org.ukrida.root.ui.user.navigation.PublicScreen
-import org.ukrida.root.ui.user.components.DashboardMenu
-import org.ukrida.root.ui.user.components.DashboardTopBar
-import org.ukrida.root.ui.user.screens.members.components.MemberBackButton
-import org.ukrida.root.ui.user.screens.members.components.MemberDetailHeader
-import org.ukrida.root.ui.user.screens.members.components.MemberInfoItem
-import org.ukrida.root.ui.user.screens.members.viewmodel.MemberDetailViewModel
+import org.ukrida.root.ui.user.screens.groupmenus.member.components.MemberBackButton
+import org.ukrida.root.ui.user.screens.groupmenus.member.components.MemberDetailHeader
+import org.ukrida.root.ui.user.screens.groupmenus.member.components.MemberInfoItem
+import org.ukrida.root.ui.user.screens.groupmenus.member.viewmodel.MemberViewModel
+import org.ukrida.root.utils.Resource
 
 @Composable
 fun MemberDetailScreen(
+    viewModel: MemberViewModel,
     navController: NavHostController,
     groupId: Int,
     userId: Int
 ) {
-    val viewModel: MemberDetailViewModel = viewModel()
-    val member by viewModel.member.collectAsState()
-    var expanded by remember {
-        mutableStateOf(false)
-    }
+    val memberState by viewModel.member.collectAsState()
+
     LaunchedEffect(userId) {
         viewModel.loadMember(
             userId = userId,
@@ -50,126 +49,91 @@ fun MemberDetailScreen(
                 .background(Color(0xFF2A2522))
                 .padding(padding)
         ) {
-            member?.let { member ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    DashboardTopBar(
-                        title = "MEMBER",
-                        expanded = expanded,
-                        onExpandClick = {
-                            expanded = !expanded
-                        }
-                    )
-                    MemberBackButton(
-                        onBackClick = {
-                            navController.popBackStack()
-                        }
-                    )
-                    MemberDetailHeader(
-                        member = member
-                    )
-                    Spacer(
-                        modifier = Modifier.height(32.dp)
-                    )
-                    Column(
-                        modifier = Modifier.padding(horizontal = 20.dp)
+            when (val state = memberState) {
+                is Resource.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
                     ) {
-                        MemberInfoItem(
-                            label = "EMAIL",
-                            value = member.email ?: "-"
-                        )
-                        MemberInfoItem(
-                            label = "PHONE",
-                            value = member.phone ?: "-"
-                        )
-                        MemberInfoItem(
-                            label = "ROLE",
-                            value = member.role
-                        )
-                        MemberInfoItem(
-                            label = "STATUS",
-                            value = member.statusJoin
-                        )
-                        MemberInfoItem(
-                            label = "JOIN DATE",
-                            value = member.joinDate
-                        )
-                        MemberInfoItem(
-                            label = "BIO",
-                            value = "No bio available."
-                        )
-                        // TODO Backend Integration
-                        // Replace BIO with member.bio when backend provides it.
-                        Spacer(
-                            modifier = Modifier.height(32.dp)
+                        CircularProgressIndicator(color = Color(0xFFE8D8C9))
+                    }
+                }
+                is Resource.Success -> {
+                    val member = state.data
+                    if (member != null) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                        ) {
+                            MemberBackButton(
+                                onBackClick = {
+                                    navController.popBackStack()
+                                }
+                            )
+                            MemberDetailHeader(
+                                member = member
+                            )
+                            Spacer(
+                                modifier = Modifier.height(32.dp)
+                            )
+                            Column(
+                                modifier = Modifier.padding(horizontal = 20.dp)
+                            ) {
+                                MemberInfoItem(
+                                    label = "EMAIL",
+                                    value = member.email ?: "-"
+                                )
+                                MemberInfoItem(
+                                    label = "PHONE",
+                                    value = member.phone ?: "-"
+                                )
+                                MemberInfoItem(
+                                    label = "ROLE",
+                                    value = member.role
+                                )
+                                MemberInfoItem(
+                                    label = "STATUS",
+                                    value = member.statusJoin
+                                )
+                                MemberInfoItem(
+                                    label = "JOIN DATE",
+                                    value = member.joinDate
+                                )
+                                MemberInfoItem(
+                                    label = "BIO",
+                                    value = member.bio ?: "-"
+                                )
+                                Spacer(
+                                    modifier = Modifier.height(32.dp)
+                                )
+                            }
+                        }
+                    } else {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Member not found",
+                                color = Color.White
+                            )
+                        }
+                    }
+                }
+                is Resource.Error -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = state.message,
+                            color = Color.Red,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(16.dp)
                         )
                     }
                 }
-            }
-            AnimatedVisibility(
-                visible = expanded,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.4f))
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember {
-                                MutableInteractionSource()
-                            }
-                        ) {
-                            expanded = false
-                        }
-                )
-            }
-            if (expanded) {
-                DashboardMenu(
-                    onDashboardClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Dashboard.createRoute(groupId)
-                        )
-                    },
-                    onItineraryClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Itinerary.createRoute(groupId)
-                        )
-                    },
-                    onHymnClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Hymn.createRoute(groupId)
-                        )
-                    },
-                    onDailyBreadClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.DailyBread.createRoute(groupId)
-                        )
-                    },
-                    onJournalClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Journal.createRoute(groupId)
-                        )
-                    },
-                    onGalleryClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Gallery.createRoute(groupId)
-                        )
-                    },
-                    onMembersClick = {
-                        expanded = false
-                    }
-                )
             }
         }
     }

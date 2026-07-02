@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,35 +24,32 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import org.ukrida.root.ui.user.navigation.PublicScreen
 import org.ukrida.root.ui.user.components.DashboardMenu
 import org.ukrida.root.ui.user.components.DashboardTopBar
 import org.ukrida.root.ui.user.screens.groupmenus.hymn.components.HymnBackButton
 import org.ukrida.root.ui.user.screens.groupmenus.hymn.components.HymnLyricsSection
-import org.ukrida.root.ui.user.screens.groupmenus.hymn.viewmodel.HymnDetailViewModel
+import org.ukrida.root.ui.user.screens.groupmenus.hymn.viewmodel.HymnViewModel
 import org.ukrida.root.ui.user.screens.groupmenus.hymn.components.HymnDetailHeader
+import org.ukrida.root.utils.Resource
 
 @Composable
 fun HymnDetailScreen(
+    viewModel: HymnViewModel,
     navController: NavHostController,
-    groupId: Int,
     songId: Int
 ) {
-    val viewModel: HymnDetailViewModel = viewModel()
-    val song by viewModel.song.collectAsState()
-    var expanded by remember {
-        mutableStateOf(false)
-    }
-    // TODO Backend Integration
-    // Load song detail from repository using songId.
+    val uiState by viewModel.uiState.collectAsState()
+
     LaunchedEffect(songId) {
-        viewModel.loadSong(songId)
+        viewModel.loadSongDetail(songId)
     }
+
     Scaffold(
         containerColor = Color(0xFF2A2522)
     ) { padding ->
@@ -60,100 +59,45 @@ fun HymnDetailScreen(
                 .background(Color(0xFF2A2522))
                 .padding(padding)
         ) {
-            song?.let {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    DashboardTopBar(
-                        title = "HYMN FOR HIM",
-                        expanded = expanded,
-                        onExpandClick = {
-                            expanded = !expanded
-                        }
-                    )
-                    Column(
-                        modifier = Modifier.padding(horizontal = 20.dp)
-                    ) {
-                        HymnBackButton(
-                            onBackClick = {
-                                navController.popBackStack()
-                            }
-                        )
-                        HymnDetailHeader(
-                            song = it
-                        )
-                        Spacer(
-                            modifier = Modifier.height(20.dp)
-                        )
-                        HymnLyricsSection(
-                            song = it
-                        )
+            when (val songRes = uiState.song) {
+                is Resource.Loading -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = Color.White)
                     }
                 }
-                if (expanded) {
-                    AnimatedVisibility(
-                        visible = expanded,
-                        enter = fadeIn(),
-                        exit = fadeOut()
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.Black.copy(alpha = 0.4f))
-                                .clickable(
-                                    indication = null,
-                                    interactionSource = remember { MutableInteractionSource() }
-                                ) {
-                                    expanded = false
-                                }
-                        )
+                is Resource.Error -> {
+                    Column {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(text = songRes.message, color = Color.White)
+                        }
                     }
-                    DashboardMenu(
-                        onDashboardClick = {
-                            expanded = false
-                            navController.navigate(
-                                PublicScreen.Dashboard.createRoute(groupId)
+                }
+                is Resource.Success -> {
+                    val song = songRes.data
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(horizontal = 20.dp)
+                        ) {
+                            HymnBackButton(
+                                onBackClick = {
+                                    navController.popBackStack()
+                                }
                             )
-                        },
-                        onItineraryClick = {
-                            expanded = false
-                            navController.navigate(
-                                PublicScreen.Itinerary.createRoute(groupId)
+                            HymnDetailHeader(
+                                song = song
                             )
-                        },
-                        onHymnClick = {
-                            expanded = false
-                            navController.navigate(
-                                PublicScreen.Hymn.createRoute(groupId)
+                            Spacer(
+                                modifier = Modifier.height(20.dp)
                             )
-                        },
-                        onDailyBreadClick = {
-                            expanded = false
-                            navController.navigate(
-                                PublicScreen.DailyBread.createRoute(groupId)
-                            )
-                        },
-                        onJournalClick = {
-                            expanded = false
-                            navController.navigate(
-                                PublicScreen.Journal.createRoute(groupId)
-                            )
-                        },
-                        onGalleryClick = {
-                            expanded = false
-                            navController.navigate(
-                                PublicScreen.Gallery.createRoute(groupId)
-                            )
-                        },
-                        onMembersClick = {
-                            expanded = false
-                            navController.navigate(
-                                PublicScreen.Members.createRoute(groupId)
+                            HymnLyricsSection(
+                                song = song
                             )
                         }
-                    )
+                    }
                 }
             }
         }

@@ -14,13 +14,13 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun JournalSaveButton(
+    modifier: Modifier = Modifier,
     isEditMode: Boolean,
     onClick: () -> Unit
 ) {
     Button(
         onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .height(54.dp),
         shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(
@@ -28,7 +28,7 @@ fun JournalSaveButton(
         )
     ) {
         Text(
-            text = if (isEditMode) "UPDATE JOURNAL" else "SAVE JOURNAL",
+            text = if (isEditMode) "UPDATE" else "SAVE",
             style = MaterialTheme.typography.titleMedium,
             color = Color.White
         )

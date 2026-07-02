@@ -1,97 +1,45 @@
 package org.ukrida.root.ui.user.screens.groupmenus.gallery.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import org.ukrida.root.data.model.GroupImage
+import org.ukrida.root.data.repository.GalleryRepository
+import org.ukrida.root.utils.Resource
+import java.io.File
 
-class GalleryViewModel : ViewModel() {
+class GalleryViewModel(
+    private val galleryRepository: GalleryRepository
+) : ViewModel() {
 
-    private val _images = MutableStateFlow<List<GroupImage>>(emptyList())
-    val images = _images.asStateFlow()
+    private val _images = MutableStateFlow<Resource<List<GroupImage>>>(Resource.Loading())
+    val images: StateFlow<Resource<List<GroupImage>>> = _images.asStateFlow()
+
+    private val _uploadStatus = MutableStateFlow<Resource<GroupImage>?>(null)
+    val uploadStatus: StateFlow<Resource<GroupImage>?> = _uploadStatus.asStateFlow()
+
     fun loadGallery(groupId: Int) {
-        // TODO Backend Integration
-        // Replace loadDummy() with:
-        // repository.listImages(groupId)
-        // Then update _images with API response.
-        loadDummy(groupId)
+        viewModelScope.launch {
+            _images.value = Resource.Loading()
+            _images.value = galleryRepository.listImages(groupId)
+        }
     }
 
-    private fun loadDummy(groupId: Int) {
+    fun uploadImage(groupId: Int, imageFile: File, caption: String? = null) {
+        viewModelScope.launch {
+            _uploadStatus.value = Resource.Loading()
+            val result = galleryRepository.uploadImage(groupId, imageFile, caption)
+            _uploadStatus.value = result
+            if (result is Resource.Success) {
+                loadGallery(groupId)
+            }
+        }
+    }
 
-        _images.value = listOf(
-            GroupImage(
-                id = 1,
-                groupId = groupId,
-                imageUrl = "",
-                caption = "Gallery Image 1",
-                imageType = "image",
-                sortOrder = 1,
-                createdAt = "2026-06-29"
-            ),
-            GroupImage(
-                id = 2,
-                groupId = groupId,
-                imageUrl = "",
-                caption = "Gallery Image 2",
-                imageType = "image",
-                sortOrder = 2,
-                createdAt = "2026-06-29"
-            ),
-            GroupImage(
-                id = 3,
-                groupId = groupId,
-                imageUrl = "",
-                caption = "Gallery Image 3",
-                imageType = "image",
-                sortOrder = 3,
-                createdAt = "2026-06-29"
-            ),
-            GroupImage(
-                id = 4,
-                groupId = groupId,
-                imageUrl = "",
-                caption = "Gallery Image 4",
-                imageType = "image",
-                sortOrder = 4,
-                createdAt = "2026-06-29"
-            ),
-            GroupImage(
-                id = 5,
-                groupId = groupId,
-                imageUrl = "",
-                caption = "Gallery Image 5",
-                imageType = "image",
-                sortOrder = 5,
-                createdAt = "2026-06-29"
-            ),
-            GroupImage(
-                id = 6,
-                groupId = groupId,
-                imageUrl = "",
-                caption = "Gallery Image 6",
-                imageType = "image",
-                sortOrder = 6,
-                createdAt = "2026-06-29"
-            ),
-            GroupImage(
-                id = 7,
-                groupId = groupId,
-                imageUrl = "",
-                caption = "Gallery Image 7",
-                imageType = "image",
-                sortOrder = 7,
-                createdAt = "2026-06-29"
-            ),
-            GroupImage(
-                id = 8,
-                groupId = groupId,
-                imageUrl = "",
-                caption = "Gallery Image 8",
-                imageType = "image",
-                sortOrder = 8,
-                createdAt = "2026-06-29"
-            )
-        )
+    fun resetUploadStatus() {
+        _uploadStatus.value = null
     }
 }

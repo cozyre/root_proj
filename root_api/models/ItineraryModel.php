@@ -55,4 +55,151 @@ class ItineraryModel {
         $stmt->execute(['group_id' => $groupId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function createItem(
+        int $itineraryId,
+        string $startTime,
+        string $endTime,
+        string $type,
+        string $description
+    ): ?array {
+        try {
+            $stmt = $this->db->prepare(
+                "INSERT INTO itenary_items 
+                 (itenary_id, start_time, end_time, type, description)
+                 VALUES (:itenary_id, :start_time, :end_time, :type, :description)"
+            );
+            
+            $success = $stmt->execute([
+                'itenary_id' => $itineraryId,
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+                'type' => $type,
+                'description' => $description
+            ]);
+ 
+            if (!$success) {
+                error_log("Failed to insert itinerary item");
+                return null;
+            }
+ 
+            // Return newly created item
+            $id = (int) $this->db->lastInsertId();
+ 
+            return [
+                'id' => $id,
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+                'type' => $type,
+                'description' => $description
+            ];
+ 
+        } catch (Exception $e) {
+            error_log("Error in createItem: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    public function updateItem(
+        int $itemId,
+        string $startTime,
+        string $endTime,
+        string $type,
+        string $description
+    ): ?array {
+        try {
+            $stmt = $this->db->prepare(
+                "UPDATE itenary_items 
+                 SET start_time = :start_time, 
+                     end_time = :end_time, 
+                     type = :type, 
+                     description = :description
+                 WHERE id = :id"
+            );
+            
+            $success = $stmt->execute([
+                'id' => $itemId,
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+                'type' => $type,
+                'description' => $description
+            ]);
+ 
+            if (!$success) {
+                error_log("Failed to update itinerary item");
+                return null;
+            }
+ 
+            // Return updated item
+            return [
+                'id' => $itemId,
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+                'type' => $type,
+                'description' => $description
+            ];
+ 
+        } catch (Exception $e) {
+            error_log("Error in updateItem: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    public function deleteItem(int $itemId): bool {
+        try {
+            $stmt = $this->db->prepare(
+                "DELETE FROM itenary_items WHERE id = :id"
+            );
+            
+            $success = $stmt->execute(['id' => $itemId]);
+ 
+            if (!$success) {
+                error_log("Failed to delete itinerary item");
+                return false;
+            }
+ 
+            return true;
+ 
+        } catch (Exception $e) {
+            error_log("Error in deleteItem: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function itemExists(int $itemId): bool {
+        try {
+            $stmt = $this->db->prepare(
+                "SELECT id FROM itenary_items WHERE id = :id LIMIT 1"
+            );
+            
+            $stmt->execute(['id' => $itemId]);
+            
+            return $stmt->rowCount() > 0;
+ 
+        } catch (Exception $e) {
+            error_log("Error in itemExists: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getItemById(int $itemId): ?array {
+        try {
+            $stmt = $this->db->prepare(
+                "SELECT id, start_time, end_time, type, description
+                 FROM itenary_items
+                 WHERE id = :id
+                 LIMIT 1"
+            );
+            
+            $stmt->execute(['id' => $itemId]);
+            
+            $item = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            return $item ?: null;
+ 
+        } catch (Exception $e) {
+            error_log("Error in getItemById: " . $e->getMessage());
+            return null;
+        }
+    }
 }

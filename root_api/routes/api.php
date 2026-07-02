@@ -148,6 +148,8 @@ match (true) {
         => $adminCtrl->galleryRemoveImage(),
     $method === 'POST' && $route === 'admin/song/create'
         => $adminCtrl->songCreate(),
+    $method === 'POST' && $route === 'admin/song/removeFromGroup'
+    => $songCtrl->removeFromGroup(),
     $method === 'POST' && $route === 'admin/song/addToGroup'
         => $adminCtrl->songAddToGroup(),
     $method === 'POST' && $route === 'admin/devotion/create'
@@ -156,6 +158,14 @@ match (true) {
         => $adminCtrl->devotionUpdate(),
     $method === 'GET' && $route === 'admin/accounts/pending'
         => $adminCtrl->pendingAccounts(),
+    $method === 'GET' && $route === 'member/leaders'
+        => $memberCtrl->leaders(),
+    $method === 'POST' && $route === 'itinerary/createItem'
+        => $itineraryCtrl->createItem(),
+    $method === 'POST' && $route === 'itinerary/updateItem'
+        => $itineraryCtrl->updateItem(),
+    $method === 'POST' && $route === 'itinerary/deleteItem'
+        => $itineraryCtrl->deleteItem(),
 
 
     default => (function () use ($route, $method) {

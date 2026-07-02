@@ -1,73 +1,37 @@
 package org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import org.ukrida.root.data.model.Journal
+import org.ukrida.root.data.repository.JournalRepository
+import org.ukrida.root.utils.Resource
 
-class JournalViewModel : ViewModel() {
+class JournalViewModel(
+    private val journalRepository: JournalRepository
+) : ViewModel() {
 
-    private val _journals = MutableStateFlow<List<Journal>>(emptyList())
-    val journals = _journals.asStateFlow()
+    private val _uiState = MutableStateFlow(JournalUiState())
+    val uiState: StateFlow<JournalUiState> = _uiState.asStateFlow()
+
+    data class JournalUiState(
+        val journals: Resource<List<Journal>> = Resource.Loading(),
+        val actionResult: Resource<Unit>? = null
+    )
+
     fun loadJournals(groupId: Int) {
-        // TODO Backend Integration
-        // Replace loadDummy() with:
-        // repository.listJournals(groupId)
-        // Update _journals with API response.
-        loadDummy(groupId)
+        viewModelScope.launch {
+            _uiState.update { it.copy(journals = Resource.Loading()) }
+            val result = journalRepository.listJournals(groupId)
+            _uiState.update { it.copy(journals = result) }
+        }
     }
-    private fun loadDummy(groupId: Int) {
-        _journals.value = listOf(
-            Journal(
-                id = 1,
-                userId = 1,
-                groupId = groupId,
-                title = "Arrival in Jerusalem",
-                content = "Today I arrived in Jerusalem and visited the Old City. It was a wonderful experience.",
-                journalDate = "2026-10-01",
-                createdAt = "",
-                updatedAt = ""
-            ),
-            Journal(
-                id = 2,
-                userId = 1,
-                groupId = groupId,
-                title = "Mount of Olives",
-                content = "Visited the Mount of Olives and enjoyed the beautiful scenery.",
-                journalDate = "2026-10-02",
-                createdAt = "",
-                updatedAt = ""
-            ),
-            Journal(
-                id = 3,
-                userId = 1,
-                groupId = groupId,
-                title = "Jordan River",
-                content = "Today we went to the Jordan River for the baptism remembrance.",
-                journalDate = "2026-10-03",
-                createdAt = "",
-                updatedAt = ""
-            ),
-            Journal(
-                id = 4,
-                userId = 1,
-                groupId = groupId,
-                title = "Bethlehem",
-                content = "Visited Bethlehem and the Church of the Nativity.",
-                journalDate = "2026-10-04",
-                createdAt = "",
-                updatedAt = ""
-            ),
-            Journal(
-                id = 5,
-                userId = 1,
-                groupId = groupId,
-                title = "Sea of Galilee",
-                content = "A peaceful day around the Sea of Galilee.",
-                journalDate = "2026-10-05",
-                createdAt = "",
-                updatedAt = ""
-            )
-        )
+
+    fun resetActionResult() {
+        _uiState.update { it.copy(actionResult = null) }
     }
 }

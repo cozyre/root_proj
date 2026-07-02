@@ -1,92 +1,154 @@
 package org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import org.ukrida.root.data.repository.JournalRepository
+import org.ukrida.root.utils.Resource
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
-class JournalEditorViewModel : ViewModel() {
-    // TODO Backend Integration
-    // private val repository: JournalRepository
-    private val _title = MutableStateFlow("")
-    val title = _title.asStateFlow()
-    private val _content = MutableStateFlow("")
-    val content = _content.asStateFlow()
-    private val _journalDate = MutableStateFlow("")
-    val journalDate = _journalDate.asStateFlow()
-    private val _isEditMode = MutableStateFlow(false)
-    val isEditMode = _isEditMode.asStateFlow()
+class JournalEditorViewModel(
+    private val journalRepository: JournalRepository
+) : ViewModel() {
+
+    private val _uiState = MutableStateFlow(JournalEditorUiState())
+    val uiState: StateFlow<JournalEditorUiState> = _uiState.asStateFlow()
+
     private var journalId: Int? = null
-    private val _titleError = MutableStateFlow<String?>(null)
-    val titleError = _titleError.asStateFlow()
 
-    private val _contentError = MutableStateFlow<String?>(null)
-    val contentError = _contentError.asStateFlow()
-    fun loadJournal(journalId: Int?) {
-        if (journalId == null) {
-            // Create Mode
-            _isEditMode.value = false
-            clearForm()
-            return
+    data class JournalEditorUiState(
+        val title: String = "",
+        val content: String = "",
+        val journalDate: String = LocalDate.now().toString(),
+        val isEditMode: Boolean = false,
+        val saveResult: Resource<Unit>? = null,
+        val titleError: String? = null,
+        val contentError: String? = null
+    )
+
+    fun loadJournal(groupId: Int, journalId: Int?) {
+        // Handle -1 (default from navigation for new journal) as null
+        val effectiveId = if (journalId == -1 || journalId == null) null else journalId
+        this.journalId = effectiveId
+        
+        viewModelScope.launch {
+            if (effectiveId == null) {
+                _uiState.update {
+                    it.copy(
+                        isEditMode = false,
+                        title = "",
+                        content = "",
+                        journalDate = LocalDate.now().toString(),
+                        titleError = null,
+                        contentError = null,
+                        saveResult = null
+                    )
+                }
+            } else {
+                _uiState.update { it.copy(isEditMode = true, saveResult = null) }
+                val result = journalRepository.listJournals(groupId)
+                if (result is Resource.Success) {
+                    val journal = result.data.find { it.id == effectiveId }
+                    if (journal != null) {
+                        _uiState.update {
+                            it.copy(
+                                title = journal.title,
+                                content = journal.content,
+                                journalDate = journal.journalDate
+                            )
+                        }
+                    }
+                }
+            }
         }
-        // TODO Backend Integration
-        // repository.getJournal(journalId)
-        loadDummy(journalId)
     }
-    private fun loadDummy(id: Int) {
-        journalId = id
-        _isEditMode.value = true
-        _title.value = "Arrival in Jerusalem"
-        _content.value =
-            """
-            Today marked the beginning of our pilgrimage.
-            
-            Walking through the Old City was unforgettable.
-            """.trimIndent()
-        _journalDate.value = "2026-10-01"
-    }
+
     fun updateTitle(value: String) {
-        _title.value = value
+        _uiState.update { it.copy(title = value) }
     }
+
     fun updateContent(value: String) {
-        _content.value = value
+        _uiState.update { it.copy(content = value) }
     }
+
     fun updateDate(value: String) {
-        _journalDate.value = value
+        _uiState.update { it.copy(journalDate = value) }
     }
-    fun saveJournal(): Boolean {
-        if (!validate()) return false
-        if (_isEditMode.value) {
-            // TODO Backend Integration
-            // repository.updateJournal(...)
-        } else {
-            // TODO Backend Integration
-            // repository.createJournal(...)
+
+    fun saveJournal(groupId: Int) {
+        if (!validate()) return
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(saveResult = Resource.Loading()) }
+            val currentState = _uiState.value
+            val result = if (currentState.isEditMode) {
+                journalRepository.updateJournal(
+                    id = journalId!!,
+                    title = currentState.title,
+                    content = currentState.content,
+                    journalDate = currentState.journalDate
+                )
+            } else {
+                journalRepository.createJournal(
+                    groupId = groupId,
+                    title = currentState.title,
+                    content = currentState.content,
+                    journalDate = currentState.journalDate
+                )
+            }
+
+            _uiState.update {
+                it.copy(
+                    saveResult = when (result) {
+                        is Resource.Success -> Resource.Success(Unit)
+                        is Resource.Error -> Resource.Error(result.message)
+                        else -> Resource.Loading()
+                    }
+                )
+            }
         }
-        return true
     }
-    private fun clearForm() {
-        journalId = null
-        _title.value = ""
-        _content.value = ""
-        _journalDate.value =
-            LocalDate.now().format(
-                DateTimeFormatter.ofPattern("dd MMMM yyyy")
-            )
+
+    fun deleteJournal() {
+        val id = journalId ?: return
+        viewModelScope.launch {
+            _uiState.update { it.copy(saveResult = Resource.Loading()) }
+            val result = journalRepository.deleteJournal(id)
+            _uiState.update {
+                it.copy(
+                    saveResult = when (result) {
+                        is Resource.Success -> Resource.Success(Unit)
+                        is Resource.Error -> Resource.Error(result.message)
+                        else -> Resource.Loading()
+                    }
+                )
+            }
+        }
     }
+
+    fun resetSaveResult() {
+        _uiState.update { it.copy(saveResult = null) }
+    }
+
     private fun validate(): Boolean {
         var valid = true
-        _titleError.value = null
-        _contentError.value = null
-        if (_title.value.isBlank()) {
-            _titleError.value = "Title cannot be empty."
+        var titleErr: String? = null
+        var contentErr: String? = null
+
+        if (_uiState.value.title.isBlank()) {
+            titleErr = "Title cannot be empty."
             valid = false
         }
-        if (_content.value.isBlank()) {
-            _contentError.value = "Content cannot be empty."
+        if (_uiState.value.content.isBlank()) {
+            contentErr = "Content cannot be empty."
             valid = false
         }
+
+        _uiState.update { it.copy(titleError = titleErr, contentError = contentErr) }
         return valid
     }
 }

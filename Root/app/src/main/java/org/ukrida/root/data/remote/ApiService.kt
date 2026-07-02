@@ -5,9 +5,11 @@ import okhttp3.RequestBody
 import org.ukrida.root.data.model.*
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Query
 
@@ -79,6 +81,27 @@ interface ApiService {
         @Query("group_id") groupId: Int
     ): Response<ApiResponse<List<ItineraryDate>>>
 
+    @POST("index.php")
+    suspend fun createItineraryItem(
+        @Query("route") route: String = "itinerary/createItem",
+        @Body body: CreateItineraryItemRequest
+    ): Response<ApiResponse<ItineraryItemResponse>>
+
+    @POST("index.php")
+    suspend fun updateItineraryItem(
+        @Query("route") route: String = "itinerary/updateItem",
+        @Query("id") id: Int,
+        @Body body: UpdateItineraryRequest
+    ): Response<ApiResponse<ItineraryItemResponse>>
+
+    @POST("index.php")
+    suspend fun deleteItineraryItem(
+        @Query("route") route: String = "itinerary/deleteItem",
+        @Query("id") id: Int
+    ): Response<ApiResponse<DeleteResponse>>
+
+
+
     //Songs -----------------------------------------------------------------
     /** All songs in a group's songbook (no day filter) */
     @GET("index.php")
@@ -117,6 +140,17 @@ interface ApiService {
         @Query("q")     query: String = ""
     ): Response<ApiResponse<List<SongBrowseItem>>>
 
+    @POST("index.php")
+    suspend fun addSongToGroup(
+        @Query("route") route: String = "admin/song/addToGroup",
+        @Body body: AddSongToGroupRequest
+    ): Response<ApiResponse<Unit>>
+
+    @POST("index.php")
+    suspend fun removeSongFromGroup(
+        @Query("route") route: String = "admin/song/removeFromGroup",
+        @Body body: RemoveSongFromGroupRequest
+    ): Response<ApiResponse<Unit>>
     //Devotions -----------------------------------------------------------------
     @GET("index.php")
     suspend fun getDevotion(
@@ -182,6 +216,12 @@ interface ApiService {
     suspend fun listMembers(
         @Query("route")    route: String = "member/list",
         @Query("group_id") groupId: Int
+    ): Response<ApiResponse<List<Member>>>
+
+    @GET("index.php")
+    suspend fun getLeaders(
+        @Query("route") route: String = "member/leaders",
+        @Query("role")  role: String
     ): Response<ApiResponse<List<Member>>>
 
     @GET("index.php")

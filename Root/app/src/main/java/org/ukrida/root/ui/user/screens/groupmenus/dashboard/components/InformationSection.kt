@@ -13,10 +13,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.ukrida.root.data.model.Group
+import org.ukrida.root.data.model.GroupDetail
 
 @Composable
 fun InformationSection(
-    group: Group
+    group: GroupDetail
 ) {
 
     Column(

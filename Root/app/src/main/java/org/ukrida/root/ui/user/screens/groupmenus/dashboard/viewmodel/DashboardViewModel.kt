@@ -1,62 +1,72 @@
 package org.ukrida.root.ui.user.screens.groupmenus.dashboard.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.ukrida.root.data.model.Group
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import org.ukrida.root.data.model.GroupDetail
+import org.ukrida.root.data.model.GroupImage
+import org.ukrida.root.data.repository.AccountRepository
+import org.ukrida.root.data.repository.GalleryRepository
+import org.ukrida.root.utils.Resource
 
-class DashboardViewModel : ViewModel() {
+class DashboardViewModel(
+    private val accountRepository: AccountRepository,
+    private val galleryRepository: GalleryRepository
+) : ViewModel() {
 
-    private val _group = MutableStateFlow<Group?>(null)
-    val group = _group.asStateFlow()
+    private val _uiState = MutableStateFlow(DashboardUiState())
+    val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
+
+    data class DashboardUiState(
+        val group: Resource<GroupDetail> = Resource.Loading(),
+        val gallery: Resource<List<GroupImage>> = Resource.Loading()
+    )
 
     fun loadDashboard(groupId: Int) {
-        // TODO Backend Integration
-        // repository.getGroupDetail(groupId)
-        loadDummy(groupId)
+        viewModelScope.launch {
+            fetchDashboardData(groupId)
+        }
     }
 
-    private fun loadDummy(groupId: Int) {
-
-        val groups = listOf(
-
-            Group(
-                id = 1,
-                name = "Holy Land",
-                description = "Experience the places where Jesus walked.",
-                location = "Jerusalem",
-                dresscode = "Casual",
-                status = "Completed",
-                startDate = "2026-10-01",
-                endDate = "2026-10-12",
-                meetupTime = "08:00",
-                meetupAddress = "Soekarno Hatta Airport",
-                joinDate = "2026-07-15",
-                statusJoin = "Approved"
-            ),
-
-            Group(
-                id = 2,
-                name = "Jordan Pilgrimage",
-                description = "Visit the Jordan River and Mount Nebo.",
-                location = "Jordan",
-                dresscode = "Casual",
-                status = "Completed",
-                startDate = "2026-11-05",
-                endDate = "2026-11-12",
-                meetupTime = "09:00",
-                meetupAddress = "Soekarno Hatta Airport",
-                joinDate = "2026-08-01",
-                statusJoin = "Approved"
+    private suspend fun fetchDashboardData(groupId: Int) {
+        _uiState.update {
+            it.copy(
+                group = Resource.Loading(),
+                gallery = Resource.Loading()
             )
+        }
 
-        )
+        coroutineScope {
+            val groupDeferred = async { accountRepository.getGroupDetail(groupId) }
+            val galleryDeferred = async { galleryRepository.listImages(groupId) }
 
-        _group.value =
-            groups.firstOrNull {
-                it.id == groupId
-            } ?: groups.first()
+            val groupResult = groupDeferred.await()
+            val galleryRes = galleryDeferred.await()
 
+            val groupResource = if (groupResult.isSuccess) {
+                Resource.Success(groupResult.getOrThrow())
+            } else {
+                Resource.Error(groupResult.exceptionOrNull()?.message ?: "Failed to load group details")
+            }
+
+            val galleryResource = when (galleryRes) {
+                is Resource.Success -> Resource.Success(galleryRes.data.take(1))
+                is Resource.Error -> Resource.Error(galleryRes.message)
+                else -> Resource.Loading()
+            }
+
+            _uiState.update {
+                it.copy(
+                    group = groupResource,
+                    gallery = galleryResource
+                )
+            }
+        }
     }
-
 }

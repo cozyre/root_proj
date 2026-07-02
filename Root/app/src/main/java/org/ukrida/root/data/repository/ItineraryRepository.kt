@@ -1,8 +1,12 @@
 package org.ukrida.root.data.repository
 
 import org.ukrida.root.data.model.ApiResponse
+import org.ukrida.root.data.model.CreateItineraryItemRequest
+import org.ukrida.root.data.model.DeleteResponse
 import org.ukrida.root.data.model.Itinerary
 import org.ukrida.root.data.model.ItineraryDate
+import org.ukrida.root.data.model.ItineraryItemResponse
+import org.ukrida.root.data.model.UpdateItineraryRequest
 import org.ukrida.root.data.remote.ApiService
 import retrofit2.Response
 
@@ -15,6 +19,28 @@ class ItineraryRepository(private val api: ApiService) {
     suspend fun getItineraryDates(groupId: Int): Result<List<ItineraryDate>> = safeCallList {
         api.getItineraryDates(groupId = groupId)
     }
+    suspend fun createItem(
+        request: CreateItineraryItemRequest
+    ): Result<ItineraryItemResponse> = safeCall {
+        api.createItineraryItem(body = request)
+    }
+
+    suspend fun updateItem(
+        id: Int,
+        request: UpdateItineraryRequest
+    ): Result<ItineraryItemResponse> = safeCall {
+        api.updateItineraryItem(
+            id = id,
+            body = request
+        )
+    }
+
+    suspend fun deleteItem(
+        id: Int
+    ): Result<DeleteResponse> = safeCall {
+        api.deleteItineraryItem(id = id)
+    }
+
 
     // ─── Helpers ─────────────────────────────────────────────────────────
 

@@ -22,6 +22,12 @@ import org.ukrida.root.ui.admin.screens.ongoing.components.TimelineBar
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.EditItineraryViewModel
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.ItineraryItemUiState
 import org.ukrida.root.ui.theme.*
+import android.app.TimePickerDialog
+import android.widget.Toast
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import org.ukrida.root.ui.admin.components.TimePickerField
 
 @Composable
 fun EditItineraryScreen(
@@ -38,6 +44,21 @@ fun EditItineraryScreen(
     }
 
     var showDayDropdown by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val submitSuccess by viewModel.submitSuccess.collectAsState()
+
+    LaunchedEffect(submitSuccess) {
+        if (submitSuccess) {
+            Toast.makeText(context, "Itinerary berhasil diperbarui", Toast.LENGTH_SHORT).show()
+            navController.navigate("ongoing_detail/${viewModel.tripId}") {
+                popUpTo("edit_itinerary/${viewModel.tripId}") {
+                    inclusive = true
+                }
+            }
+            viewModel.resetSubmitSuccess()
+        }
+    }
 
     Scaffold(
         containerColor = BackgroundDark,
@@ -166,7 +187,7 @@ fun EditItineraryScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { navController.popBackStack() },
+                onClick = { viewModel.submitAll() },
                 modifier = Modifier.fillMaxWidth().height(32.dp),
                 shape = RoundedCornerShape(26.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = MainButton)
@@ -193,6 +214,8 @@ fun ItineraryEditCard(
     onActivityChange: (String) -> Unit,
     onDelete: () -> Unit
 ) {
+    val context = LocalContext.current
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
@@ -219,46 +242,16 @@ fun ItineraryEditCard(
                         verticalArrangement = Arrangement.spacedBy(6.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        OutlinedTextField(
+                        TimePickerField(
                             value = item.startTime,
-                            onValueChange = onStartTimeChange,
-                            modifier = Modifier.width(72.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(50.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = Color.White,
-                                unfocusedTextColor = Color.White,
-                                focusedBorderColor = TitleColor,
-                                unfocusedBorderColor = Color(0xFF6B5C4E),
-                                focusedContainerColor = Color(0xFF2A2018),
-                                unfocusedContainerColor = Color(0xFF2A2018)
-                            ),
-                            textStyle = MaterialTheme.typography.bodySmall.copy(
-                                fontSize = 12.sp,
-                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                            )
+                            onTimeSelected = onStartTimeChange
                         )
 
                         Text("-", color = Color.White, fontSize = 14.sp)
 
-                        OutlinedTextField(
-                            value = item.endTime,  // sudah String (bukan nullable) di UiState
-                            onValueChange = onEndTimeChange,
-                            modifier = Modifier.width(72.dp),
-                            singleLine = true,
-                            shape = RoundedCornerShape(50.dp),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = Color.White,
-                                unfocusedTextColor = Color.White,
-                                focusedBorderColor = TitleColor,
-                                unfocusedBorderColor = Color(0xFF6B5C4E),
-                                focusedContainerColor = Color(0xFF2A2018),
-                                unfocusedContainerColor = Color(0xFF2A2018)
-                            ),
-                            textStyle = MaterialTheme.typography.bodySmall.copy(
-                                fontSize = 12.sp,
-                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                            )
+                        TimePickerField(
+                            value = item.endTime,
+                            onTimeSelected = onEndTimeChange
                         )
                     }
 

@@ -360,8 +360,31 @@ fun OnGoingDetailScreen(
             EditTripBottomSheet(
                 currentTitle = currentTitle,
                 currentDescription = currentDescription,
-                currentMentor = uiState.mentor?.name ?: "",
-                currentCoordinator = uiState.coordinator?.name ?: "",
+
+                currentMentorId =
+                    uiState.tripState?.mentorId,
+
+                currentCoordinatorId =
+                    uiState.tripState?.coordinatorId,
+
+                mentorOptions =
+                    uiState.mentorOptions,
+
+                coordinatorOptions =
+                    uiState.coordinatorOptions,
+
+                onSave = { title, description, mentorId, coordinatorId ->
+
+                    viewModel.updateTrip(
+                        title = title,
+                        description = description,
+                        mentorId = mentorId,
+                        coordinatorId = coordinatorId
+                    )
+
+                    showEditSheet = false
+                },
+
                 onClose = {
                     showEditSheet = false
                 }

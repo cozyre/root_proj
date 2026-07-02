@@ -15,6 +15,14 @@ class MemberRepository(private val api: ApiService) {
             Resource.Error(res.body()?.message ?: "Failed to load members")
     }
 
+    suspend fun listByRole(role: String): Resource<List<Member>> = safeCall {
+        val res = api.getLeaders(role = role)
+        if (res.isSuccessful && res.body()?.success == true)
+            Resource.Success(res.body()!!.data ?: emptyList())
+        else
+            Resource.Error(res.body()?.message ?: "Failed to load $role list")
+    }
+
     suspend fun getMemberDetail(userId: Int, groupId: Int): Resource<MemberDetail> = safeCall {
         val res = api.getMemberDetail(userId = userId, groupId = groupId)
         if (res.isSuccessful && res.body()?.success == true)

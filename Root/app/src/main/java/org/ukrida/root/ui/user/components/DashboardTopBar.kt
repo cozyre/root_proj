@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,11 +29,12 @@ fun DashboardTopBar(
     onExpandClick: () -> Unit,
     onNotificationClick: () -> Unit = {}
 ) {
+    val cream = Color(0xFFE5C19A)
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp, vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
 
         // Logo
@@ -42,8 +44,10 @@ fun DashboardTopBar(
         ) {
             Text(
                 text = "R",
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color(0xFFE5C19A)
+                color = cream,
+                fontSize = 34.sp,
+                fontStyle = FontStyle.Italic,
+                fontWeight = FontWeight.Bold
             )
         }
 

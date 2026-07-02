@@ -59,11 +59,119 @@ class ItineraryController {
         $this->success(200, $dates);
     }
 
+    public function createItem(): void {
+        $user = $this->auth->requireAuth();
+        
+        $input = json_decode(file_get_contents('php://input'), true);
+ 
+        if (!$input) {
+            $this->error(400, 'Invalid JSON input');
+            return;
+        }
+ 
+        // Validate required fields
+        $required = ['itenary_id', 'start_time', 'end_time', 'type', 'description'];
+        foreach ($required as $field) {
+            if (!isset($input[$field])) {
+                $this->error(400, "$field is required");
+                return;
+            }
+        }
+ 
+        // Validate time format
+        if (!$this->isValidTime($input['start_time']) || 
+            !$this->isValidTime($input['end_time'])) {
+            $this->error(400, 'start_time and end_time must be in HH:MM format');
+            return;
+        }
+ 
+        $result = $this->model->createItem(
+            (int) $input['itenary_id'],
+            $input['start_time'],
+            $input['end_time'],
+            $input['type'],
+            $input['description']
+        );
+ 
+        if ($result) {
+            $this->success(201, $result, 'Item created successfully');
+        } else {
+            $this->error(500, 'Failed to create item');
+        }
+    }
+
+    public function updateItem(): void {
+        $user = $this->auth->requireAuth();
+ 
+        $itemId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+        if (!$itemId) {
+            $this->error(400, 'item id is required in query parameter');
+            return;
+        }
+ 
+        $input = json_decode(file_get_contents('php://input'), true);
+ 
+        if (!$input) {
+            $this->error(400, 'Invalid JSON input');
+            return;
+        }
+ 
+        // Validate required fields
+        $required = ['start_time', 'end_time', 'type', 'description'];
+        foreach ($required as $field) {
+            if (!isset($input[$field])) {
+                $this->error(400, "$field is required");
+                return;
+            }
+        }
+ 
+        // Validate time format
+        if (!$this->isValidTime($input['start_time']) || 
+            !$this->isValidTime($input['end_time'])) {
+            $this->error(400, 'start_time and end_time must be in HH:MM format');
+            return;
+        }
+ 
+        $result = $this->model->updateItem(
+            $itemId,
+            $input['start_time'],
+            $input['end_time'],
+            $input['type'],
+            $input['description']
+        );
+ 
+        if ($result) {
+            $this->success(200, $result, 'Item updated successfully');
+        } else {
+            $this->error(500, 'Failed to update item');
+        }
+    }
+
+    public function deleteItem(): void {
+        $user = $this->auth->requireAuth();
+ 
+        $itemId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+        if (!$itemId) {
+            $this->error(400, 'item id is required in query parameter');
+            return;
+        }
+ 
+        if ($this->model->deleteItem($itemId)) {
+            $this->success(200, ['deleted' => true, 'id' => $itemId], 'Item deleted successfully');
+        } else {
+            $this->error(500, 'Failed to delete item');
+        }
+    }
+
     // --- Helpers ---
 
     private function isValidDate(string $date): bool {
         $d = DateTime::createFromFormat('Y-m-d', $date);
         return $d && $d->format('Y-m-d') === $date;
+    }
+
+    private function isValidTime(string $time): bool {
+        return preg_match('/^([01]\d|2[0-3]):([0-5]\d)$/', $time) === 1;
     }
 
     private function success(int $code, $data, string $message = ''): void {

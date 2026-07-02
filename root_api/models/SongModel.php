@@ -72,6 +72,36 @@ class SongModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function removeFromGroup($groupId, $songId, $itenaryId = null)
+    {
+        if ($itenaryId !== null) {
+            $stmt = $this->db->prepare("
+                DELETE FROM group_songs
+                WHERE group_id = ?
+                AND song_id = ?
+                AND itenary_id = ?
+            ");
+
+            $stmt->bind_param("iii", $groupId, $songId, $itenaryId);
+        } else {
+            $stmt = $this->db->prepare("
+                DELETE FROM group_songs
+                WHERE group_id = ?
+                AND song_id = ?
+            ");
+
+            $stmt->bind_param("ii", $groupId, $songId);
+        }
+
+        if (!$stmt) {
+            return false;
+        }
+
+        $stmt->execute();
+
+        return $stmt->affected_rows > 0;
+    }
+
     /**
      * Browse the global song library (no group filter).
      * Optionally filter by a search query.

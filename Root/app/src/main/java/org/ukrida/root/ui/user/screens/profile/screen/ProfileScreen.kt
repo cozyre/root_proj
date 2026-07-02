@@ -39,8 +39,6 @@ fun ProfileScreen(
     var bio by remember { mutableStateOf("") }
     var hidePhone by remember { mutableStateOf(false) }
 
-    var expanded by remember { mutableStateOf(false) }
-
     // ─── Initialize form from profile data ───────────────────────────────────
     LaunchedEffect(profile) {
         when (profile) {
@@ -57,6 +55,19 @@ fun ProfileScreen(
 
             else -> {}
         }
+    }
+
+    // ─── Check if profile has been changed ───────────────────────────────────
+    val isChanged = remember(profile, firstName, lastName, username, phone, bio, hidePhone) {
+        val p = (profile as? Resource.Success)?.data
+        p != null && (
+            firstName != p.firstName ||
+            lastName != p.lastName ||
+            username != p.username ||
+            phone != (p.phone ?: "") ||
+            bio != (p.bio ?: "") ||
+            hidePhone != p.hidePhone
+        )
     }
 
     // ─── Handle update result ────────────────────────────────────────────────
@@ -78,25 +89,6 @@ fun ProfileScreen(
 
     Scaffold(
         containerColor = Color(0xFF2A2522),
-//        bottomBar = {
-//            PublicBottomNavigation(
-//                currentDestination = PublicDestination.PROFILE,
-//                onNavigate = { destination ->
-//                    when (destination) {
-//                        PublicDestination.HOME ->
-//                            navController.navigate(PublicScreen.Home.route)
-//
-//                        PublicDestination.PROMISED_LAND ->
-//                            navController.navigate(PublicScreen.PromisedLand.route)
-//
-//                        PublicDestination.GROUP ->
-//                            navController.popBackStack()
-//
-//                        PublicDestination.PROFILE -> {}
-//                    }
-//                }
-//            )
-//        }
     ) { padding ->
         Box(
             modifier = Modifier
@@ -107,7 +99,8 @@ fun ProfileScreen(
             when (profile) {
                 is Resource.Loading -> {
                     CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
+                        color = Color(0xFFE8D8C9)
                     )
                 }
 
@@ -118,13 +111,6 @@ fun ProfileScreen(
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                     ) {
-//                        DashboardTopBar(
-//                            title = "PROFILE",
-//                            expanded = expanded,
-//                            onExpandClick = {
-//                                expanded = !expanded
-//                            }
-//                        )
                         Column(
                             modifier = Modifier.padding(20.dp)
                         ) {
@@ -183,6 +169,7 @@ fun ProfileScreen(
                             Spacer(modifier = Modifier.height(28.dp))
                             SaveButton(
                                 isLoading = updateState is Resource.Loading,
+                                enabled = isChanged,
                                 onClick = {
                                     viewModel.updateProfile(
                                         firstName = firstName,

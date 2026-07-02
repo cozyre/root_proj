@@ -93,10 +93,12 @@ class AccountController {
             'meetup_address' => $detail['meetup_address'],
             'status'         => $detail['status'],
             'mentor' => [
+                'id'    => (int) $detail['mentor_id'],
                 'name'  => trim($detail['mentor_first_name'] . ' ' . $detail['mentor_last_name']),
                 'photo' => $detail['mentor_photo'],
             ],
             'coordinator' => [
+                'id'    => (int) $detail['coordinator_id'],
                 'name'  => trim($detail['coordinator_first_name'] . ' ' . $detail['coordinator_last_name']),
                 'photo' => $detail['coordinator_photo'],
             ],

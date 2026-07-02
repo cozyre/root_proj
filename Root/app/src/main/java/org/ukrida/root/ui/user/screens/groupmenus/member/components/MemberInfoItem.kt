@@ -1,4 +1,4 @@
-package org.ukrida.root.ui.user.screens.members.components
+package org.ukrida.root.ui.user.screens.groupmenus.member.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

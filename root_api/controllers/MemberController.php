@@ -9,6 +9,18 @@ class MemberController {
         $this->auth  = $auth;
     }
 
+    public function leaders(): void {
+        $this->auth->requireAuth();
+        $role = trim((string)($_GET['role'] ?? ''));
+
+        if (!in_array($role, ['mentor', 'koordinator'], true)) {
+            $this->fail(400, "role must be 'mentor' or 'koordinator'");
+            return;
+        }
+
+        $this->ok($this->model->getByRole($role));
+    }
+    
     // GET ?route=member/list&group_id=X
     public function list(): void {
         $this->auth->requireAuth();

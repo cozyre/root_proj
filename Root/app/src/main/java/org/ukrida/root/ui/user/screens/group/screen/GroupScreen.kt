@@ -17,9 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import org.ukrida.root.ui.user.components.PublicBottomNavigation
-import org.ukrida.root.ui.user.components.PublicDestination
-import org.ukrida.root.ui.user.components.PublicTopBar
 import org.ukrida.root.ui.user.navigation.PublicScreen
 import org.ukrida.root.ui.user.screens.group.components.GroupSection
 import org.ukrida.root.ui.user.screens.group.viewmodel.GroupViewModel
@@ -34,22 +31,6 @@ fun GroupScreen(
     val groups = (groupState as? Resource.Success)?.data
     Scaffold(
         containerColor = Color(0xFF2A2522),
-//        bottomBar = {
-//            PublicBottomNavigation(
-//                currentDestination = PublicDestination.GROUP,
-//                onNavigate = { destination ->
-//                    when (destination) {
-//                        PublicDestination.HOME ->
-//                            navController.navigate(PublicScreen.Home.route)
-//                        PublicDestination.PROMISED_LAND ->
-//                            navController.navigate(PublicScreen.PromisedLand.route)
-//                        PublicDestination.GROUP -> {}
-//                        PublicDestination.PROFILE ->
-//                            navController.navigate(PublicScreen.Profile.route)
-//                    }
-//                }
-//            )
-//        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -58,9 +39,6 @@ fun GroupScreen(
                 .background(Color(0xFF2A2522))
                 .verticalScroll(rememberScrollState())
         ) {
-//            PublicTopBar(
-//                title = "GROUP"
-//            )
             Spacer(modifier = Modifier.height(20.dp))
             GroupSection(
                 groups = groups,

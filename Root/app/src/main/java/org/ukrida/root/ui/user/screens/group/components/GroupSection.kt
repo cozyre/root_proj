@@ -39,6 +39,7 @@ fun GroupSection(
             GroupCard(
                 group = group,
                 onClick = {
+                    println("DEBUG GroupCard: group.id=${group.id}, statusJoin=${group.statusJoin}")
                     if (group.statusJoin == GroupStatus.APPROVED) {
                         onGroupClick(group.id)
                     }
