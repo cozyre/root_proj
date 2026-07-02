@@ -156,6 +156,14 @@ match (true) {
         => $adminCtrl->devotionUpdate(),
     $method === 'GET' && $route === 'admin/accounts/pending'
         => $adminCtrl->pendingAccounts(),
+    $method === 'GET' && $route === 'member/leaders'
+        => $memberCtrl->leaders(),
+    $method === 'POST' && $route === 'itinerary/createItem'
+        => $itineraryCtrl->createItem(),
+    $method === 'POST' && $route === 'itinerary/updateItem'
+        => $itineraryCtrl->updateItem(),
+    $method === 'POST' && $route === 'itinerary/deleteItem'
+        => $itineraryCtrl->deleteItem(),
 
 
     default => (function () use ($route, $method) {

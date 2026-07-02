@@ -24,15 +24,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import org.ukrida.root.ui.theme.H1Color
 import org.ukrida.root.ui.theme.*
-import org.ukrida.root.data.dummy.DummyMemberData
+import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.LeaderOption
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditTripBottomSheet(
     currentTitle: String,
     currentDescription: String,
-    currentMentor: String,
-    currentCoordinator: String,
+
+    currentMentorId: Int?,
+    currentCoordinatorId: Int?,
+
+    mentorOptions: List<LeaderOption>,
+    coordinatorOptions: List<LeaderOption>,
+
+    onSave: (
+        title: String,
+        description: String,
+        mentorId: Int,
+        coordinatorId: Int
+    ) -> Unit,
     onClose: () -> Unit
 ) {
 
@@ -44,23 +55,32 @@ fun EditTripBottomSheet(
         mutableStateOf(currentDescription)
     }
 
-    var mentor by remember {
-        mutableStateOf(currentMentor)
+    var selectedMentor by remember(
+        currentMentorId,
+        mentorOptions
+    ) {
+        mutableStateOf(
+            mentorOptions.find {
+                it.id == currentMentorId
+            }
+        )
     }
 
-    var coordinator by remember {
-        mutableStateOf(currentCoordinator)
+    var selectedCoordinator by remember(
+        currentCoordinatorId,
+        coordinatorOptions
+    ) {
+        mutableStateOf(
+            coordinatorOptions.find {
+                it.id == currentCoordinatorId
+            }
+        )
     }
-    val mentorList = remember {
-        DummyMemberData.members
-            .filter { it.role == "mentor" }
-            .map { "${it.firstName} ${it.lastName}" }
+
+    var validationError by remember {
+        mutableStateOf<String?>(null)
     }
-    val coordinatorList = remember {
-        DummyMemberData.members
-            .filter { it.role == "coordinator" }
-            .map { "${it.firstName} ${it.lastName}" }
-    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -133,10 +153,19 @@ fun EditTripBottomSheet(
 
         LeaderDropdown(
             label = "Mentor",
-            selectedValue = mentor,
-            items = mentorList,
-            onSelected = {
-                mentor = it
+
+            selectedValue =
+                selectedMentor?.name ?: "",
+
+            items =
+                mentorOptions.map { it.name },
+
+            onSelected = { name ->
+
+                selectedMentor =
+                    mentorOptions.find {
+                        it.name == name
+                    }
             }
         )
 
@@ -144,24 +173,68 @@ fun EditTripBottomSheet(
 
         LeaderDropdown(
             label = "Coordinator",
-            selectedValue = coordinator,
-            items = coordinatorList,
-            onSelected = {
-                coordinator = it
+
+            selectedValue =
+                selectedCoordinator?.name ?: "",
+
+            items =
+                coordinatorOptions.map { it.name },
+
+            onSelected = { name ->
+
+                selectedCoordinator =
+                    coordinatorOptions.find {
+                        it.name == name
+                    }
             }
         )
+
+        if (validationError != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = validationError!!,
+                color = Color(0xFFD9534F),
+                fontSize = 12.sp
+            )
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             onClick = {
-                // TODO SAVE
+
+                val mentorId = selectedMentor?.id
+                val coordinatorId = selectedCoordinator?.id
+
+                validationError = when {
+                    mentorId == null && coordinatorId == null ->
+                        "Pilih mentor dan koordinator terlebih dahulu"
+                    mentorId == null ->
+                        "Pilih mentor terlebih dahulu"
+                    coordinatorId == null ->
+                        "Pilih koordinator terlebih dahulu"
+                    else -> null
+                }
+
+                if (mentorId != null && coordinatorId != null) {
+                    onSave(
+                        title,
+                        description,
+                        mentorId,
+                        coordinatorId
+                    )
+                }
             },
             colors = ButtonDefaults.buttonColors(
-                containerColor = MainButton),
+                containerColor = MainButton
+            ),
             modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Save", color = H1Color)
+        )
+        {
+            Text(
+                text = "Save",
+                color = H1Color
+            )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
