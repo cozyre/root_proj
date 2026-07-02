@@ -23,22 +23,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import org.ukrida.root.data.model.Group
+import org.ukrida.root.data.model.GroupDetail
 
 @Composable
 fun OrganizerSection(
-    group: Group
+    group: GroupDetail
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // TODO Backend Integration
-        // Replace dummy organizer data with API response.
-        // Example:
-        // OrganizerItem(
-        //     name = group.coordinator.name,
-        //     photoUrl = group.coordinator.photo
-        // )
         Text(
             text = "Organizer",
             style = MaterialTheme.typography.headlineSmall,
@@ -46,13 +40,13 @@ fun OrganizerSection(
         )
         Spacer(modifier = Modifier.height(24.dp))
         OrganizerItem(
-            "COORDINATOR NAME",
-            photoUrl = null
+            group.coordinator.name,
+            photoUrl = group.coordinator.photo
         )
         Spacer(modifier = Modifier.height(18.dp))
         OrganizerItem(
-            "LEADER NAME",
-            photoUrl = null
+            group.mentor.name,
+            photoUrl = group.mentor.photo
         )
     }
 }

@@ -13,9 +13,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun JournalSaveButton(
+fun JournalDeleteButton(
     modifier: Modifier = Modifier,
-    isEditMode: Boolean,
     onClick: () -> Unit
 ) {
     Button(
@@ -24,11 +23,11 @@ fun JournalSaveButton(
             .height(54.dp),
         shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF7A8A4A)
+            containerColor = Color(0xFFB03A2E)
         )
     ) {
         Text(
-            text = if (isEditMode) "UPDATE" else "SAVE",
+            text = "DELETE",
             style = MaterialTheme.typography.titleMedium,
             color = Color.White
         )

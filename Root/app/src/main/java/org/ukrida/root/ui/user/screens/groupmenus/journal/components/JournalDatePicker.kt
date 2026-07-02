@@ -48,10 +48,7 @@ fun JournalDatePicker(
         ) {
             Text(
                 text =
-                    if (date.isBlank())
-                        "Select journal date"
-                    else
-                        date,
+                    date.ifBlank { "Select journal date" },
                 color =
                     if (date.isBlank())
                         Color.White.copy(alpha = .5f)

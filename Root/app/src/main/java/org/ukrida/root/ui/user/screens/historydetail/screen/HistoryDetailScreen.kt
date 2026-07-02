@@ -1,6 +1,7 @@
 package org.ukrida.root.ui.user.screens.historydetail.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,36 +9,33 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import org.ukrida.root.ui.user.components.PublicBottomNavigation
-import org.ukrida.root.ui.user.components.PublicDestination
-import org.ukrida.root.ui.user.components.PublicTopBar
-import org.ukrida.root.ui.user.navigation.PublicScreen
 import org.ukrida.root.ui.user.screens.historydetail.components.GallerySection
-import org.ukrida.root.ui.user.screens.historydetail.components.HistoryHeader
 import org.ukrida.root.ui.user.screens.historydetail.components.GroupMemberSection
+import org.ukrida.root.ui.user.screens.historydetail.components.HistoryHeader
 import org.ukrida.root.ui.user.screens.historydetail.viewmodel.HistoryDetailViewModel
+import org.ukrida.root.utils.Resource
 
 @Composable
 fun HistoryDetailScreen(
+    viewModel: HistoryDetailViewModel,
     navController: NavHostController,
     groupId: Int
 ) {
-
-    val viewModel: HistoryDetailViewModel = viewModel()
-
-    val group by viewModel.group.collectAsState()
-    val members by viewModel.members.collectAsState()
-    val gallery by viewModel.gallery.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(groupId) {
         viewModel.loadHistoryDetail(groupId)
@@ -45,47 +43,43 @@ fun HistoryDetailScreen(
 
     Scaffold(
         containerColor = Color(0xFF2A2522),
-        bottomBar = {
-            PublicBottomNavigation(
-                currentDestination = PublicDestination.PROMISED_LAND,
-                onNavigate = { destination ->
-                    when(destination){
-                        PublicDestination.HOME ->
-                            navController.navigate(PublicScreen.Home.route)
-                        PublicDestination.PROMISED_LAND ->
-                            navController.popBackStack()
-                        PublicDestination.GROUP ->
-                            navController.navigate(PublicScreen.Group.route)
-                        PublicDestination.PROFILE ->
-                            navController.navigate(PublicScreen.Profile.route)
-                    }
-                }
-            )
-        }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .background(Color(0xFF2A2522))
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
-        ) {
-            PublicTopBar(
-                title = "HISTORY"
-            )
-            group?.let {
-                HistoryHeader(group = it)
-                Spacer(Modifier.height(30.dp))
-                GroupMemberSection(
-                    members = members,
-                    onMemberClick={},
-                )
-                Spacer(Modifier.height(30.dp))
-                GallerySection(
-                    gallery = gallery,
-                    onImageClick = {},
-                )
+        when (val groupRes = uiState.group) {
+            is Resource.Loading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = Color.White)
+                }
+            }
+            is Resource.Error -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = groupRes.message, color = Color.White)
+                }
+            }
+            is Resource.Success -> {
+                val groupData = groupRes.data
+                val members = (uiState.members as? Resource.Success)?.data ?: emptyList()
+                val gallery = (uiState.gallery as? Resource.Success)?.data ?: emptyList()
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding)
+                        .background(Color(0xFF2A2522))
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 20.dp)
+                ) {
+                    HistoryHeader(group = groupData, navController)
+                    Spacer(Modifier.height(30.dp))
+                    GroupMemberSection(
+                        members = members,
+                        onMemberClick = { },
+                    )
+                    Spacer(Modifier.height(30.dp))
+                    GallerySection(
+                        gallery = gallery,
+                        onImageClick = {},
+                    )
+                }
             }
         }
     }

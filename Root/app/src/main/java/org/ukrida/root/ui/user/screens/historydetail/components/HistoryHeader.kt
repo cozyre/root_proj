@@ -21,12 +21,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import org.ukrida.root.R
-import org.ukrida.root.data.model.Group
+import org.ukrida.root.data.model.GroupDetail
 
 @Composable
 fun HistoryHeader(
-    group: Group
+    group: GroupDetail,
+    navController: NavController
 ) {
 
     Column(
@@ -34,7 +36,7 @@ fun HistoryHeader(
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
     ) {
-        Breadcrumb()
+        Breadcrumb(navController)
         Spacer(modifier = Modifier.height(20.dp))
         Image(
             painter = painterResource(R.drawable.pyramid),
