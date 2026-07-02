@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.ukrida.root.data.model.Devotion
 import org.ukrida.root.data.model.DevotionDate
 import org.ukrida.root.data.repository.DevotionRepository
 import org.ukrida.root.utils.Resource
@@ -19,8 +20,26 @@ class DailyBreadViewModel(
     val uiState: StateFlow<DailyBreadUiState> = _uiState.asStateFlow()
 
     data class DailyBreadUiState(
-        val devotions: Resource<List<DevotionDate>> = Resource.Loading()
+        val devotions: Resource<List<DevotionDate>> = Resource.Loading(),
+        val devotionDetail: Resource<Devotion> = Resource.Loading()
     )
+
+    fun loadDevotionDetail(groupId: Int, date: String){
+        viewModelScope.launch{
+            _uiState.update { it.copy(devotionDetail = Resource.Loading()) }
+            val devotionDetailResult = devotionRepository.getDevotion(groupId, date)
+
+            val devotionDetailResource = if (devotionDetailResult.isSuccess){
+                Resource.Success(devotionDetailResult.getOrThrow())
+            } else{
+                Resource.Error(devotionDetailResult.exceptionOrNull()?.message ?: "Failed to load devotion details")
+            }
+
+            _uiState.update {
+                it.copy(devotionDetail = devotionDetailResource)
+            }
+        }
+    }
 
     fun loadDevotions(groupId: Int) {
         viewModelScope.launch {

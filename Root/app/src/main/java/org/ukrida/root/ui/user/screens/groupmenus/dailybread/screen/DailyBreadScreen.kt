@@ -99,7 +99,7 @@ fun DailyBreadScreen(
                     }
                     is Resource.Error -> {
                         Text(
-                            text = resource.message ?: "An error occurred",
+                            text = resource.message,
                             color = Color.Red,
                             modifier = Modifier.align(Alignment.Center).padding(16.dp)
                         )

@@ -7,10 +7,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -22,23 +26,22 @@ import org.ukrida.root.ui.user.components.DashboardTopBar
 import org.ukrida.root.ui.user.screens.groupmenus.dailybread.components.DevotionBackButton
 import org.ukrida.root.ui.user.screens.groupmenus.dailybread.components.DevotionContent
 import org.ukrida.root.ui.user.screens.groupmenus.dailybread.components.DevotionDetailHeader
-import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBreadDetailViewModel
+import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBreadViewModel
+import org.ukrida.root.utils.Resource
 
 @Composable
 fun DailyBreadDetailScreen(
-    viewModel: DailyBreadDetailViewModel = viewModel(),
+    viewModel: DailyBreadViewModel,
     navController: NavHostController,
     groupId: Int,
     date: String
 ) {
-    val devotion by viewModel.devotion.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
-    var expanded by remember {
-        mutableStateOf(false)
+    LaunchedEffect(groupId, date) {
+        viewModel.loadDevotionDetail(groupId, date)
     }
-    LaunchedEffect(date) {
-        viewModel.loadDevotion(groupId, date)
-    }
+
     Scaffold(
         containerColor = Color(0xFF2A2522)
     ) { padding ->
@@ -48,99 +51,42 @@ fun DailyBreadDetailScreen(
                 .background(Color(0xFF2A2522))
                 .padding(padding)
         ) {
-            devotion?.let {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    DashboardTopBar(
-                        title = "DAILY BREAD",
-                        expanded = expanded,
-                        onExpandClick = {
-                            expanded = !expanded
-                        }
-                    )
-                    DevotionBackButton(
-                        onBackClick = {
-                            navController.popBackStack()
-                        }
-                    )
-                    DevotionDetailHeader(
-                        devotion = it
-                    )
-                    Spacer(
-                        modifier = Modifier.height(24.dp)
-                    )
-                    DevotionContent(
-                        devotion = it
+            when (val resource = uiState.devotionDetail) {
+                is Resource.Loading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        color = Color(0xFFE8D8C9)
                     )
                 }
-            }
-            if (expanded) {
-                AnimatedVisibility(
-                    visible = expanded,
-                    enter = fadeIn(),
-                    exit = fadeOut()
-                ) {
-                    Box(
+                is Resource.Success -> {
+                    Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color.Black.copy(alpha = .4f))
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember {
-                                    MutableInteractionSource()
-                                }
-                            ) {
-                                expanded = false
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        DevotionBackButton(
+                            onBackClick = {
+                                navController.popBackStack()
                             }
-                    )
-                }
-                DashboardMenu(
-                    onDashboardClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Dashboard.createRoute(groupId)
                         )
-                    },
-                    onItineraryClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Itinerary.createRoute(groupId)
+                        DevotionDetailHeader(
+                            devotion = resource.data
                         )
-                    },
-                    onHymnClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Hymn.createRoute(groupId)
+                        Spacer(
+                            modifier = Modifier.height(24.dp)
                         )
-                    },
-                    onDailyBreadClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.DailyBread.createRoute(groupId)
-                        )
-                    },
-                    onJournalClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Journal.createRoute(groupId)
-                        )
-                    },
-                    onGalleryClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Gallery.createRoute(groupId)
-                        )
-                    },
-                    onMembersClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Members.createRoute(groupId)
+                        DevotionContent(
+                            devotion = resource.data
                         )
                     }
-                )
+                }
+                    is Resource.Error -> {
+                        Text(
+                            text = resource.message ?: "An error occurred",
+                            color = Color.Red,
+                            modifier = Modifier.align(Alignment.Center).padding(16.dp)
+                        )
+                    }
             }
         }
     }

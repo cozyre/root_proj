@@ -20,8 +20,8 @@ import org.ukrida.root.ui.user.screens.groupmenus.itinerary.screen.ItineraryScre
 import org.ukrida.root.ui.user.screens.groupmenus.itinerary.viewmodel.ItineraryViewModel
 import org.ukrida.root.ui.user.screens.groupmenus.hymn.screen.HymnScreen
 import org.ukrida.root.ui.user.screens.groupmenus.hymn.viewmodel.HymnViewModel
+import org.ukrida.root.ui.user.screens.groupmenus.hymn.viewmodel.HymnViewModelFactory
 import org.ukrida.root.ui.user.screens.groupmenus.hymn.screen.HymnDetailScreen
-import org.ukrida.root.ui.user.screens.groupmenus.hymn.viewmodel.HymnDetailViewModel
 import org.ukrida.root.ui.user.screens.groupmenus.gallery.screen.GalleryScreen
 import org.ukrida.root.ui.user.screens.groupmenus.gallery.viewmodel.GalleryViewModel
 import org.ukrida.root.ui.user.screens.groupmenus.journal.screen.JournalScreen
@@ -31,7 +31,6 @@ import org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel.JournalEdito
 import org.ukrida.root.ui.user.screens.groupmenus.dailybread.screen.DailyBreadScreen
 import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBreadViewModel
 import org.ukrida.root.ui.user.screens.groupmenus.dailybread.screen.DailyBreadDetailScreen
-import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBreadDetailViewModel
 import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBreadViewModelFactory
 import org.ukrida.root.ui.user.screens.groupmenus.itinerary.viewmodel.ItineraryViewModelFactory
 import org.ukrida.root.ui.user.screens.home.screen.HomeScreen
@@ -217,8 +216,10 @@ fun PublicNavigation(
             )
         ) {
             val groupId = it.arguments?.getInt("groupId") ?: 0
-            // TODO: Create HymnViewModelFactory if not exists
-            val viewModel: HymnViewModel = viewModel()
+            val factory = remember {
+                HymnViewModelFactory(appContainer.songRepository)
+            }
+            val viewModel: HymnViewModel = viewModel(factory = factory)
             HymnScreen(
                 viewModel = viewModel,
                 navController = navController,
@@ -235,8 +236,10 @@ fun PublicNavigation(
         ) {
             val groupId = it.arguments?.getInt("groupId") ?: 0
             val songId = it.arguments?.getInt("songId") ?: 0
-            // TODO: Create HymnDetailViewModelFactory if not exists
-            val viewModel: HymnDetailViewModel = viewModel()
+            val factory = remember {
+                HymnViewModelFactory(appContainer.songRepository)
+            }
+            val viewModel: HymnViewModel = viewModel(factory = factory)
             HymnDetailScreen(
                 viewModel = viewModel,
                 navController = navController,
@@ -323,8 +326,10 @@ fun PublicNavigation(
         ) {
             val groupId = it.arguments?.getInt("groupId") ?: 0
             val date = it.arguments?.getString("date") ?: ""
-            // TODO: Create DailyBreadDetailViewModelFactory if not exists
-            val viewModel: DailyBreadDetailViewModel = viewModel()
+            val factory = remember{
+                DailyBreadViewModelFactory(appContainer.devotionRepository)
+            }
+            val viewModel: DailyBreadViewModel = viewModel(factory = factory)
             DailyBreadDetailScreen(
                 viewModel = viewModel,
                 navController = navController,
