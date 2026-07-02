@@ -60,49 +60,49 @@ fun DailyBreadScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(20.dp))
-            }
 
-            Box(modifier = Modifier.weight(1f)) {
-                when (val resource = uiState.devotions) {
-                    is Resource.Loading -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center),
-                            color = Color(0xFFE8D8C9)
-                        )
-                    }
-                    is Resource.Success -> {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            itemsIndexed(resource.data) { index, devotion ->
-                                Text(
-                                    text = "DAY ${String.format("%02d", index + 1)}",
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFFE8D8C9)
-                                )
-                                DevotionCard(
-                                    devotion = devotion,
-                                    onClick = {
-                                        navController.navigate(
-                                            PublicScreen.DailyBreadDetail.createRoute(
-                                                groupId,
-                                                devotion.date
+                Box(modifier = Modifier.weight(1f)) {
+                    when (val resource = uiState.devotions) {
+                        is Resource.Loading -> {
+                            CircularProgressIndicator(
+                                modifier = Modifier.align(Alignment.Center),
+                                color = Color(0xFFE8D8C9)
+                            )
+                        }
+                        is Resource.Success -> {
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+                                itemsIndexed(resource.data) { index, devotion ->
+                                    Text(
+                                        text = "DAY ${String.format("%02d", index + 1)}",
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFFE8D8C9)
+                                    )
+                                    DevotionCard(
+                                        devotion = devotion,
+                                        onClick = {
+                                            navController.navigate(
+                                                PublicScreen.DailyBreadDetail.createRoute(
+                                                    groupId,
+                                                    devotion.date
+                                                )
                                             )
-                                        )
-                                    }
-                                )
+                                        }
+                                    )
+                                }
                             }
                         }
-                    }
-                    is Resource.Error -> {
-                        Text(
-                            text = resource.message,
-                            color = Color.Red,
-                            modifier = Modifier.align(Alignment.Center).padding(16.dp)
-                        )
+                        is Resource.Error -> {
+                            Text(
+                                text = resource.message,
+                                color = Color.Red,
+                                modifier = Modifier.align(Alignment.Center).padding(16.dp)
+                            )
+                        }
                     }
                 }
             }

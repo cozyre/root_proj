@@ -42,13 +42,9 @@ import org.ukrida.root.utils.Resource
 fun HymnDetailScreen(
     viewModel: HymnViewModel,
     navController: NavHostController,
-    groupId: Int,
     songId: Int
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    var expanded by remember {
-        mutableStateOf(false)
-    }
 
     LaunchedEffect(songId) {
         viewModel.loadSongDetail(songId)
@@ -83,13 +79,6 @@ fun HymnDetailScreen(
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                     ) {
-                        DashboardTopBar(
-                            title = "HYMN FOR HIM",
-                            expanded = expanded,
-                            onExpandClick = {
-                                expanded = !expanded
-                            }
-                        )
                         Column(
                             modifier = Modifier.padding(horizontal = 20.dp)
                         ) {

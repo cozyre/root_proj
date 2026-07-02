@@ -21,8 +21,8 @@ fun DashboardMenuItem(
             onClick()
         },
         style = MaterialTheme.typography.headlineLarge,
-        fontSize = 22.sp,
-        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.SemiBold,
         color = Color(0xFFE5C19A)
     )
 

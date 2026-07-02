@@ -131,7 +131,7 @@ fun HymnScreen(
                             }
                         } else {
                             // DayHeader template
-                            DayHeader(title = "DAY 0")
+//                            DayHeader(title = "DAY 0")
                             
                             songs.forEach { song ->
                                 HymnCard(

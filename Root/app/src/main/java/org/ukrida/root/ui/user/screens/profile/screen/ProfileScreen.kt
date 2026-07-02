@@ -78,25 +78,6 @@ fun ProfileScreen(
 
     Scaffold(
         containerColor = Color(0xFF2A2522),
-//        bottomBar = {
-//            PublicBottomNavigation(
-//                currentDestination = PublicDestination.PROFILE,
-//                onNavigate = { destination ->
-//                    when (destination) {
-//                        PublicDestination.HOME ->
-//                            navController.navigate(PublicScreen.Home.route)
-//
-//                        PublicDestination.PROMISED_LAND ->
-//                            navController.navigate(PublicScreen.PromisedLand.route)
-//
-//                        PublicDestination.GROUP ->
-//                            navController.popBackStack()
-//
-//                        PublicDestination.PROFILE -> {}
-//                    }
-//                }
-//            )
-//        }
     ) { padding ->
         Box(
             modifier = Modifier
@@ -107,7 +88,8 @@ fun ProfileScreen(
             when (profile) {
                 is Resource.Loading -> {
                     CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
+                        color = Color(0xFFE8D8C9)
                     )
                 }
 
@@ -118,13 +100,6 @@ fun ProfileScreen(
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                     ) {
-//                        DashboardTopBar(
-//                            title = "PROFILE",
-//                            expanded = expanded,
-//                            onExpandClick = {
-//                                expanded = !expanded
-//                            }
-//                        )
                         Column(
                             modifier = Modifier.padding(20.dp)
                         ) {

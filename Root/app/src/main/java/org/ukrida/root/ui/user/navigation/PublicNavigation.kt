@@ -234,7 +234,6 @@ fun PublicNavigation(
                 navArgument("songId") { type = NavType.IntType }
             )
         ) {
-            val groupId = it.arguments?.getInt("groupId") ?: 0
             val songId = it.arguments?.getInt("songId") ?: 0
             val factory = remember {
                 HymnViewModelFactory(appContainer.songRepository)
@@ -243,7 +242,6 @@ fun PublicNavigation(
             HymnDetailScreen(
                 viewModel = viewModel,
                 navController = navController,
-                groupId = groupId,
                 songId = songId
             )
         }
