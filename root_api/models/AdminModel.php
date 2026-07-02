@@ -238,6 +238,23 @@ class AdminModel {
         $id = $this->db->lastInsertId();
         return $id ? (int) $id : null;
     }
+    public function updateSong(int $id, array $data): bool {
+        $stmt = $this->db->prepare(
+            "UPDATE songs
+            SET title = :title,
+                author = :author,
+                lyrics = :lyrics,
+                updated_at = NOW()
+            WHERE id = :id"
+        );
+
+        return $stmt->execute([
+            'id'     => $id,
+            'title'  => $data['title'],
+            'author' => $data['author'] ?? null,
+            'lyrics' => $data['lyrics'] ?? null,
+        ]);
+    }
 
     public function getSongById(int $id): ?array {
         $stmt = $this->db->prepare(
