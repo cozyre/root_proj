@@ -27,6 +27,9 @@ import org.ukrida.root.ui.user.screens.order.components.OrderHeader
 import org.ukrida.root.ui.user.screens.order.components.OrderInfoSection
 import org.ukrida.root.ui.user.screens.order.components.OrderPriceSection
 import org.ukrida.root.ui.user.screens.order.viewmodel.OrderViewModel
+import androidx.compose.material3.Text
+import org.ukrida.root.data.model.Group
+import org.ukrida.root.utils.Resource
 
 @Composable
 fun OrderScreen(
@@ -81,46 +84,61 @@ fun OrderScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            group?.let { tour ->
+            when (val state = group) {
 
-                OrderHeader(
-                    group = tour
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                OrderInfoSection(
-                    group = tour
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Dummy dulu, nanti backend tinggal kirim harga
-                OrderPriceSection(
-                    price = "Rp 25.000.000"
-                )
-
-                Spacer(modifier = Modifier.height(36.dp))
-
-                val buttonText = when (tour.statusJoin) {
-                    null -> "ORDER"
-                    "pending" -> "PENDING"
-                    "approved" -> "JOIN"
-                    else -> "ORDER"
+                is Resource.Loading -> {
+                    Text(
+                        text = "Loading...",
+                        color = Color.White
+                    )
                 }
 
-                OrderButton(
-                    text = buttonText,
-                    enabled = tour.statusJoin != "Pending",
-                    onClick = {
+                is Resource.Error -> {
+                    Text(
+                        text = state.message,
+                        color = Color.Red
+                    )
+                }
 
-                        // TODO:
-                        // ORDER -> Create Order
-                        // JOIN -> Join Group
+                is Resource.Success -> {
+
+                    val tour: Group = state.data
+
+                    OrderHeader(
+                        group = tour
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    OrderInfoSection(
+                        group = tour
+                    )
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    OrderPriceSection(
+                        price = "Rp 25.000.000"
+                    )
+
+                    Spacer(modifier = Modifier.height(36.dp))
+
+                    val buttonText = when (tour.statusJoin?.lowercase()) {
+                        null -> "ORDER"
+                        "pending" -> "PENDING"
+                        "approved" -> "JOIN"
+                        else -> "ORDER"
                     }
-                )
 
-                Spacer(modifier = Modifier.height(30.dp))
+                    OrderButton(
+                        text = buttonText,
+                        enabled = tour.statusJoin?.lowercase() != "pending",
+                        onClick = {
+                            // TODO
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(30.dp))
+                }
             }
         }
     }

@@ -98,13 +98,13 @@ fun FinishedTripScreen(
                         Spacer(modifier = Modifier.height(24.dp))
                     }
 
-                    items(uiState.groups) { group ->
+                    items(uiState.trips) { trip ->
 
                         FinishedTripCard(
-                            group = group,
+                            trip = trip,
                             onClick = {
                                 val route = Screen.FinishedDetail.route
-                                    .replace("{tripId}", group.id.toString())
+                                    .replace("{tripId}", trip.id.toString())
 
                                 navController.navigate(route)
                             }

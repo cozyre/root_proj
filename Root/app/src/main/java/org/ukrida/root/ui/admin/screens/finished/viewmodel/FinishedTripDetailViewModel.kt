@@ -8,11 +8,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.ukrida.root.data.dummy.DummyGroupData
-import org.ukrida.root.data.dummy.DummyMemberData
-import org.ukrida.root.data.fake.FakeGroupRepository
 import org.ukrida.root.data.model.Group
+import org.ukrida.root.data.model.GroupImage
 import org.ukrida.root.data.model.Member
+import org.ukrida.root.data.remote.RetrofitClient
+import org.ukrida.root.data.repository.GalleryRepository
+import org.ukrida.root.data.repository.GroupRepository
+import org.ukrida.root.data.repository.MemberRepository
+import org.ukrida.root.utils.Resource
 
 data class TripState(
     val title: String,
@@ -37,7 +40,9 @@ class FinishedTripDetailViewModel(
     val tripId: Int
 ) : ViewModel() {
 
-    private val groupRepository = FakeGroupRepository()
+    private val groupRepository = GroupRepository(RetrofitClient.instance)
+    private val memberRepository = MemberRepository(RetrofitClient.instance)
+    private val galleryRepository = GalleryRepository(RetrofitClient.instance)
 
     private val _uiState =
         MutableStateFlow(FinishedTripDetailUiState())
@@ -57,29 +62,28 @@ class FinishedTripDetailViewModel(
                 errorMessage = null
             )
 
-            val groupDeferred = async {
-                groupRepository.getTourById(tripId)
-            }
+            val groupDeferred = async { groupRepository.getTourById(tripId) }
+            val membersDeferred = async { memberRepository.listMembers(tripId) }
+            val imagesDeferred = async { galleryRepository.listImages(tripId) }
 
             val groupResult = groupDeferred.await()
+            val membersResult = membersDeferred.await()
+            val imagesResult = imagesDeferred.await()
 
             groupResult
                 .onSuccess { group ->
 
                     val tripState = group.toTripState()
 
-                    val memberList = DummyMemberData.members
-                        .map { it.toUiModel() }
+                    val memberList = when (membersResult) {
+                        is Resource.Success -> membersResult.data.map { it.toUiModel() }
+                        else -> emptyList()
+                    }
 
-                    val documentationList =
-                        DummyGroupData.groupImages
-                            .filter { it.groupId == tripId }
-                            .map {
-                                DocumentationUiModel(
-                                    id = it.id.toString(),
-                                    imageUrl = it.imageUrl
-                                )
-                            }
+                    val documentationList = when (imagesResult) {
+                        is Resource.Success -> imagesResult.data.map { it.toUiModel() }
+                        else -> emptyList()
+                    }
 
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
@@ -114,6 +118,11 @@ class FinishedTripDetailViewModel(
         id = id.toString(),
         name = fullName,
         profilePhotoUrl = profilePhotoUrl
+    )
+
+    private fun GroupImage.toUiModel() = DocumentationUiModel(
+        id = id.toString(),
+        imageUrl = imageUrl
     )
 
     companion object {

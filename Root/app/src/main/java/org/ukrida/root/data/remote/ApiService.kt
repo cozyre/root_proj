@@ -232,6 +232,12 @@ interface ApiService {
         @Body body: AdminTripUpdateRequest
     ): Response<ApiResponse<AdminTripResult>>
 
+    @POST("index.php")
+    suspend fun adminDeleteTrip(
+        @Query("route") route: String = "admin/trip/delete",
+        @Body body: AdminTripDeleteRequest
+    ): Response<ApiResponse<Unit>>
+
     // Admin — Orders ────────────────────────────────────────────────────────
 
     /** POST ?route=admin/order/approve */

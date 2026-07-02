@@ -1,5 +1,6 @@
 package org.ukrida.root.data.repository
 
+import org.ukrida.root.data.model.AdminTripDeleteRequest
 import org.ukrida.root.data.model.Group
 import org.ukrida.root.data.model.GroupResponse
 import org.ukrida.root.data.model.GroupSingleResponse

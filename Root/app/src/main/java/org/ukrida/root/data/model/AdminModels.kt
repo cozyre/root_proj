@@ -33,6 +33,10 @@ data class AdminTripUpdateRequest(
     @SerializedName("koordinator_id") val koordinatorId: Int
 )
 
+data class AdminTripDeleteRequest(
+    val id: Int
+)
+
 /** Returned in data.group from create/update */
 data class AdminTrip(
     val id: Int,

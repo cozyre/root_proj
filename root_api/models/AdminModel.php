@@ -340,4 +340,14 @@ class AdminModel {
             'id'            => $id,
         ]);
     }
+    public function deleteTrip(int $id): bool
+    {
+        $stmt = $this->db->prepare("
+            UPDATE groups
+            SET deleted_at = NOW()
+            WHERE id = ?
+        ");
+
+        return $stmt->execute([$id]);
+    }
 }

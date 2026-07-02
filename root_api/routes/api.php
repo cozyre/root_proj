@@ -136,6 +136,8 @@ match (true) {
         => $adminCtrl->tripCreate(),
     $method === 'POST' && $route === 'admin/trip/update'
         => $adminCtrl->tripUpdate(),
+    $method === 'POST' && $route === 'admin/trip/delete'
+        => $adminCtrl->tripDelete(),
     $method === 'POST' && $route === 'admin/order/approve'
         => $adminCtrl->orderApprove(),
     $method === 'POST' && $route === 'admin/order/reject'
