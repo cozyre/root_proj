@@ -15,3 +15,19 @@ data class DevotionDate(
     @SerializedName("devotion_date") val date: String,
     val title: String
 )
+
+data class CreateDevotionRequest(
+    @SerializedName("group_id") val groupId: Int,
+    @SerializedName("devotion_date") val devotionDate: String,
+    val title: String,
+    val content: String,
+    @SerializedName("scripture_ref") val scriptureRef: String? = null
+)
+
+data class UpdateDevotionRequest(
+    @SerializedName("group_id") val groupId: Int,
+    @SerializedName("devotion_date") val devotionDate: String,
+    val title: String,
+    val content: String,
+    @SerializedName("scripture_ref") val scriptureRef: String? = null
+)
