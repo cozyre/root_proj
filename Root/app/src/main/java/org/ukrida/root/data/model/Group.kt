@@ -8,6 +8,7 @@ data class Group(
     val description: String?,
     val location: String?,
     val dresscode: String?,
+    val price: Int,
     val status: String,
     @SerializedName("start_date") val startDate: String?,
     @SerializedName("end_date") val endDate: String?,

@@ -34,23 +34,13 @@ fun PublicTopBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (onBackClick != null) {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    tint = cream
-                )
-            }
-        } else {
-            Text(
-                text = "R",
-                color = cream,
-                fontSize = 34.sp,
-                fontStyle = FontStyle.Italic,
-                fontWeight = FontWeight.Bold
-            )
-        }
+        Text(
+            text = "R",
+            color = cream,
+            fontSize = 34.sp,
+            fontStyle = FontStyle.Italic,
+            fontWeight = FontWeight.Bold
+        )
 
         Text(
             text = title,
