@@ -29,7 +29,8 @@ fun AppDrawer(
         DrawerItem("FINISHED TOUR", "finished_trip"),
         DrawerItem("ONGOING TOUR", "ongoing_trip"),
         DrawerItem("HYMN FOR HIM", "hymn_for_him"),
-        DrawerItem("APPROVAL", "approval")
+        DrawerItem("APPROVAL", "approval"),
+        DrawerItem("BROADCAST", "broadcast")
     )
 
     Box {

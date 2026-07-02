@@ -38,6 +38,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import org.ukrida.root.ui.admin.screens.hymn.viewmodel.AddSongViewModel
+import org.ukrida.root.ui.admin.screens.newtrip.screen.NewDailyBreadScreen
+import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.NewTripViewModel
+import org.ukrida.root.ui.admin.screens.newtrip.screen.NewItineraryScreen
+import org.ukrida.root.ui.admin.screens.newtrip.screen.NewSongsScreen
+import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.NewDailyBreadViewModel
+import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.NewItineraryViewModel
+import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.NewSongsViewModel
 
 
 @Composable
@@ -232,7 +239,93 @@ fun AppNavigation(
         }
 
         composable(Screen.NewTrip.route) {
-            NewTripScreen(onMenuClick = onMenuClick)
+            val viewModel: NewTripViewModel = viewModel(
+                factory = NewTripViewModel.factory(
+                    adminRepository = appContainer.adminRepository,
+                    memberRepository = appContainer.memberRepository
+                )
+            )
+
+            NewTripScreen(
+                navController = navController,
+                onMenuClick = onMenuClick,
+                viewModel = viewModel
+            )
+        }
+
+        composable(
+            route = Screen.NewItinerary.route,
+            arguments = listOf(
+                navArgument("tripId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+
+            val tripId = backStackEntry.arguments?.getInt("tripId") ?: 0
+
+            val viewModel: NewItineraryViewModel = viewModel(
+                factory = NewItineraryViewModel.factory(
+                    tripId = tripId,
+                    itineraryRepository = appContainer.itineraryRepository
+                )
+            )
+
+            NewItineraryScreen(
+                navController = navController,
+                onMenuClick = onMenuClick,
+                viewModel = viewModel
+            )
+        }
+        composable(
+            route = Screen.NewSongs.route,
+            arguments = listOf(
+                navArgument("tripId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+
+            val tripId = backStackEntry.arguments?.getInt("tripId") ?: 0
+
+            val viewModel: NewSongsViewModel = viewModel(
+                factory = NewSongsViewModel.factory(
+                    tripId = tripId,
+                    songRepository = appContainer.songRepository,
+                    itineraryRepository = appContainer.itineraryRepository
+                )
+            )
+
+            NewSongsScreen(
+                navController = navController,
+                onMenuClick = onMenuClick,
+                viewModel = viewModel
+            )
+        }
+        composable(
+            route = Screen.NewDailyBread.route,
+            arguments = listOf(
+                navArgument("tripId") {
+                    type = NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+
+            val tripId = backStackEntry.arguments?.getInt("tripId") ?: 0
+
+            val viewModel: NewDailyBreadViewModel = viewModel(
+                factory = NewDailyBreadViewModel.factory(
+                    tripId = tripId,
+                    adminRepository = appContainer.adminRepository,
+                    devotionRepository = appContainer.devotionRepository
+                )
+            )
+
+            NewDailyBreadScreen(
+                navController = navController,
+                onMenuClick = onMenuClick,
+                viewModel = viewModel
+            )
         }
 
         composable(Screen.FinishedTrip.route) {
