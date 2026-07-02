@@ -25,6 +25,7 @@ import org.ukrida.root.ui.admin.screens.RootScreen
 import org.ukrida.root.ui.user.login.components.AuthNavigation
 import org.ukrida.root.ui.user.screens.PublicRootScreen
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.view.WindowCompat.enableEdgeToEdge
 
 
 class MainActivity : ComponentActivity() {
