@@ -21,7 +21,6 @@ import org.ukrida.root.utils.SessionManager
 import kotlinx.coroutines.delay
 import android.util.Log
 import org.ukrida.root.data.AppContainer
-import org.ukrida.root.ui.admin.screens.RootScreen
 import org.ukrida.root.ui.user.login.components.AuthNavigation
 import org.ukrida.root.ui.user.screens.PublicRootScreen
 import androidx.compose.ui.platform.LocalContext
@@ -116,7 +115,7 @@ fun MainScreen(activity: MainActivity) {
         }
 
         "admin_root" -> {
-            RootScreen(appContainer = appContainer, onLogout)
+            PublicRootScreen(appContainer = appContainer, onLogout)
         }
 
         "public_root" -> {
