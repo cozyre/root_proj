@@ -1,8 +1,6 @@
 package org.ukrida.root.data.repository
 
-import org.ukrida.root.data.model.AddSongToGroupRequest
 import org.ukrida.root.data.model.ApiResponse
-import org.ukrida.root.data.model.RemoveSongFromGroupRequest
 import org.ukrida.root.data.model.Song
 import org.ukrida.root.data.model.SongBrowseItem
 import org.ukrida.root.data.model.SongSummary
@@ -29,18 +27,6 @@ class SongRepository(private val api: ApiService) {
 
     suspend fun browseSongs(query: String = ""): Result<List<SongBrowseItem>> = safeCallList {
         api.browseSongs(query = query)
-    }
-
-    suspend fun addSongToGroup(
-        request: AddSongToGroupRequest
-    ): Result<Unit> = safeCall {
-        api.addSongToGroup(body = request)
-    }
-
-    suspend fun removeSongFromGroup(
-        request: RemoveSongFromGroupRequest
-    ): Result<Unit> = safeCall {
-        api.removeSongFromGroup(body = request)
     }
 
     // ─── Helpers ─────────────────────────────────────────────────────────

@@ -140,17 +140,6 @@ interface ApiService {
         @Query("q")     query: String = ""
     ): Response<ApiResponse<List<SongBrowseItem>>>
 
-    @POST("index.php")
-    suspend fun addSongToGroup(
-        @Query("route") route: String = "admin/song/addToGroup",
-        @Body body: AddSongToGroupRequest
-    ): Response<ApiResponse<Unit>>
-
-    @POST("index.php")
-    suspend fun removeSongFromGroup(
-        @Query("route") route: String = "admin/song/removeFromGroup",
-        @Body body: RemoveSongFromGroupRequest
-    ): Response<ApiResponse<Unit>>
     //Devotions -----------------------------------------------------------------
     @GET("index.php")
     suspend fun getDevotion(

@@ -24,16 +24,3 @@ data class SongBrowseItem(
     val title: String,
     val author: String?
 )
-
-data class AddSongToGroupRequest(
-    val group_id: Int,
-    val song_id: Int,
-    val itenary_id: Int? = null,
-    val sort_order: Int? = null
-)
-
-data class RemoveSongFromGroupRequest(
-    val group_id: Int,
-    val song_id: Int,
-    val itenary_id: Int? = null
-)

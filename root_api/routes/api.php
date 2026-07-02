@@ -148,8 +148,6 @@ match (true) {
         => $adminCtrl->galleryRemoveImage(),
     $method === 'POST' && $route === 'admin/song/create'
         => $adminCtrl->songCreate(),
-    $method === 'POST' && $route === 'admin/song/removeFromGroup'
-    => $songCtrl->removeFromGroup(),
     $method === 'POST' && $route === 'admin/song/addToGroup'
         => $adminCtrl->songAddToGroup(),
     $method === 'POST' && $route === 'admin/devotion/create'

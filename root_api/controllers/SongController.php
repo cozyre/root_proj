@@ -43,39 +43,6 @@ class SongController {
         $this->success(200, $this->model->getByGroupAndDate($groupId, $date));
     }
 
-    public function removeFromGroup(): void
-    {
-        $user = $this->auth->requireAuth();
-
-        $input = json_decode(file_get_contents('php://input'), true);
-
-        $groupId = isset($input['group_id']) ? (int) $input['group_id'] : 0;
-        $songId = isset($input['song_id']) ? (int) $input['song_id'] : 0;
-        $itenaryId = isset($input['itenary_id']) ? (int) $input['itenary_id'] : null;
-
-        if ($groupId <= 0 || $songId <= 0) {
-            $this->error(400, 'group_id and song_id are required');
-            return;
-        }
-
-        $deleted = $this->model->removeFromGroup(
-            $groupId,
-            $songId,
-            $itenaryId
-        );
-
-        if ($deleted) {
-            $this->success(200, [
-                'group_id' => $groupId,
-                'song_id' => $songId,
-                'itenary_id' => $itenaryId
-            ], 'Song removed from group');
-            return;
-        }
-
-        $this->error(404, 'Song relation not found or already removed');
-    }
-
     /**
      * GET ?route=song/get&id=5
      * Single song with full lyrics.
