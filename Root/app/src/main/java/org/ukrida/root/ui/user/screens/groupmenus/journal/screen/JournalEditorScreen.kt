@@ -1,61 +1,63 @@
 package org.ukrida.root.ui.user.screens.groupmenus.journal.screen
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import org.ukrida.root.ui.user.navigation.PublicScreen
-import org.ukrida.root.ui.user.components.DashboardMenu
-import org.ukrida.root.ui.user.components.DashboardTopBar
 import org.ukrida.root.ui.user.screens.groupmenus.journal.components.CustomJournalField
 import org.ukrida.root.ui.user.screens.groupmenus.journal.components.JournalBackButton
 import org.ukrida.root.ui.user.screens.groupmenus.journal.components.JournalDatePicker
+import org.ukrida.root.ui.user.screens.groupmenus.journal.components.JournalDeleteButton
 import org.ukrida.root.ui.user.screens.groupmenus.journal.components.JournalSaveButton
 import org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel.JournalEditorViewModel
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberDatePickerState
+import org.ukrida.root.utils.Resource
+import java.time.Instant
+import java.time.ZoneId
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JournalEditorScreen(
-    viewModel: JournalEditorViewModel = viewModel(),
+    viewModel: JournalEditorViewModel,
     navController: NavHostController,
     groupId: Int,
     journalId: Int?
 ) {
+    val uiState by viewModel.uiState.collectAsState()
 
-    val title by viewModel.title.collectAsState()
-    val content by viewModel.content.collectAsState()
-    val journalDate by viewModel.journalDate.collectAsState()
-    val isEditMode by viewModel.isEditMode.collectAsState()
-    val titleError by viewModel.titleError.collectAsState()
-    val contentError by viewModel.contentError.collectAsState()
-
-    var expanded by remember {
-        mutableStateOf(false)
-    }
-    var showDatePicker by remember {
-        mutableStateOf(false)
-    }
+    val context = LocalContext.current
+    var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
-    LaunchedEffect(journalId) {
-        viewModel.loadJournal(journalId)
+
+    LaunchedEffect(groupId, journalId) {
+        viewModel.loadJournal(groupId, journalId)
     }
+
+    LaunchedEffect(uiState.saveResult) {
+        uiState.saveResult?.let { resource ->
+            when (resource) {
+                is Resource.Success -> {
+                    Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                    viewModel.resetSaveResult()
+                    navController.popBackStack()
+                }
+                is Resource.Error -> {
+                    Toast.makeText(context, resource.message, Toast.LENGTH_SHORT).show()
+                    viewModel.resetSaveResult()
+                }
+                else -> {}
+            }
+        }
+    }
+
     Scaffold(
         containerColor = Color(0xFF2A2522)
     ) { padding ->
@@ -70,13 +72,6 @@ fun JournalEditorScreen(
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
-                DashboardTopBar(
-                    title = "JOURNAL",
-                    expanded = expanded,
-                    onExpandClick = {
-                        expanded = !expanded
-                    }
-                )
                 Column(
                     modifier = Modifier.padding(horizontal = 20.dp)
                 ) {
@@ -88,16 +83,16 @@ fun JournalEditorScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     CustomJournalField(
                         label = "Title",
-                        value = title,
+                        value = uiState.title,
                         placeholder = "Enter journal title",
-                        error = titleError,
+                        error = uiState.titleError,
                         onValueChange = {
                             viewModel.updateTitle(it)
                         }
                     )
                     Spacer(modifier = Modifier.height(20.dp))
                     JournalDatePicker(
-                        date = journalDate,
+                        date = uiState.journalDate,
                         onClick = {
                             showDatePicker = true
                         }
@@ -105,98 +100,49 @@ fun JournalEditorScreen(
                     Spacer(modifier = Modifier.height(20.dp))
                     CustomJournalField(
                         label = "Content",
-                        value = content,
+                        value = uiState.content,
                         placeholder = "Write your journal...",
-                        error = contentError,
+                        error = uiState.contentError,
                         minLines = 10,
                         onValueChange = {
                             viewModel.updateContent(it)
                         }
                     )
                     Spacer(modifier = Modifier.height(32.dp))
-                    JournalSaveButton(
-                        isEditMode = isEditMode,
-                        onClick = {
-                            val success = viewModel.saveJournal()
-                            if (success) {
-                                // TODO Backend Integration
-                                // After create/update succeeds:
-                                //
-                                // JournalScreen should call:
-                                // viewModel.loadJournals(groupId)
-                                //
-                                // Then:
-                                navController.popBackStack()
-                            }
+
+                    if (uiState.saveResult is Resource.Loading) {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                color = Color(0xFFE8D8C9)
+                            )
                         }
-                    )
+                    } else {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            if (uiState.isEditMode) {
+                                JournalDeleteButton(
+                                    modifier = Modifier.weight(1f),
+                                    onClick = {
+                                        viewModel.deleteJournal()
+                                    }
+                                )
+                            }
+                            JournalSaveButton(
+                                modifier = Modifier.weight(1f),
+                                isEditMode = uiState.isEditMode,
+                                onClick = {
+                                    viewModel.saveJournal(groupId)
+                                }
+                            )
+                        }
+                    }
                     Spacer(modifier = Modifier.height(24.dp))
                 }
-            }
-            AnimatedVisibility(
-                visible = expanded,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = .4f))
-                        .clickable(
-                            indication = null,
-                            interactionSource = remember {
-                                MutableInteractionSource()
-                            }
-                        ) {
-                            expanded = false
-                        }
-                )
-            }
-            if (expanded) {
-                DashboardMenu(
-                    onDashboardClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Dashboard.createRoute(groupId)
-                        )
-                    },
-                    onItineraryClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Itinerary.createRoute(groupId)
-                        )
-                    },
-                    onHymnClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Hymn.createRoute(groupId)
-                        )
-                    },
-                    onDailyBreadClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.DailyBread.createRoute(groupId)
-                        )
-                    },
-                    onJournalClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Journal.createRoute(groupId)
-                        )
-                    },
-                    onGalleryClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Gallery.createRoute(groupId)
-                        )
-                    },
-                    onMembersClick = {
-                        expanded = false
-                        navController.navigate(
-                            PublicScreen.Members.createRoute(groupId)
-                        )
-                    }
-                )
             }
         }
         if (showDatePicker) {
@@ -208,16 +154,16 @@ fun JournalEditorScreen(
                     TextButton(
                         onClick = {
                             datePickerState.selectedDateMillis?.let { millis ->
-                                val date = java.time.Instant
+                                val date = Instant
                                     .ofEpochMilli(millis)
-                                    .atZone(java.time.ZoneId.systemDefault())
+                                    .atZone(ZoneId.systemDefault())
                                     .toLocalDate()
                                 viewModel.updateDate(date.toString())
                             }
                             showDatePicker = false
                         }
                     ) {
-                        androidx.compose.material3.Text("OK")
+                        Text("OK")
                     }
                 },
                 dismissButton = {
@@ -226,7 +172,7 @@ fun JournalEditorScreen(
                             showDatePicker = false
                         }
                     ) {
-                        androidx.compose.material3.Text("Cancel")
+                        Text("Cancel")
                     }
                 }
             ) {

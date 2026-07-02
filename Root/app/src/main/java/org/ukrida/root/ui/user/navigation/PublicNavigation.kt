@@ -33,6 +33,8 @@ import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBrea
 import org.ukrida.root.ui.user.screens.groupmenus.dailybread.screen.DailyBreadDetailScreen
 import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBreadViewModelFactory
 import org.ukrida.root.ui.user.screens.groupmenus.itinerary.viewmodel.ItineraryViewModelFactory
+import org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel.JournalEditorViewModelFactory
+import org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel.JournalViewModelFactory
 import org.ukrida.root.ui.user.screens.home.screen.HomeScreen
 import org.ukrida.root.ui.user.screens.home.viewmodel.HomeViewModel
 import org.ukrida.root.ui.user.screens.home.viewmodel.HomeViewModelFactory
@@ -269,8 +271,10 @@ fun PublicNavigation(
             )
         ) {
             val groupId = it.arguments?.getInt("groupId") ?: 0
-            // TODO: Create JournalViewModelFactory if not exists
-            val viewModel: JournalViewModel = viewModel()
+            val factory = remember {
+                JournalViewModelFactory(appContainer.journalRepository)
+            }
+            val viewModel: JournalViewModel = viewModel(factory = factory)
             JournalScreen(
                 viewModel = viewModel,
                 navController = navController,
@@ -287,8 +291,10 @@ fun PublicNavigation(
         ) {
             val groupId = it.arguments?.getInt("groupId") ?: 0
             val journalId = it.arguments?.getInt("journalId") ?: -1
-            // TODO: Create JournalEditorViewModelFactory if not exists
-            val viewModel: JournalEditorViewModel = viewModel()
+            val factory = remember {
+                JournalEditorViewModelFactory(appContainer.journalRepository)
+            }
+            val viewModel: JournalEditorViewModel = viewModel(factory = factory)
             JournalEditorScreen(
                 viewModel = viewModel,
                 navController = navController,

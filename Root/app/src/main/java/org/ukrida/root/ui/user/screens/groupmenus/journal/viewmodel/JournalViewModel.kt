@@ -31,39 +31,6 @@ class JournalViewModel(
         }
     }
 
-    fun createJournal(groupId: Int, title: String, content: String, journalDate: String) {
-        viewModelScope.launch {
-            _uiState.update { it.copy(actionResult = Resource.Loading()) }
-            val result = journalRepository.createJournal(groupId, title, content, journalDate)
-            when (result) {
-                is Resource.Success -> {
-                    _uiState.update { it.copy(actionResult = Resource.Success(Unit)) }
-                    loadJournals(groupId)
-                }
-                is Resource.Error -> {
-                    _uiState.update { it.copy(actionResult = Resource.Error(result.message)) }
-                }
-                is Resource.Loading -> {}
-            }
-        }
-    }
-
-    fun deleteJournal(groupId: Int, journalId: Int) {
-        viewModelScope.launch {
-            _uiState.update { it.copy(actionResult = Resource.Loading()) }
-            when (val result = journalRepository.deleteJournal(journalId)) {
-                is Resource.Success -> {
-                    _uiState.update { it.copy(actionResult = Resource.Success(Unit)) }
-                    loadJournals(groupId)
-                }
-                is Resource.Error -> {
-                    _uiState.update { it.copy(actionResult = Resource.Error(result.message)) }
-                }
-                is Resource.Loading -> {}
-            }
-        }
-    }
-
     fun resetActionResult() {
         _uiState.update { it.copy(actionResult = null) }
     }
