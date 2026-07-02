@@ -16,6 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -37,6 +40,8 @@ fun OnGoingScreen(
     viewModel: OnGoingViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedId by remember { mutableStateOf<Int?>(null) }
 
     Column(
         modifier = Modifier
@@ -107,7 +112,8 @@ fun OnGoingScreen(
                             group = group,
                             showRemoveButton = true,
                             onRemoveClick = {
-                                // aksi hapus
+                                selectedId = group.id
+                                showDialog = true
                             },
                             onClick = {
                                 val route = Screen.OngoingDetail.route
@@ -120,6 +126,43 @@ fun OnGoingScreen(
                     item {
                         Spacer(modifier = Modifier.height(24.dp))
                     }
+                }
+                if (showDialog) {
+                    androidx.compose.material3.AlertDialog(
+                        onDismissRequest = {
+                            showDialog = false
+                            selectedId = null
+                        },
+                        title = {
+                            Text("Hapus Trip")
+                        },
+                        text = {
+                            Text("Apakah kamu yakin ingin menghapus trip ini?")
+                        },
+                        confirmButton = {
+                            androidx.compose.material3.TextButton(
+                                onClick = {
+                                    selectedId?.let {
+                                        viewModel.deleteTrip(it)
+                                    }
+                                    showDialog = false
+                                    selectedId = null
+                                }
+                            ) {
+                                Text("Hapus")
+                            }
+                        },
+                        dismissButton = {
+                            androidx.compose.material3.TextButton(
+                                onClick = {
+                                    showDialog = false
+                                    selectedId = null
+                                }
+                            ) {
+                                Text("Batal")
+                            }
+                        }
+                    )
                 }
             }
         }

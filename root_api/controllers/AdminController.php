@@ -83,6 +83,40 @@ class AdminController {
         ], 'Trip updated');
     }
 
+    // ─── DELETE TRIP ─────────────────────────────────────────────
+    // POST ?route=admin/trip/delete
+    // Body: { id }
+
+    public function tripDelete(): void
+    {
+        $this->auth->requireRole('admin');
+
+        $body = json_decode(file_get_contents('php://input'), true) ?? [];
+
+        $id = (int)($body['id'] ?? 0);
+
+        if (!$id) {
+            $this->fail(400, 'id is required');
+            return;
+        }
+
+        $trip = $this->model->getTripById($id);
+
+        if (!$trip) {
+            $this->fail(404, 'Trip not found');
+            return;
+        }
+
+        $deleted = $this->model->deleteTrip($id);
+
+        if (!$deleted) {
+            $this->fail(500, 'Failed to delete trip');
+            return;
+        }
+
+        $this->ok(null, 'Trip deleted');
+    }
+
     // ─── 4a. APPROVE ORDER ────────────────────────────────────────────────────
     // POST ?route=admin/order/approve
     // Body: { account_id }

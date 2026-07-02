@@ -38,14 +38,11 @@ fun TripScreen(
 ) {
 
     val groups by viewModel.groups.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     val ongoingTrips = groups.filter {
         it.status.equals("upcoming", ignoreCase = true) ||
                 it.status.equals("active", ignoreCase = true)
-    }.take(2)
-
-    val finishedTrips = groups.filter {
-        it.status.equals("completed", ignoreCase = true)
     }.take(2)
 
     LazyColumn(
@@ -228,22 +225,23 @@ fun TripScreen(
         }
 
         items(
-            finishedTrips.take(3)
-        ) { group ->
+            uiState.finishedTrips.take(3)
+        ) { trip ->
 
             Box(
                 modifier = Modifier.padding(horizontal = 24.dp)
             ) {
 
                 FinishedTripCard(
-                    group = group,
+                    trip = trip,
                     onClick = {
 
-                        val route = Screen.FinishedDetail.route
-                            .replace(
-                                "{tripId}",
-                                group.id.toString()
-                            )
+                        val route =
+                            Screen.FinishedDetail.route
+                                .replace(
+                                    "{tripId}",
+                                    trip.id.toString()
+                                )
 
                         navController.navigate(route)
                     }
@@ -253,7 +251,7 @@ fun TripScreen(
 
         item {
 
-            if (finishedTrips.size > 3) {
+            if (uiState.finishedTrips.size > 3) {
 
                 Box(
                     modifier = Modifier

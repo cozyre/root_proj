@@ -5,9 +5,11 @@ import okhttp3.RequestBody
 import org.ukrida.root.data.model.*
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Query
 
@@ -78,6 +80,27 @@ interface ApiService {
         @Query("route")    route: String = "itinerary/getDates",
         @Query("group_id") groupId: Int
     ): Response<ApiResponse<List<ItineraryDate>>>
+
+    @POST("index.php")
+    suspend fun createItineraryItem(
+        @Query("route") route: String = "itinerary/createItem",
+        @Body body: CreateItineraryItemRequest
+    ): Response<ApiResponse<ItineraryItemResponse>>
+
+    @POST("index.php")
+    suspend fun updateItineraryItem(
+        @Query("route") route: String = "itinerary/updateItem",
+        @Query("id") id: Int,
+        @Body body: UpdateItineraryRequest
+    ): Response<ApiResponse<ItineraryItemResponse>>
+
+    @POST("index.php")
+    suspend fun deleteItineraryItem(
+        @Query("route") route: String = "itinerary/deleteItem",
+        @Query("id") id: Int
+    ): Response<ApiResponse<DeleteResponse>>
+
+
 
     //Songs -----------------------------------------------------------------
     /** All songs in a group's songbook (no day filter) */
@@ -185,6 +208,12 @@ interface ApiService {
     ): Response<ApiResponse<List<Member>>>
 
     @GET("index.php")
+    suspend fun getLeaders(
+        @Query("route") route: String = "member/leaders",
+        @Query("role")  role: String
+    ): Response<ApiResponse<List<Member>>>
+
+    @GET("index.php")
     suspend fun getMemberDetail(
         @Query("route")    route: String = "member/detail",
         @Query("user_id")  userId: Int,
@@ -231,6 +260,12 @@ interface ApiService {
         @Query("route") route: String = "admin/trip/update",
         @Body body: AdminTripUpdateRequest
     ): Response<ApiResponse<AdminTripResult>>
+
+    @POST("index.php")
+    suspend fun adminDeleteTrip(
+        @Query("route") route: String = "admin/trip/delete",
+        @Body body: AdminTripDeleteRequest
+    ): Response<ApiResponse<Unit>>
 
     // Admin — Orders ────────────────────────────────────────────────────────
 

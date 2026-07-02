@@ -136,6 +136,8 @@ match (true) {
         => $adminCtrl->tripCreate(),
     $method === 'POST' && $route === 'admin/trip/update'
         => $adminCtrl->tripUpdate(),
+    $method === 'POST' && $route === 'admin/trip/delete'
+        => $adminCtrl->tripDelete(),
     $method === 'POST' && $route === 'admin/order/approve'
         => $adminCtrl->orderApprove(),
     $method === 'POST' && $route === 'admin/order/reject'
@@ -154,6 +156,14 @@ match (true) {
         => $adminCtrl->devotionUpdate(),
     $method === 'GET' && $route === 'admin/accounts/pending'
         => $adminCtrl->pendingAccounts(),
+    $method === 'GET' && $route === 'member/leaders'
+        => $memberCtrl->leaders(),
+    $method === 'POST' && $route === 'itinerary/createItem'
+        => $itineraryCtrl->createItem(),
+    $method === 'POST' && $route === 'itinerary/updateItem'
+        => $itineraryCtrl->updateItem(),
+    $method === 'POST' && $route === 'itinerary/deleteItem'
+        => $itineraryCtrl->deleteItem(),
 
 
     default => (function () use ($route, $method) {

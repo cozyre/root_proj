@@ -21,3 +21,32 @@ data class ItineraryDate(
     @SerializedName("itenary_date") val date: String,
     @SerializedName("itenary_desc") val desc: String
 )
+
+data class CreateItineraryItemRequest(
+    val itenary_id: Int,
+    val start_time: String,
+    val end_time: String,
+    val type: String,
+    val description: String
+)
+
+data class UpdateItineraryRequest(
+    val start_time: String,
+    val end_time: String,
+    val type: String,
+    val description: String
+)
+
+data class ItineraryItemResponse(
+    val id: Int,
+    val start_time: String,
+    val end_time: String,
+    val type: String,
+    val description: String
+)
+
+data class DeleteResponse(
+    val deleted: Boolean,
+    val id: Int? = null
+)
+

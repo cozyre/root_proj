@@ -10,6 +10,7 @@ import org.ukrida.root.data.model.AdminOrderResult
 import org.ukrida.root.data.model.AdminSongAddResult
 import org.ukrida.root.data.model.AdminSongAddToGroupRequest
 import org.ukrida.root.data.model.AdminSongRequest
+import org.ukrida.root.data.model.AdminTripDeleteRequest
 import org.ukrida.root.data.model.AdminTripRequest
 import org.ukrida.root.data.model.AdminTripResult
 import org.ukrida.root.data.model.AdminTripUpdateRequest
@@ -32,6 +33,7 @@ class AdminRepository(private val api: ApiService) {
 
     suspend fun getCompletedTrips(): Resource<List<CompletedTrip>> = safeCall {
         val res = api.adminGetTrips()
+
         if (res.isSuccessful && res.body()?.success == true)
             Resource.Success(res.body()!!.data ?: emptyList())
         else
@@ -174,6 +176,24 @@ class AdminRepository(private val api: ApiService) {
             } else {
                 Result.failure(Exception(res.body()?.message ?: "Error fetching pending accounts"))
             }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+    suspend fun deleteTrip(id: Int): Result<Unit> {
+        return try {
+
+            val response = api.adminDeleteTrip(
+                route = "admin/trip/delete",
+                body = AdminTripDeleteRequest(id)
+            )
+
+            if (response.isSuccessful) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Delete failed: ${response.code()}"))
+            }
+
         } catch (e: Exception) {
             Result.failure(e)
         }

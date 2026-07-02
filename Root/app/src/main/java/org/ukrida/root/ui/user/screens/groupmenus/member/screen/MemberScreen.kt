@@ -37,6 +37,7 @@ import org.ukrida.root.ui.user.components.DashboardTopBar
 import org.ukrida.root.ui.user.screens.members.components.MemberCard
 import org.ukrida.root.ui.user.screens.members.viewmodel.MemberViewModel
 
+
 @Composable
 fun MemberScreen(
     viewModel: MemberViewModel = viewModel(),

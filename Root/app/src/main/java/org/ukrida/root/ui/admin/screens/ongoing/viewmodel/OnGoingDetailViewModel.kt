@@ -8,21 +8,31 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.ukrida.root.data.dummy.DummyMemberData
-import org.ukrida.root.data.fake.FakeAccountRepository
-import org.ukrida.root.data.fake.FakeGroupRepository
-import org.ukrida.root.data.fake.FakeMemberRepository
+import org.ukrida.root.data.model.AdminTripUpdateRequest
 import org.ukrida.root.data.model.Group
 import org.ukrida.root.data.model.Member
+import org.ukrida.root.data.remote.RetrofitClient
+import org.ukrida.root.data.repository.AccountRepository
+import org.ukrida.root.data.repository.AdminRepository
+import org.ukrida.root.data.repository.GalleryRepository
+import org.ukrida.root.data.repository.GroupRepository
+import org.ukrida.root.data.repository.MemberRepository
+import org.ukrida.root.ui.admin.screens.finished.viewmodel.DocumentationUiModel
+import org.ukrida.root.ui.admin.screens.finished.viewmodel.LeaderUiModel
+import org.ukrida.root.ui.admin.screens.finished.viewmodel.MemberUiModel
 import org.ukrida.root.utils.Resource
-import org.ukrida.root.ui.admin.screens.finished.viewmodel.*
 
-
-// Data class untuk state layar detail
 data class TripState(
     val title: String,
     val description: String,
     val dateRange: String,
+
+    val startDate: String?,
+    val endDate: String?,
+
+    val mentorId: Int?,
+    val coordinatorId: Int?,
+
     val imageUrl: String?,
     val location: String?,
     val dresscode: String?,
@@ -30,138 +40,403 @@ data class TripState(
     val meetupAddress: String?
 )
 
+data class LeaderOption(
+    val id: Int,
+    val name: String
+)
+
 data class OnGoingDetailUiState(
     val isLoading: Boolean = false,
+
     val tripState: TripState? = null,
+
     val members: List<MemberUiModel> = emptyList(),
+
     val documentations: List<DocumentationUiModel> = emptyList(),
-    val errorMessage: String? = null,
+
+    val mentorOptions: List<LeaderOption> = emptyList(),
+    val coordinatorOptions: List<LeaderOption> = emptyList(),
+
     val mentor: LeaderUiModel? = null,
-    val coordinator: LeaderUiModel? = null
+    val coordinator: LeaderUiModel? = null,
+
+    val errorMessage: String? = null
 )
 
 class OnGoingDetailViewModel(
     val tripId: Int
 ) : ViewModel() {
 
-    private val groupRepository = FakeGroupRepository()
-    private val memberRepository = FakeMemberRepository()
-    private val accountRepository = FakeAccountRepository()
+    private val groupRepository =
+        GroupRepository(RetrofitClient.instance)
 
-    private val _uiState = MutableStateFlow(OnGoingDetailUiState())
-    val uiState: StateFlow<OnGoingDetailUiState> = _uiState.asStateFlow()
+    private val memberRepository =
+        MemberRepository(RetrofitClient.instance)
 
-    // Tetap expose tripState langsung untuk kompatibilitas dengan screen yang sudah ada
-    val tripState: StateFlow<TripState?> = MutableStateFlow<TripState?>(null).also { flow ->
-        viewModelScope.launch {
-            uiState.collect { flow.value = it.tripState }
-        }
-    }
-    fun loadDetail() {
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(
-                isLoading = true,
-                errorMessage = null
-            )
+    private val accountRepository =
+        AccountRepository(RetrofitClient.instance)
 
-            // Load group
-            val groupDeferred = async {
-                groupRepository.getTourById(tripId)
-            }
-            val detailDeferred = async {
-                accountRepository.getGroupDetail(tripId)
-            }
-            val detailResult = detailDeferred.await()
+    private val galleryRepository =
+        GalleryRepository(RetrofitClient.instance)
 
-            val groupResult = groupDeferred.await()
+    private val adminRepository =
+        AdminRepository(RetrofitClient.instance)
 
-            // Ambil member yang sudah approved dan sudah bayar
-            val memberUiList = DummyMemberData.members
-                .map { it.toUiModel() }
+    private val _uiState =
+        MutableStateFlow(OnGoingDetailUiState())
 
-            val detail = detailResult.getOrNull()
-
-            groupResult
-                .onSuccess { group ->
-
-                    val tripState = group.toTripState()
-
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        tripState = tripState,
-                        members = memberUiList,
-
-                        mentor = detail?.mentor?.let {
-                            LeaderUiModel(
-                                name = it.name,
-                                photoUrl = it.photo
-                            )
-                        },
-
-                        coordinator = detail?.coordinator?.let {
-                            LeaderUiModel(
-                                name = it.name,
-                                photoUrl = it.photo
-                            )
-                        }
-                    )
-                }
-
-            // Dokumentasi berdasarkan tripId
-            val docList = org.ukrida.root.data.dummy.DummyGroupData.groupImages
-                .filter { it.groupId == tripId }
-                .map {
-                    DocumentationUiModel(
-                        id = it.id.toString(),
-                        imageUrl = it.imageUrl
-                    )
-                }
-
-            _uiState.value = _uiState.value.copy(
-                documentations = docList
-            )
-        }
-    }
+    val uiState: StateFlow<OnGoingDetailUiState> =
+        _uiState.asStateFlow()
 
     init {
         loadDetail()
     }
 
+    fun loadDetail() {
+
+        viewModelScope.launch {
+
+            _uiState.value =
+                _uiState.value.copy(
+                    isLoading = true,
+                    errorMessage = null
+                )
+
+            try {
+
+                val groupDeferred = async {
+                    groupRepository.getTourById(tripId)
+                }
+
+                val detailDeferred = async {
+                    accountRepository.getGroupDetail(tripId)
+                }
+
+                val memberDeferred = async {
+                    memberRepository.listMembers(tripId)
+                }
+
+                val imageDeferred = async {
+                    galleryRepository.listImages(tripId)
+                }
+
+                val mentorListDeferred = async {
+                    memberRepository.listByRole("mentor")
+                }
+
+                val coordinatorListDeferred = async {
+                    memberRepository.listByRole("koordinator")
+                }
+
+                val groupResult = groupDeferred.await()
+                val detailResult = detailDeferred.await()
+                val memberResult = memberDeferred.await()
+                val imageResult = imageDeferred.await()
+                val mentorListResult = mentorListDeferred.await()
+                val coordinatorListResult = coordinatorListDeferred.await()
+
+                groupResult.onSuccess { group ->
+
+                    val detail =
+                        detailResult.getOrNull()
+
+                    val memberUiList =
+                        when (memberResult) {
+
+                            is Resource.Success -> {
+                                memberResult.data.map { member ->
+                                    MemberUiModel(
+                                        id = member.id.toString(),
+                                        name = member.fullName,
+                                        profilePhotoUrl =
+                                            member.profilePhotoUrl
+                                    )
+                                }
+                            }
+
+                            else -> emptyList()
+                        }
+
+                    val documentationList =
+                        when (imageResult) {
+
+                            is Resource.Success -> {
+                                imageResult.data.map {
+                                    DocumentationUiModel(
+                                        id = it.id.toString(),
+                                        imageUrl = it.imageUrl
+                                    )
+                                }
+                            }
+
+                            else -> emptyList()
+                        }
+
+                    // Mentor & koordinator TIDAK selalu punya baris di `accounts`
+                    // (mereka ditunjuk langsung lewat groups.mentor_id /
+                    // groups.koordinator_id, bukan lewat pendaftaran ke grup),
+                    // jadi opsi dropdown-nya diambil dari endpoint role khusus
+                    // (member/leaders), bukan difilter dari listMembers(tripId).
+                    val mentorOptions =
+                        when (mentorListResult) {
+
+                            is Resource.Success -> {
+                                mentorListResult.data.map {
+                                    LeaderOption(
+                                        id = it.id,
+                                        name = it.fullName
+                                    )
+                                }
+                            }
+
+                            else -> emptyList()
+                        }
+
+                    val coordinatorOptions =
+                        when (coordinatorListResult) {
+
+                            is Resource.Success -> {
+                                coordinatorListResult.data.map {
+                                    LeaderOption(
+                                        id = it.id,
+                                        name = it.fullName
+                                    )
+                                }
+                            }
+
+                            else -> emptyList()
+                        }
+
+                    _uiState.value =
+                        _uiState.value.copy(
+                            isLoading = false,
+                            tripState = group.toTripState(mentorId = detail?.mentor?.id,
+                                coordinatorId = detail?.coordinator?.id),
+
+                            members = memberUiList,
+                            documentations = documentationList,
+
+                            mentorOptions = mentorOptions,
+                            coordinatorOptions = coordinatorOptions,
+
+                            mentor = detail?.mentor?.let {
+                                LeaderUiModel(
+                                    name = it.name,
+                                    photoUrl = it.photo
+                                )
+                            },
+
+                            coordinator = detail?.coordinator?.let {
+                                LeaderUiModel(
+                                    name = it.name,
+                                    photoUrl = it.photo
+                                )
+                            }
+                        )
+                }
+
+            } catch (e: Exception) {
+
+                _uiState.value =
+                    _uiState.value.copy(
+                        isLoading = false,
+                        errorMessage = e.message
+                    )
+            }
+        }
+    }
+
     fun removeMember(member: MemberUiModel) {
-        val updated = _uiState.value.members.filter { it.id != member.id }
-        _uiState.value = _uiState.value.copy(members = updated)
+
+        viewModelScope.launch {
+
+            when (
+                val result =
+                    adminRepository.removeMember(
+                        userId = member.id.toInt(),
+                        groupId = tripId
+                    )
+            ) {
+
+                is Resource.Success -> {
+
+                    _uiState.value =
+                        _uiState.value.copy(
+                            members =
+                                _uiState.value.members.filter {
+                                    it.id != member.id
+                                }
+                        )
+                }
+
+                is Resource.Error -> {
+
+                    _uiState.value =
+                        _uiState.value.copy(
+                            errorMessage =
+                                result.message
+                        )
+                }
+
+                is Resource.Loading -> {}
+            }
+        }
     }
 
-    fun removeDocumentation(doc: DocumentationUiModel) {
-        val updated = _uiState.value.documentations.filter { it.id != doc.id }
-        _uiState.value = _uiState.value.copy(documentations = updated)
+    fun removeDocumentation(
+        doc: DocumentationUiModel
+    ) {
+
+        viewModelScope.launch {
+
+            when (
+                val result =
+                    adminRepository.removeImage(
+                        doc.id.toInt()
+                    )
+            ) {
+
+                is Resource.Success -> {
+
+                    _uiState.value =
+                        _uiState.value.copy(
+                            documentations =
+                                _uiState.value.documentations.filter {
+                                    it.id != doc.id
+                                }
+                        )
+                }
+
+                is Resource.Error -> {
+
+                    _uiState.value =
+                        _uiState.value.copy(
+                            errorMessage =
+                                result.message
+                        )
+                }
+
+                is Resource.Loading -> {}
+            }
+        }
     }
 
-    // Extension functions mapper
-    private fun Group.toTripState() = TripState(
+    fun updateTrip(
+        title: String,
+        description: String,
+        mentorId: Int,
+        coordinatorId: Int
+    ) {
+
+        viewModelScope.launch {
+
+            val trip =
+                _uiState.value.tripState
+                    ?: return@launch
+
+            when (
+                val result =
+                    adminRepository.updateTrip(
+                        AdminTripUpdateRequest(
+                            id = tripId,
+                            name = title,
+                            description = description,
+
+                            startDate =
+                                trip.startDate ?: "",
+
+                            endDate =
+                                trip.endDate ?: "",
+
+                            location =
+                                trip.location,
+
+                            dresscode =
+                                trip.dresscode,
+
+                            meetupTime =
+                                trip.meetupTime,
+
+                            meetupAddress =
+                                trip.meetupAddress,
+
+                            mentorId =
+                                mentorId,
+
+                            koordinatorId =
+                                coordinatorId
+                        )
+                    )
+            ) {
+
+                is Resource.Success -> {
+                    loadDetail()
+                }
+
+                is Resource.Error -> {
+
+                    _uiState.value =
+                        _uiState.value.copy(
+                            errorMessage =
+                                result.message
+                        )
+                }
+
+                is Resource.Loading -> {}
+            }
+        }
+    }
+
+    private fun Group.toTripState(
+        mentorId: Int?,
+        coordinatorId: Int?
+    ) = TripState(
+
         title = name,
-        description = description ?: "",
-        dateRange = "${startDate ?: "-"} - ${endDate ?: "-"}",
-        imageUrl = null, // Group belum punya imageUrl, nanti dari API
+
+        description =
+            description ?: "",
+
+        dateRange =
+            "${startDate ?: "-"} - ${endDate ?: "-"}",
+
+        startDate = startDate,
+        endDate = endDate,
+
+        mentorId = mentorId,
+        coordinatorId = coordinatorId,
+
+        imageUrl = null,
+
         location = location,
         dresscode = dresscode,
         meetupTime = meetupTime,
         meetupAddress = meetupAddress
     )
 
-    private fun Member.toUiModel() = MemberUiModel(
-        id = id.toString(),
-        name = fullName,
-        profilePhotoUrl = profilePhotoUrl
-    )
+    private fun Member.toUiModel() =
+        MemberUiModel(
+            id = id.toString(),
+            name = fullName,
+            profilePhotoUrl = profilePhotoUrl
+        )
 
-    // Factory untuk passing tripId ke ViewModel
     companion object {
-        fun factory(tripId: Int): ViewModelProvider.Factory =
+
+        fun factory(
+            tripId: Int
+        ): ViewModelProvider.Factory =
+
             object : ViewModelProvider.Factory {
+
                 @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return OnGoingDetailViewModel(tripId) as T
+                override fun <T : ViewModel> create(
+                    modelClass: Class<T>
+                ): T {
+
+                    return OnGoingDetailViewModel(
+                        tripId
+                    ) as T
                 }
             }
     }

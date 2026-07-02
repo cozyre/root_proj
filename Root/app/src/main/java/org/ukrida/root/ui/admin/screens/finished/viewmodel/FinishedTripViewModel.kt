@@ -6,18 +6,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.ukrida.root.data.fake.FakeGroupRepository
-import org.ukrida.root.data.model.Group
+import org.ukrida.root.data.model.CompletedTrip
+import org.ukrida.root.data.remote.RetrofitClient
+import org.ukrida.root.data.repository.AdminRepository
+import org.ukrida.root.utils.Resource
 
 data class FinishedTripUiState(
     val isLoading: Boolean = false,
-    val groups: List<Group> = emptyList(),
+    val trips: List<CompletedTrip> = emptyList(),
     val errorMessage: String? = null
 )
 
 class FinishedTripViewModel : ViewModel() {
 
-    private val repository = FakeGroupRepository()
+    private val repository = AdminRepository(RetrofitClient.instance)
 
     private val _uiState = MutableStateFlow(FinishedTripUiState())
     val uiState: StateFlow<FinishedTripUiState> = _uiState.asStateFlow()
@@ -34,24 +36,30 @@ class FinishedTripViewModel : ViewModel() {
                 errorMessage = null
             )
 
-            repository.getAllTours()
-                .onSuccess { allGroups ->
+            when (val result = repository.getCompletedTrips()) {
 
-                    val completedGroups = allGroups.filter {
-                        it.status.equals("completed", ignoreCase = true)
-                    }
+                is Resource.Success -> {
 
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        groups = completedGroups
+                        trips = result.data
                     )
                 }
-                .onFailure { error ->
+
+                is Resource.Error -> {
+
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        errorMessage = error.message ?: "Terjadi kesalahan"
+                        errorMessage = result.message
                     )
                 }
+
+                else -> {
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false
+                    )
+                }
+            }
         }
     }
 }

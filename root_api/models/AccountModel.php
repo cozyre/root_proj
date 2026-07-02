@@ -46,27 +46,29 @@ class AccountModel {
 
     // Get group detail — only if user has an approved account row for this group
     public function getGroupDetail(int $userId, int $groupId): ?array {
-        $stmt = $this->db->prepare(
-            "SELECT g.id, g.name, g.description, g.start_date, g.end_date,
-                    g.location, g.dresscode, g.meetup_time, g.meetup_address, g.status,
-                    mentor.first_name AS mentor_first_name, mentor.last_name AS mentor_last_name,
-                    mentor.profile_photo_url AS mentor_photo,
-                    coord.first_name AS coordinator_first_name, coord.last_name AS coordinator_last_name,
-                    coord.profile_photo_url AS coordinator_photo
-             FROM groups g
-             JOIN accounts a ON a.group_id = g.id
-             JOIN users mentor ON mentor.id = g.mentor_id
-             JOIN users coord ON coord.id = g.koordinator_id
-             WHERE a.user_id = :user_id
-               AND a.group_id = :group_id
-               AND a.status_join = 'approved'
-               AND a.deleted_at IS NULL
-               AND g.deleted_at IS NULL
-             LIMIT 1"
-        );
-        $stmt->execute(['user_id' => $userId, 'group_id' => $groupId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
-    }
+    $stmt = $this->db->prepare(
+        "SELECT g.id, g.name, g.description, g.start_date, g.end_date,
+                g.location, g.dresscode, g.meetup_time, g.meetup_address, g.status,
+                mentor.id AS mentor_id,
+                mentor.first_name AS mentor_first_name, mentor.last_name AS mentor_last_name,
+                mentor.profile_photo_url AS mentor_photo,
+                coord.id AS coordinator_id,
+                coord.first_name AS coordinator_first_name, coord.last_name AS coordinator_last_name,
+                coord.profile_photo_url AS coordinator_photo
+         FROM groups g
+         JOIN accounts a ON a.group_id = g.id
+         JOIN users mentor ON mentor.id = g.mentor_id
+         JOIN users coord ON coord.id = g.koordinator_id
+         WHERE a.user_id = :user_id
+           AND a.group_id = :group_id
+           AND a.status_join = 'approved'
+           AND a.deleted_at IS NULL
+           AND g.deleted_at IS NULL
+         LIMIT 1"
+    );
+    $stmt->execute(['user_id' => $userId, 'group_id' => $groupId]);
+    return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+}
 
     /**
      * Get all pending orders (admin view).

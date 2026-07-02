@@ -7,7 +7,7 @@
         <DropdownSelection timestamp="2026-07-01T10:03:11.034779500Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\LENOVO Z40\.android\avd\Medium_Phone_2_2.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Mike\.android\avd\Medium_Phone.avd" />
             </handle>
           </Target>
         </DropdownSelection>
