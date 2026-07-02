@@ -315,6 +315,16 @@ class AdminController {
         $this->ok($pending);
     }
 
+    public function approvalAccounts(): void {
+        $this->auth->requireRole('admin');
+
+        $groupId = isset($_GET['group_id']) ? (int) $_GET['group_id'] : null;
+
+        $approvals = $this->accountModel->getApprovalRequests($groupId);
+
+        $this->ok($approvals);
+    }
+
 
     // ─── Private helpers ─────────────────────────────────────────────────────
 

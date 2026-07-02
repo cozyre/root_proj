@@ -53,6 +53,24 @@ fun ApprovalScreen(
                 color = H1Color
             )
 
+            if (viewModel.isLoading) {
+                Text(
+                    text = "Loading approvals...",
+                    color = BodyColor
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+
+            viewModel.errorMessage?.let { message ->
+                Text(
+                    text = message,
+                    color = MaterialTheme.colorScheme.error
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+
             Spacer(modifier = Modifier.height(20.dp))
 
             pendingRequests.take(
@@ -62,6 +80,7 @@ fun ApprovalScreen(
                 ApprovalCard(
                     userName = approval.userName,
                     groupName = approval.groupName,
+                    enabled = viewModel.processingAccountId != approval.accountId,
                     onApprove = {
                         viewModel.approve(approval.accountId)
                     },

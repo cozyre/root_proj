@@ -19,6 +19,7 @@ import org.ukrida.root.ui.theme.*
 fun ApprovalCard(
     userName: String,
     groupName: String,
+    enabled: Boolean = true,
     onApprove: () -> Unit = {},
     onReject: () -> Unit = {}
 ) {
@@ -61,6 +62,7 @@ fun ApprovalCard(
 
         Button(
             onClick = onApprove,
+            enabled = enabled,
             colors = ButtonDefaults.buttonColors(
                 containerColor = ApproveButton
             ),
@@ -81,6 +83,7 @@ fun ApprovalCard(
 
         Button(
             onClick = onReject,
+            enabled = enabled,
             colors = ButtonDefaults.buttonColors(
                 containerColor = RejectButton
             ),
