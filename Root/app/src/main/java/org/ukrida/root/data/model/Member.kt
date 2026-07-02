@@ -25,7 +25,8 @@ data class MemberDetail(
     @SerializedName("profile_photo_url") val profilePhotoUrl: String?,
     val role: String,
     @SerializedName("status_join")       val statusJoin: String,
-    @SerializedName("join_date")         val joinDate: String
+    @SerializedName("join_date")         val joinDate: String,
+    val bio: String?
 ) {
     val fullName: String get() = "$firstName $lastName"
 }

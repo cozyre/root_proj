@@ -24,6 +24,7 @@ import org.ukrida.root.ui.user.screens.groupmenus.hymn.viewmodel.HymnViewModelFa
 import org.ukrida.root.ui.user.screens.groupmenus.hymn.screen.HymnDetailScreen
 import org.ukrida.root.ui.user.screens.groupmenus.gallery.screen.GalleryScreen
 import org.ukrida.root.ui.user.screens.groupmenus.gallery.viewmodel.GalleryViewModel
+import org.ukrida.root.ui.user.screens.groupmenus.gallery.viewmodel.GalleryViewModelFactory
 import org.ukrida.root.ui.user.screens.groupmenus.journal.screen.JournalScreen
 import org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel.JournalViewModel
 import org.ukrida.root.ui.user.screens.groupmenus.journal.screen.JournalEditorScreen
@@ -35,6 +36,7 @@ import org.ukrida.root.ui.user.screens.groupmenus.dailybread.viewmodel.DailyBrea
 import org.ukrida.root.ui.user.screens.groupmenus.itinerary.viewmodel.ItineraryViewModelFactory
 import org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel.JournalEditorViewModelFactory
 import org.ukrida.root.ui.user.screens.groupmenus.journal.viewmodel.JournalViewModelFactory
+import org.ukrida.root.ui.user.screens.groupmenus.member.viewmodel.MemberViewModelFactory
 import org.ukrida.root.ui.user.screens.home.screen.HomeScreen
 import org.ukrida.root.ui.user.screens.home.viewmodel.HomeViewModel
 import org.ukrida.root.ui.user.screens.home.viewmodel.HomeViewModelFactory
@@ -47,10 +49,9 @@ import org.ukrida.root.ui.user.screens.history.viewmodel.HistoryViewModelFactory
 import org.ukrida.root.ui.user.screens.historydetail.screen.HistoryDetailScreen
 import org.ukrida.root.ui.user.screens.historydetail.viewmodel.HistoryDetailViewModel
 import org.ukrida.root.ui.user.screens.historydetail.viewmodel.HistoryDetailViewModelFactory
-import org.ukrida.root.ui.user.screens.members.screen.MemberDetailScreen
-import org.ukrida.root.ui.user.screens.members.screen.MemberScreen
-import org.ukrida.root.ui.user.screens.members.viewmodel.MemberDetailViewModel
-import org.ukrida.root.ui.user.screens.members.viewmodel.MemberViewModel
+import org.ukrida.root.ui.user.screens.groupmenus.member.screen.MemberDetailScreen
+import org.ukrida.root.ui.user.screens.groupmenus.member.screen.MemberScreen
+import org.ukrida.root.ui.user.screens.groupmenus.member.viewmodel.MemberViewModel
 import org.ukrida.root.ui.user.screens.order.screen.OrderScreen
 import org.ukrida.root.ui.user.screens.order.viewmodel.OrderViewModel
 import org.ukrida.root.ui.user.screens.order.viewmodel.OrderViewModelFactory
@@ -255,8 +256,10 @@ fun PublicNavigation(
             )
         ) {
             val groupId = it.arguments?.getInt("groupId") ?: 0
-            // TODO: Create GalleryViewModelFactory if not exists
-            val viewModel: GalleryViewModel = viewModel()
+            val factory = remember {
+                GalleryViewModelFactory(appContainer.galleryRepository)
+            }
+            val viewModel: GalleryViewModel = viewModel(factory = factory)
             GalleryScreen(
                 viewModel = viewModel,
                 navController = navController,
@@ -349,8 +352,10 @@ fun PublicNavigation(
             )
         ) {
             val groupId = it.arguments?.getInt("groupId") ?: 0
-            // TODO: Create MemberViewModelFactory if not exists
-            val viewModel: MemberViewModel = viewModel()
+            val factory = remember {
+                MemberViewModelFactory(appContainer.memberRepository)
+            }
+            val viewModel: MemberViewModel = viewModel(factory = factory)
             MemberScreen(
                 viewModel = viewModel,
                 navController = navController,
@@ -367,8 +372,10 @@ fun PublicNavigation(
         ) {
             val groupId = it.arguments?.getInt("groupId") ?: 0
             val userId = it.arguments?.getInt("userId") ?: 0
-            // TODO: Create MemberDetailViewModelFactory if not exists
-            val viewModel: MemberDetailViewModel = viewModel()
+            val factory = remember {
+                MemberViewModelFactory(appContainer.memberRepository)
+            }
+            val viewModel: MemberViewModel = viewModel(factory = factory)
             MemberDetailScreen(
                 viewModel = viewModel,
                 navController = navController,

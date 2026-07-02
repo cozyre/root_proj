@@ -40,7 +40,7 @@ class MemberModel {
         $stmt = $this->db->prepare(
             "SELECT u.id, u.username, u.first_name, u.last_name,
                     u.email, u.phone, u.profile_photo_url, u.role,
-                    a.status_join, a.join_date
+                    a.status_join, a.join_date, u.bio
              FROM users u
              INNER JOIN accounts a ON u.id = a.user_id
              WHERE u.id         = :user_id

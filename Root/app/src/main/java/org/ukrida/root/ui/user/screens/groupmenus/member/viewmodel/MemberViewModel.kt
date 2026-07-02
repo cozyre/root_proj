@@ -1,65 +1,37 @@
-package org.ukrida.root.ui.user.screens.members.viewmodel
+package org.ukrida.root.ui.user.screens.groupmenus.member.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import org.ukrida.root.data.model.Member
+import org.ukrida.root.data.model.MemberDetail
+import org.ukrida.root.data.repository.MemberRepository
+import org.ukrida.root.utils.Resource
 
-class MemberViewModel : ViewModel() {
-    private val _members = MutableStateFlow<List<Member>>(emptyList())
-    val members = _members.asStateFlow()
+class MemberViewModel(
+    private val memberRepository: MemberRepository
+) : ViewModel() {
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading = _isLoading.asStateFlow()
+    private val _members = MutableStateFlow<Resource<List<Member>>>(Resource.Loading())
+    val members: StateFlow<Resource<List<Member>>> = _members.asStateFlow()
+
+    private val _member = MutableStateFlow<Resource<MemberDetail>>(Resource.Loading())
+    val member: StateFlow<Resource<MemberDetail>> = _member.asStateFlow()
 
     fun loadMembers(groupId: Int) {
-        // TODO Backend Integration
-        // repository.listMembers(groupId)
-        loadDummy()
+        viewModelScope.launch {
+            _members.value = Resource.Loading()
+            _members.value = memberRepository.listMembers(groupId)
+        }
     }
 
-    private fun loadDummy() {
-        _members.value = listOf(
-            Member(
-                id = 1,
-                username = "josh",
-                firstName = "Josh",
-                lastName = "Valentino",
-                profilePhotoUrl = null,
-                role = "Leader"
-            ),
-            Member(
-                id = 2,
-                username = "claudio",
-                firstName = "Claudio",
-                lastName = "Jose",
-                profilePhotoUrl = null,
-                role = "Member"
-            ),
-            Member(
-                id = 3,
-                username = "richard",
-                firstName = "Richard",
-                lastName = "Sutisna",
-                profilePhotoUrl = null,
-                role = "Member"
-            ),
-            Member(
-                id = 4,
-                username = "kevin",
-                firstName = "Kevin",
-                lastName = "Wijaya",
-                profilePhotoUrl = null,
-                role = "Member"
-            ),
-            Member(
-                id = 5,
-                username = "andrew",
-                firstName = "Andrew",
-                lastName = "Tan",
-                profilePhotoUrl = null,
-                role = "Member"
-            )
-        )
+    fun loadMember(userId: Int, groupId: Int) {
+        viewModelScope.launch {
+            _member.value = Resource.Loading()
+            _member.value = memberRepository.getMemberDetail(userId, groupId)
+        }
     }
 }

@@ -39,8 +39,6 @@ fun ProfileScreen(
     var bio by remember { mutableStateOf("") }
     var hidePhone by remember { mutableStateOf(false) }
 
-    var expanded by remember { mutableStateOf(false) }
-
     // ─── Initialize form from profile data ───────────────────────────────────
     LaunchedEffect(profile) {
         when (profile) {
@@ -57,6 +55,19 @@ fun ProfileScreen(
 
             else -> {}
         }
+    }
+
+    // ─── Check if profile has been changed ───────────────────────────────────
+    val isChanged = remember(profile, firstName, lastName, username, phone, bio, hidePhone) {
+        val p = (profile as? Resource.Success)?.data
+        p != null && (
+            firstName != p.firstName ||
+            lastName != p.lastName ||
+            username != p.username ||
+            phone != (p.phone ?: "") ||
+            bio != (p.bio ?: "") ||
+            hidePhone != p.hidePhone
+        )
     }
 
     // ─── Handle update result ────────────────────────────────────────────────
@@ -158,6 +169,7 @@ fun ProfileScreen(
                             Spacer(modifier = Modifier.height(28.dp))
                             SaveButton(
                                 isLoading = updateState is Resource.Loading,
+                                enabled = isChanged,
                                 onClick = {
                                     viewModel.updateProfile(
                                         firstName = firstName,

@@ -16,7 +16,8 @@ import org.ukrida.root.data.model.GroupImage
 fun GalleryGrid(
     images: List<GroupImage>,
     modifier: Modifier = Modifier,
-    onImageClick: (GroupImage) -> Unit = {}
+    onImageClick: (GroupImage) -> Unit = {},
+    onUploadClick: () -> Unit = {}
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -44,9 +45,6 @@ fun GalleryGrid(
         modifier = Modifier.height(10.dp)
     )
     UploadButton(
-        onUploadClick = {
-            // TODO Backend Integration
-            // Open Android Photo Picker.
-        }
+        onUploadClick = onUploadClick
     )
 }
