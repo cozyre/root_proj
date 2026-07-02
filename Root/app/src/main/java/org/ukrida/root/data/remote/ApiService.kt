@@ -250,6 +250,11 @@ interface ApiService {
         @Query("group_id") groupId: Int? = null
     ): Response<ApiResponse<List<PendingAccount>>>
 
+    @GET("index.php")
+    suspend fun getApprovalAccounts(
+        @Query("route") route: String = "admin/accounts/approval",
+        @Query("group_id") groupId: Int? = null
+    ): Response<ApiResponse<List<PendingAccount>>>
 
     // Admin — Trips ─────────────────────────────────────────────────────────
     /** GET ?route=admin/trips  →  list of completed/archived trips */
@@ -319,6 +324,12 @@ interface ApiService {
     suspend fun adminCreateSong(
         @Query("route") route: String = "admin/song/create",
         @Body body: AdminSongRequest
+    ): Response<ApiResponse<Song>>
+
+    @POST("index.php")
+    suspend fun adminUpdateSong(
+        @Query("route") route: String = "admin/song/update",
+        @Body body: AdminSongUpdateRequest
     ): Response<ApiResponse<Song>>
 
     /** POST ?route=admin/song/addToGroup  →  assign to group/day */

@@ -226,6 +226,45 @@ class AdminController {
         $this->ok($this->model->getSongById($id), 'Song created', 201);
     }
 
+    // POST ?route=admin/song/update
+    // Body: { id, title, author?, lyrics? }
+    public function songUpdate(): void {
+        $this->auth->requireRole('admin');
+
+        $body  = json_decode(file_get_contents('php://input'), true) ?? [];
+        $id    = (int) ($body['id'] ?? 0);
+        $title = trim($body['title'] ?? '');
+
+        if (!$id) {
+            $this->fail(400, 'id is required');
+            return;
+        }
+
+        if (empty($title)) {
+            $this->fail(400, 'title is required');
+            return;
+        }
+
+        $song = $this->model->getSongById($id);
+        if (!$song) {
+            $this->fail(404, 'Song not found');
+            return;
+        }
+
+        $ok = $this->model->updateSong($id, [
+            'title'  => $title,
+            'author' => trim($body['author'] ?? '') ?: null,
+            'lyrics' => $body['lyrics'] ?? null,
+        ]);
+
+        if (!$ok) {
+            $this->fail(500, 'Failed to update song');
+            return;
+        }
+
+        $this->ok($this->model->getSongById($id), 'Song updated');
+    }
+
     // ─── 8. ASSIGN SONG TO GROUP / ITINERARY DAY ─────────────────────────────
     // POST ?route=admin/song/addToGroup
     // Body: { song_id, group_id, itenary_id (nullable), sort_order }
@@ -313,6 +352,16 @@ class AdminController {
         $pending = $this->accountModel->getPending($groupId);
         
         $this->ok($pending);
+    }
+
+    public function approvalAccounts(): void {
+        $this->auth->requireRole('admin');
+
+        $groupId = isset($_GET['group_id']) ? (int) $_GET['group_id'] : null;
+
+        $approvals = $this->accountModel->getApprovalRequests($groupId);
+
+        $this->ok($approvals);
     }
 
 

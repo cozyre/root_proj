@@ -11,49 +11,38 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.ukrida.root.ui.admin.screens.hymn.components.SongSectionCard
-import org.ukrida.root.ui.admin.screens.hymn.viewmodel.SongSectionData
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.admin.screens.hymn.viewmodel.AddSongViewModel
 import org.ukrida.root.ui.theme.BodyColor
 import org.ukrida.root.ui.theme.DrawerBackground
 import org.ukrida.root.ui.theme.H1Color
 import org.ukrida.root.ui.theme.MainButton
+import org.ukrida.root.ui.theme.RejectButton
 import org.ukrida.root.ui.theme.TitleColor
 
 @Composable
 fun AddSongScreen(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onSongCreated: () -> Unit,
+    viewModel: AddSongViewModel
 ) {
 
-    var title by remember {
-        mutableStateOf("")
-    }
-
-    var author by remember {
-        mutableStateOf("")
-    }
-
-    var sections by remember {
-        mutableStateOf(
-            listOf(
-                SongSectionData(
-                    title = "Verse 1",
-                    lyrics = ""
-                )
-            )
-        )
+    LaunchedEffect(viewModel.isSuccess) {
+        if (viewModel.isSuccess) {
+            viewModel.resetSuccessState()
+            onSongCreated()
+        }
     }
 
     Column(
@@ -88,9 +77,9 @@ fun AddSongScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         OutlinedTextField(
-            value = title,
+            value = viewModel.title,
             onValueChange = {
-                title = it
+                viewModel.updateTitle(it)
             },
             label = {
                 Text("Song Title")
@@ -113,9 +102,9 @@ fun AddSongScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = author,
+            value = viewModel.author,
             onValueChange = {
-                author = it
+                viewModel.updateAuthor(it)
             },
             label = {
                 Text("Author")
@@ -137,37 +126,29 @@ fun AddSongScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        sections.forEachIndexed { index, section ->
+        viewModel.sections.forEachIndexed { index, section ->
 
             SongSectionCard(
                 sectionTitle = section.title,
 
                 onTitleChange = { newTitle ->
-
-                    sections = sections.toMutableList().apply {
-                        this[index] = this[index].copy(
-                            title = newTitle
-                        )
-                    }
+                    viewModel.updateSectionTitle(
+                        index = index,
+                        newTitle = newTitle
+                    )
                 },
 
                 lyrics = section.lyrics,
 
                 onLyricsChange = { newLyrics ->
-
-                    sections = sections.toMutableList().apply {
-                        this[index] = this[index].copy(
-                            lyrics = newLyrics
-                        )
-                    }
+                    viewModel.updateLyrics(
+                        index = index,
+                        lyrics = newLyrics
+                    )
                 },
 
                 onRemove = {
-                    if (sections.size > 1) {
-                        sections = sections.toMutableList().apply {
-                            removeAt(index)
-                        }
-                    }
+                    viewModel.removeSection(index)
                 }
             )
 
@@ -176,32 +157,40 @@ fun AddSongScreen(
 
         TextButton(
             onClick = {
-
-                val nextNumber =
-                    sections.count {
-                        it.title.startsWith("Verse")
-                    } + 1
-
-                sections = sections + SongSectionData(
-                    title = "Verse $nextNumber",
-                    lyrics = ""
-                )
+                viewModel.addSection()
             }
         ) {
             Text("Add Section", color = MainButton)
+        }
+
+        if (viewModel.errorMessage != null) {
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Text(
+                text = viewModel.errorMessage ?: "",
+                color = RejectButton,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
 
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
             onClick = {
-                // submit
+                viewModel.submitSong()
             },
+            enabled = !viewModel.isLoading,
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MainButton),
+                containerColor = MainButton
+            )
         ) {
-            Text("SUBMIT", color = H1Color)
+            if (viewModel.isLoading) {
+                CircularProgressIndicator()
+            } else {
+                Text("SUBMIT", color = H1Color)
+            }
         }
     }
 }

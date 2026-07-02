@@ -4,37 +4,59 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import org.ukrida.root.data.fake.FakeSongRepository
-import org.ukrida.root.data.model.SongSummary
+import org.ukrida.root.data.model.SongBrowseItem
+import org.ukrida.root.data.repository.SongRepository
 
-class HymnForHimViewModel : ViewModel() {
+class HymnForHimViewModel(
+    private val repository: SongRepository
+) : ViewModel() {
 
-    private val repository = FakeSongRepository()
-
-    var songs by mutableStateOf<List<SongSummary>>(emptyList())
+    var songs by mutableStateOf<List<SongBrowseItem>>(emptyList())
         private set
 
     var isLoading by mutableStateOf(false)
+        private set
+
+    var errorMessage by mutableStateOf<String?>(null)
         private set
 
     init {
         loadSongs()
     }
 
-    private fun loadSongs() {
+    fun loadSongs() {
         viewModelScope.launch {
-
             isLoading = true
+            errorMessage = null
 
             repository
-                .getSongs(groupId = 1)
+                .browseSongs()
                 .onSuccess { result ->
-                    songs = result.sortedBy { it.sortOrder }
+                    songs = result.sortedBy { it.title }
+                }
+                .onFailure { error ->
+                    errorMessage = error.message ?: "Failed to load songs"
                 }
 
             isLoading = false
+        }
+    }
+
+    companion object {
+        fun factory(
+            repository: SongRepository
+        ): ViewModelProvider.Factory {
+            return object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(
+                    modelClass: Class<T>
+                ): T {
+                    return HymnForHimViewModel(repository) as T
+                }
+            }
         }
     }
 }

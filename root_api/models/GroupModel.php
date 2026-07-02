@@ -27,7 +27,7 @@ class GroupModel {
     public function getAllUpcoming(): array {
         $stmt = $this->db->prepare(
             "SELECT id, name, description, start_date, end_date,
-                    location, dresscode, meetup_time, status
+                    location, dresscode, meetup_time, price, status
              FROM groups
              WHERE start_date > NOW()
                AND deleted_at IS NULL
@@ -41,7 +41,7 @@ class GroupModel {
     public function getById(int $id): ?array {
         $stmt = $this->db->prepare(
             "SELECT id, name, description, start_date, end_date,
-                    location, dresscode, meetup_time, meetup_address, status
+                    location, dresscode, meetup_time, meetup_address, price, status
              FROM groups
              WHERE id = :id AND deleted_at IS NULL"
         );

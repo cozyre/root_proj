@@ -10,18 +10,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.navigation.NavController
 import org.ukrida.root.data.model.Group
 import org.ukrida.root.ui.user.screens.promisedland.components.HistoryCard
 
 @Composable
 fun HistorySection(
+    navController: NavController,
     historyGroups: List<Group>?,
     onHistoryClick: ((Int) -> Unit)? = null
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 20.dp)
     ) {
-        Breadcrumb()
+        Breadcrumb(navController = navController)
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = "YOUR TRIP HISTORY",

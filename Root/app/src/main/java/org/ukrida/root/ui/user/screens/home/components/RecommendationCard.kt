@@ -71,9 +71,8 @@ fun RecommendationCard(
                 color = Color.White
             )
             Spacer(modifier = Modifier.height(16.dp))
-            //Kalau model sudah ada price bisa di ganti
             Text(
-                text = "Rp. 42.000.000",
+                text = "Rp. ${group.price}",
                 style = MaterialTheme.typography.titleLarge,
                 color = Color(0xFFE8D8C9),
                 modifier = Modifier.align(Alignment.End)

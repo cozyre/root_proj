@@ -1,6 +1,8 @@
 package org.ukrida.root.data.model
 
 import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.JsonAdapter
+import org.ukrida.root.data.remote.BooleanIntAdapter
 
 // ─── Trip ────────────────────────────────────────────────────────────────────
 
@@ -90,15 +92,19 @@ data class AdminOrderAction(
 /** Full order row returned after approve/reject */
 data class AdminOrderResult(
     val id: Int,
-    @SerializedName("user_id")       val userId: Int,
-    @SerializedName("group_id")      val groupId: Int,
-    @SerializedName("status_join")   val statusJoin: String,
-    @SerializedName("join_date")     val joinDate: String?,
+    @SerializedName("user_id") val userId: Int,
+    @SerializedName("group_id") val groupId: Int,
+    @SerializedName("status_join") val statusJoin: String,
+    @SerializedName("join_date") val joinDate: String?,
     @SerializedName("approved_date") val approvedDate: String?,
-    @SerializedName("approved_by")   val approvedBy: Int?,
-    @SerializedName("is_paid")       val isPaid: Boolean,
-    @SerializedName("user_name")     val userName: String,
-    @SerializedName("group_name")    val groupName: String
+    @SerializedName("approved_by") val approvedBy: Int?,
+
+    @field:JsonAdapter(BooleanIntAdapter::class)
+    @SerializedName("is_paid")
+    val isPaid: Boolean,
+
+    @SerializedName("user_name") val userName: String,
+    @SerializedName("group_name") val groupName: String
 )
 
 // ─── Member ───────────────────────────────────────────────────────────────────
@@ -120,6 +126,14 @@ data class AdminImageRemoveRequest(
 
 /** Body for POST admin/song/create */
 data class AdminSongRequest(
+    val title: String,
+    val author: String?,
+    val lyrics: String?
+)
+
+/** Body for POST admin/song/update */
+data class AdminSongUpdateRequest(
+    val id: Int,
     val title: String,
     val author: String?,
     val lyrics: String?

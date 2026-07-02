@@ -110,4 +110,42 @@ class AccountModel {
         }
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    public function getApprovalRequests(?int $groupId = null): array {
+    if ($groupId) {
+        $stmt = $this->db->prepare(
+            "SELECT a.id, a.user_id, a.group_id, a.status_join, a.join_date,
+                    u.first_name, u.last_name, u.profile_photo_url,
+                    g.name AS group_name
+             FROM accounts a
+             JOIN users u ON u.id = a.user_id
+             JOIN groups g ON g.id = a.group_id
+             WHERE a.status_join IN ('pending', 'approved', 'rejected')
+               AND a.group_id = :group_id
+               AND a.deleted_at IS NULL
+               AND u.deleted_at IS NULL
+               AND g.deleted_at IS NULL
+             ORDER BY a.join_date DESC"
+        );
+
+        $stmt->execute(['group_id' => $groupId]);
+    } else {
+        $stmt = $this->db->prepare(
+            "SELECT a.id, a.user_id, a.group_id, a.status_join, a.join_date,
+                    u.first_name, u.last_name, u.profile_photo_url,
+                    g.name AS group_name
+             FROM accounts a
+             JOIN users u ON u.id = a.user_id
+             JOIN groups g ON g.id = a.group_id
+             WHERE a.status_join IN ('pending', 'approved', 'rejected')
+               AND a.deleted_at IS NULL
+               AND u.deleted_at IS NULL
+               AND g.deleted_at IS NULL
+             ORDER BY a.join_date DESC"
+        );
+
+        $stmt->execute();
+    }
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 }

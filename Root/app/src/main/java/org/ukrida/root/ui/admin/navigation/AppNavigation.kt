@@ -23,6 +23,7 @@ import org.ukrida.root.ui.admin.screens.finished.viewmodel.FinishedTripDetailVie
 import org.ukrida.root.ui.admin.screens.hymn.screen.AddSongScreen
 import org.ukrida.root.ui.admin.screens.hymn.screen.EditSongScreen
 import org.ukrida.root.ui.admin.screens.hymn.viewmodel.EditSongViewModel
+import org.ukrida.root.ui.admin.screens.hymn.viewmodel.HymnForHimViewModel
 import org.ukrida.root.ui.admin.screens.ongoing.screen.EditDailyBreadScreen
 import org.ukrida.root.ui.admin.screens.ongoing.screen.EditItineraryScreen
 import org.ukrida.root.ui.admin.screens.ongoing.screen.EditSongsScreen
@@ -33,6 +34,10 @@ import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.EditItineraryViewModel
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.EditSongsViewModel
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.OnGoingDetailViewModel
 import org.ukrida.root.ui.admin.screens.trip.screen.TripScreen
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import org.ukrida.root.ui.admin.screens.hymn.viewmodel.AddSongViewModel
 
 
 @Composable
@@ -71,27 +76,57 @@ fun AppNavigation(
             ApprovalScreen(onMenuClick = onMenuClick)
         }
 
-        composable(Screen.HymnForHim.route) {
+        composable(Screen.HymnForHim.route) { backStackEntry ->
+
+            val viewModel: HymnForHimViewModel = viewModel(
+                factory = HymnForHimViewModel.factory(
+                    appContainer.songRepository
+                )
+            )
+
+            val refreshSongs by backStackEntry
+                .savedStateHandle
+                .getStateFlow("refreshSongs", false)
+                .collectAsState()
+
+            LaunchedEffect(refreshSongs) {
+                if (refreshSongs) {
+                    viewModel.loadSongs()
+                    backStackEntry.savedStateHandle["refreshSongs"] = false
+                }
+            }
+
             HymnForHimScreen(
                 onMenuClick = onMenuClick,
                 onCreateSongClick = {
-                navController.navigate(
-                    Screen.AddSong.route
-                )
+                    navController.navigate(Screen.AddSong.route)
                 },
                 onSongClick = { songId ->
-                    navController.navigate(
-                        "edit_song/$songId"
-                    )
-                }
-                )
+                    navController.navigate("edit_song/$songId")
+                },
+                viewModel = viewModel
+            )
         }
         composable(Screen.AddSong.route) {
+
+            val viewModel: AddSongViewModel = viewModel(
+                factory = AddSongViewModel.factory(
+                    appContainer.adminRepository
+                )
+            )
 
             AddSongScreen(
                 onBackClick = {
                     navController.popBackStack()
-                }
+                },
+                onSongCreated = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("refreshSongs", true)
+
+                    navController.popBackStack()
+                },
+                viewModel = viewModel
             )
         }
 
@@ -239,7 +274,11 @@ fun AppNavigation(
                 backStackEntry.arguments?.getInt("songId") ?: 0
 
             val viewModel: EditSongViewModel = viewModel(
-                factory = EditSongViewModel.factory(songId)
+                factory = EditSongViewModel.factory(
+                    songId = songId,
+                    songRepository = appContainer.songRepository,
+                    adminRepository = appContainer.adminRepository
+                )
             )
 
             EditSongScreen(

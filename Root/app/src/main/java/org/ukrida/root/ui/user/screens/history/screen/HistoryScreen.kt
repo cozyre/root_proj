@@ -41,6 +41,7 @@ fun HistoryScreen(
         ) {
             Spacer(modifier = Modifier.height(20.dp))
             HistorySection(
+                navController = navController,
                 historyGroups = historyGroups,
                 onHistoryClick = { groupId ->
                     navController.navigate(
