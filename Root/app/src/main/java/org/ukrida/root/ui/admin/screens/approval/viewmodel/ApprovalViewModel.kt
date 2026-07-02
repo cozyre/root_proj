@@ -6,20 +6,25 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import org.ukrida.root.data.fake.FakeAccountRepository
-import org.ukrida.root.data.fake.FakeMemberRepository
+import org.ukrida.root.data.remote.RetrofitClient
+import org.ukrida.root.data.repository.AdminRepository
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.ApprovalUiModel
 import org.ukrida.root.utils.Resource
 
 class ApprovalViewModel : ViewModel() {
 
-    private val accountRepository = FakeAccountRepository()
-    private val memberRepository = FakeMemberRepository()
+    private val repository = AdminRepository(RetrofitClient.instance)
 
     var approvals by mutableStateOf<List<ApprovalUiModel>>(emptyList())
         private set
 
     var isLoading by mutableStateOf(false)
+        private set
+
+    var errorMessage by mutableStateOf<String?>(null)
+        private set
+
+    var processingAccountId by mutableStateOf<Int?>(null)
         private set
 
     var showAllPending by mutableStateOf(false)
@@ -32,42 +37,29 @@ class ApprovalViewModel : ViewModel() {
         loadApprovals()
     }
 
-    private fun loadApprovals() {
+    fun loadApprovals() {
         viewModelScope.launch {
-
             isLoading = true
+            errorMessage = null
 
-            try {
+            val result = repository.getApprovalAccounts()
 
-                val accountStatuses =
-                    accountRepository.getAllStatuses().getOrNull()
-                        ?: emptyList()
-
-                val membersResult =
-                    memberRepository.listMembers(groupId = 1)
-
-                val members = when (membersResult) {
-                    is Resource.Success -> membersResult.data ?: emptyList()
-                    else -> emptyList()
-                }
-
-                approvals = accountStatuses.map { status ->
-
-                    val member = members.find {
-                        it.id == status.accountId
+            result
+                .onSuccess { accounts ->
+                    approvals = accounts.map { account ->
+                        ApprovalUiModel(
+                            accountId = account.id,
+                            userName = account.fullName,
+                            groupName = account.groupName,
+                            status = account.statusJoin
+                        )
                     }
-
-                    ApprovalUiModel(
-                        accountId = status.accountId,
-                        userName = member?.fullName ?: "Unknown User",
-                        groupName = status.groupName,
-                        status = status.statusJoin
-                    )
+                }
+                .onFailure { error ->
+                    errorMessage = error.message ?: "Failed to load approvals"
                 }
 
-            } finally {
-                isLoading = false
-            }
+            isLoading = false
         }
     }
 
@@ -91,30 +83,58 @@ class ApprovalViewModel : ViewModel() {
     }
 
     fun approve(accountId: Int) {
-
-        approvals = approvals.map {
-
-            if (it.accountId == accountId) {
-                it.copy(
-                    status = "approved"
-                )
-            } else {
-                it
-            }
-        }
+        updateApprovalStatus(
+            accountId = accountId,
+            isApprove = true
+        )
     }
 
     fun reject(accountId: Int) {
+        updateApprovalStatus(
+            accountId = accountId,
+            isApprove = false
+        )
+    }
 
-        approvals = approvals.map {
+    private fun updateApprovalStatus(
+        accountId: Int,
+        isApprove: Boolean
+    ) {
+        viewModelScope.launch {
+            processingAccountId = accountId
+            errorMessage = null
 
-            if (it.accountId == accountId) {
-                it.copy(
-                    status = "rejected"
-                )
+            val result = if (isApprove) {
+                repository.approveOrder(accountId)
             } else {
-                it
+                repository.rejectOrder(accountId)
             }
+
+            when (result) {
+                is Resource.Success -> {
+                    val updatedOrder = result.data
+
+                    approvals = approvals.map { approval ->
+                        if (approval.accountId == accountId) {
+                            approval.copy(
+                                userName = updatedOrder.userName,
+                                groupName = updatedOrder.groupName,
+                                status = updatedOrder.statusJoin
+                            )
+                        } else {
+                            approval
+                        }
+                    }
+                }
+
+                is Resource.Error -> {
+                    errorMessage = result.message
+                }
+
+                else -> Unit
+            }
+
+            processingAccountId = null
         }
     }
 }

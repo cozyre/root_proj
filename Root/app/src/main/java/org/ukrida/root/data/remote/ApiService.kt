@@ -250,6 +250,11 @@ interface ApiService {
         @Query("group_id") groupId: Int? = null
     ): Response<ApiResponse<List<PendingAccount>>>
 
+    @GET("index.php")
+    suspend fun getApprovalAccounts(
+        @Query("route") route: String = "admin/accounts/approval",
+        @Query("group_id") groupId: Int? = null
+    ): Response<ApiResponse<List<PendingAccount>>>
 
     // Admin — Trips ─────────────────────────────────────────────────────────
     /** GET ?route=admin/trips  →  list of completed/archived trips */

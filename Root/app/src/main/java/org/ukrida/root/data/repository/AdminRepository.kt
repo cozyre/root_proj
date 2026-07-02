@@ -28,6 +28,9 @@ class AdminRepository(private val api: ApiService) {
         api.getPendingAccounts(groupId = groupId)
     }
 
+    suspend fun getApprovalAccounts(groupId: Int? = null): Result<List<PendingAccount>> = safeCallList {
+        api.getApprovalAccounts(groupId = groupId)
+    }
 
     // ─── Trips ───────────────────────────────────────────────────────────────
 
