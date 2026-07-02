@@ -21,6 +21,8 @@ import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.screens.ongoing.components.TimelineBar
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.EditDailyBreadViewModel
 import org.ukrida.root.ui.theme.*
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun EditDailyBreadScreen(
@@ -32,6 +34,29 @@ fun EditDailyBreadScreen(
     val selectedDay    by viewModel.selectedDay.collectAsState()
     val availableDays  by viewModel.availableDays.collectAsState()
     val isLoading      by viewModel.isLoading.collectAsState()
+
+    val context = LocalContext.current
+    val submitSuccess by viewModel.submitSuccess.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+
+    LaunchedEffect(submitSuccess) {
+        if (submitSuccess) {
+            Toast.makeText(context, "Daily Bread berhasil diperbarui", Toast.LENGTH_SHORT).show()
+            navController.navigate("ongoing_detail/${viewModel.tripId}") {
+                popUpTo("daily_bread/${viewModel.tripId}") {
+                    inclusive = true
+                }
+            }
+            viewModel.resetSubmitSuccess()
+        }
+    }
+
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            viewModel.clearError()
+        }
+    }
 
     val currentItem = dailyBreadList.find { it.day == selectedDay }
 
@@ -234,7 +259,6 @@ fun EditDailyBreadScreen(
                     Button(
                         onClick = {
                             viewModel.submit()
-                            navController.popBackStack()
                         },
                         modifier = Modifier.fillMaxWidth().height(32.dp),
                         shape = RoundedCornerShape(26.dp),
