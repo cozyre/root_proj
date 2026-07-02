@@ -40,10 +40,28 @@ fun TripScreen(
     val groups by viewModel.groups.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
 
+    if (uiState.isLoading) {
+        Text(
+            text = "Loading trips...",
+            style = MaterialTheme.typography.bodyMedium,
+            color = BodyColor,
+            modifier = Modifier.padding(top = 12.dp)
+        )
+    }
+
+    uiState.errorMessage?.let { message ->
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyMedium,
+            color = TitleColor,
+            modifier = Modifier.padding(top = 12.dp)
+        )
+    }
+
     val ongoingTrips = groups.filter {
         it.status.equals("upcoming", ignoreCase = true) ||
                 it.status.equals("active", ignoreCase = true)
-    }.take(2)
+    }
 
     LazyColumn(
         modifier = Modifier
