@@ -97,30 +97,47 @@ fun HymnForHimScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            if (viewModel.isLoading) {
-
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
+            when {
+                viewModel.isLoading -> {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
 
-            } else {
+                viewModel.errorMessage != null -> {
+                    Text(
+                        text = viewModel.errorMessage ?: "Failed to load songs",
+                        color = BodyColor,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
 
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
+                viewModel.songs.isEmpty() -> {
+                    Text(
+                        text = "No songs available yet.",
+                        color = BodyColor,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
 
-                    viewModel.songs.forEach { song ->
-
-                        SongCard(
-                            title = song.title,
-                            author = song.author,
-                            onClick = {
-                                onSongClick(song.id)
-                            }
-                        )
+                else -> {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        viewModel.songs.forEach { song ->
+                            SongCard(
+                                title = song.title,
+                                author = song.author,
+                                onClick = {
+                                    onSongClick(song.id)
+                                }
+                            )
+                        }
                     }
                 }
             }

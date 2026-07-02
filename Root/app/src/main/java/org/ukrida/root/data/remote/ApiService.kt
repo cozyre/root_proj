@@ -326,6 +326,12 @@ interface ApiService {
         @Body body: AdminSongRequest
     ): Response<ApiResponse<Song>>
 
+    @POST("index.php")
+    suspend fun adminUpdateSong(
+        @Query("route") route: String = "admin/song/update",
+        @Body body: AdminSongUpdateRequest
+    ): Response<ApiResponse<Song>>
+
     /** POST ?route=admin/song/addToGroup  →  assign to group/day */
     @POST("index.php")
     suspend fun adminAddSongToGroup(

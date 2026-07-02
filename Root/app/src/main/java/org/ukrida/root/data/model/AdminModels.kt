@@ -131,6 +131,14 @@ data class AdminSongRequest(
     val lyrics: String?
 )
 
+/** Body for POST admin/song/update */
+data class AdminSongUpdateRequest(
+    val id: Int,
+    val title: String,
+    val author: String?,
+    val lyrics: String?
+)
+
 /** Body for POST admin/song/addToGroup */
 data class AdminSongAddToGroupRequest(
     @SerializedName("song_id")    val songId: Int,

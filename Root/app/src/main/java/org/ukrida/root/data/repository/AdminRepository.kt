@@ -10,6 +10,7 @@ import org.ukrida.root.data.model.AdminOrderResult
 import org.ukrida.root.data.model.AdminSongAddResult
 import org.ukrida.root.data.model.AdminSongAddToGroupRequest
 import org.ukrida.root.data.model.AdminSongRequest
+import org.ukrida.root.data.model.AdminSongUpdateRequest
 import org.ukrida.root.data.model.AdminTripDeleteRequest
 import org.ukrida.root.data.model.AdminTripRequest
 import org.ukrida.root.data.model.AdminTripResult
@@ -110,6 +111,27 @@ class AdminRepository(private val api: ApiService) {
         else
             Resource.Error(res.body()?.message ?: "Failed to create song")
     }
+    suspend fun updateSong(
+        id: Int,
+        title: String,
+        author: String?,
+        lyrics: String?
+    ): Resource<Song> = safeCall {
+        val res = api.adminUpdateSong(
+            body = AdminSongUpdateRequest(
+                id = id,
+                title = title,
+                author = author,
+                lyrics = lyrics
+            )
+        )
+
+        if (res.isSuccessful && res.body()?.success == true)
+            Resource.Success(res.body()!!.data!!)
+        else
+            Resource.Error(res.body()?.message ?: "Failed to update song")
+    }
+
 
     suspend fun addSongToGroup(
         songId: Int,
