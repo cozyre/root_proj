@@ -26,11 +26,11 @@ import org.ukrida.root.ui.user.screens.members.viewmodel.MemberDetailViewModel
 
 @Composable
 fun MemberDetailScreen(
+    viewModel: MemberDetailViewModel = viewModel(),
     navController: NavHostController,
     groupId: Int,
     userId: Int
 ) {
-    val viewModel: MemberDetailViewModel = viewModel()
     val member by viewModel.member.collectAsState()
     var expanded by remember {
         mutableStateOf(false)

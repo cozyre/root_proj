@@ -17,9 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import org.ukrida.root.ui.user.components.PublicBottomNavigation
-import org.ukrida.root.ui.user.components.PublicDestination
-import org.ukrida.root.ui.user.components.PublicTopBar
 import org.ukrida.root.ui.user.navigation.PublicScreen
 import org.ukrida.root.ui.user.screens.promisedland.components.AllTripSection
 import org.ukrida.root.ui.user.screens.promisedland.components.HistorySection
@@ -39,31 +36,6 @@ fun PromisedLandScreen(
 
     Scaffold(
         containerColor = Color(0xFF2A2522),
-//        bottomBar = {
-//            PublicBottomNavigation(
-//                currentDestination = PublicDestination.PROMISED_LAND,
-//                onNavigate = { destination ->
-//                    when (destination) {
-//
-//                        PublicDestination.HOME -> {
-//                            navController.navigate(PublicScreen.Home.route)
-//                        }
-//
-//                        PublicDestination.PROMISED_LAND -> {
-//                            // Sudah berada di Promised Land
-//                        }
-//
-//                        PublicDestination.GROUP -> {
-//                            navController.navigate(PublicScreen.Group.route)
-//                        }
-//
-//                        PublicDestination.PROFILE -> {
-//                            navController.navigate(PublicScreen.Profile.route)
-//                        }
-//                    }
-//                }
-//            )
-//        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -72,7 +44,6 @@ fun PromisedLandScreen(
                 .background(Color(0xFF2A2522))
                 .verticalScroll(rememberScrollState())
         ) {
-//            PublicTopBar(title = "PROMISED LAND")
             Spacer(modifier = Modifier.height(12.dp))
             HistorySection(
                 historyGroups = historyGroups,

@@ -34,10 +34,10 @@ import org.ukrida.root.ui.user.screens.groupmenus.gallery.viewmodel.GalleryViewM
 
 @Composable
 fun GalleryScreen(
+    viewModel: GalleryViewModel = viewModel(),
     navController: NavHostController,
     groupId: Int
 ) {
-    val viewModel: GalleryViewModel = viewModel()
     val images by viewModel.images.collectAsState()
     LaunchedEffect(groupId) {
         viewModel.loadGallery(groupId)
