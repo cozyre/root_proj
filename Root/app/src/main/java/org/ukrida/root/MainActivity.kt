@@ -25,6 +25,7 @@ import org.ukrida.root.ui.admin.screens.RootScreen
 import org.ukrida.root.ui.user.login.components.AuthNavigation
 import org.ukrida.root.ui.user.screens.PublicRootScreen
 import androidx.compose.ui.platform.LocalContext
+import org.ukrida.root.ui.admin.components.LoadingScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -124,7 +125,7 @@ fun MainScreen(activity: MainActivity) {
         }
 
         null -> {
-            // Loading state while checking session
+            LoadingScreen()
         }
     }
 
