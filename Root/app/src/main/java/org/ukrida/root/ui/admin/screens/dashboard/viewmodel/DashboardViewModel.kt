@@ -1,5 +1,8 @@
 package org.ukrida.root.ui.admin.screens.dashboard.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,8 +19,15 @@ class DashboardViewModel(
     private val groupRepository: GroupRepository
 ) : ViewModel() {
 
+    var processingAccountId by mutableStateOf<Int?>(null)
+        private set
+
+    var approvalActionError by mutableStateOf<String?>(null)
+        private set
+
     // Pending approvals
-    private val _pendingApprovals = MutableStateFlow<Resource<List<PendingAccount>>>(Resource.Loading())
+    private val _pendingApprovals =
+        MutableStateFlow<Resource<List<PendingAccount>>>(Resource.Loading())
     val pendingApprovals: StateFlow<Resource<List<PendingAccount>>> = _pendingApprovals
 
     // Latest tour
@@ -42,7 +52,6 @@ class DashboardViewModel(
 
         if (result.isSuccess) {
             val pending = result.getOrNull() ?: emptyList()
-
             _pendingApprovals.value = Resource.Success(pending)
         } else {
             _pendingApprovals.value = Resource.Error(
@@ -72,12 +81,64 @@ class DashboardViewModel(
         }
     }
 
-    // Reload methods for pull-to-refresh or manual refresh
     fun refreshApprovals() {
-        viewModelScope.launch { loadPendingApprovals() }
+        viewModelScope.launch {
+            loadPendingApprovals()
+        }
     }
 
     fun refreshLatestTour() {
-        viewModelScope.launch { loadLatestTour() }
+        viewModelScope.launch {
+            loadLatestTour()
+        }
+    }
+
+    fun approve(accountId: Int) {
+        updateApprovalStatus(
+            accountId = accountId,
+            isApprove = true
+        )
+    }
+
+    fun reject(accountId: Int) {
+        updateApprovalStatus(
+            accountId = accountId,
+            isApprove = false
+        )
+    }
+
+    private fun updateApprovalStatus(
+        accountId: Int,
+        isApprove: Boolean
+    ) {
+        viewModelScope.launch {
+            processingAccountId = accountId
+            approvalActionError = null
+
+            val result = if (isApprove) {
+                adminRepository.approveOrder(accountId)
+            } else {
+                adminRepository.rejectOrder(accountId)
+            }
+
+            when (result) {
+                is Resource.Success -> {
+                    val currentPending =
+                        (_pendingApprovals.value as? Resource.Success)?.data.orEmpty()
+
+                    _pendingApprovals.value = Resource.Success(
+                        currentPending.filterNot { it.id == accountId }
+                    )
+                }
+
+                is Resource.Error -> {
+                    approvalActionError = result.message
+                }
+
+                else -> Unit
+            }
+
+            processingAccountId = null
+        }
     }
 }

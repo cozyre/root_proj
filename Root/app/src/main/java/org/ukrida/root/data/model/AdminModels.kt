@@ -9,15 +9,32 @@ import org.ukrida.root.data.remote.BooleanIntAdapter
 /** Body for POST admin/trip/create */
 data class AdminTripRequest(
     val name: String,
+
     val description: String?,
-    @SerializedName("start_date")     val startDate: String,
-    @SerializedName("end_date")       val endDate: String,
+
+    @SerializedName("start_date")
+    val startDate: String?,
+
+    @SerializedName("end_date")
+    val endDate: String?,
+
+    val status: String = "upcoming",
+
     val location: String?,
+
     val dresscode: String?,
-    @SerializedName("meetup_time")    val meetupTime: String?,
-    @SerializedName("meetup_address") val meetupAddress: String?,
-    @SerializedName("mentor_id")      val mentorId: Int,
-    @SerializedName("koordinator_id") val koordinatorId: Int
+
+    @SerializedName("meetup_time")
+    val meetupTime: String?,
+
+    @SerializedName("meetup_address")
+    val meetupAddress: String?,
+
+    @SerializedName("mentor_id")
+    val mentorId: Int?,
+
+    @SerializedName("koordinator_id")
+    val koordinatorId: Int?
 )
 
 /** Body for POST admin/trip/update — same as create but with id */

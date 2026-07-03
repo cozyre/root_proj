@@ -21,7 +21,7 @@ class ProfileViewModel(
 
     // ─── Update State (separate tracking for update operation) ────────────────
 
-    private val _updateState = MutableStateFlow<Resource<Unit>>(Resource.Loading())
+    private val _updateState = MutableStateFlow<Resource<Unit>>(Resource.Success(Unit))
     val updateState: StateFlow<Resource<Unit>> = _updateState.asStateFlow()
 
     init {
@@ -88,6 +88,6 @@ class ProfileViewModel(
      * Clears the update state so the UI stops showing the result message.
      */
     fun clearUpdateState() {
-        _updateState.value = Resource.Loading()
+        _updateState.value = Resource.Success(Unit)
     }
 }

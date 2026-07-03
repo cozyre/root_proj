@@ -14,18 +14,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.ukrida.root.data.AppContainer
+import org.ukrida.root.ui.admin.components.ApprovalCard
 import org.ukrida.root.ui.admin.components.PriceTripCard
 import org.ukrida.root.ui.admin.components.TopBar
-import org.ukrida.root.ui.admin.components.ApprovalCard
 import org.ukrida.root.ui.admin.screens.dashboard.viewmodel.DashboardViewModel
-import org.ukrida.root.ui.admin.screens.dashboard.viewmodel.DashboardViewModelFactory
 import org.ukrida.root.ui.theme.BackgroundDark
 import org.ukrida.root.ui.theme.BodyColor
 import org.ukrida.root.ui.theme.DrawerBackground
@@ -45,7 +42,6 @@ fun DashboardScreen(
     val approvalsState by viewModel.pendingApprovals.collectAsState()
     val latestTourState by viewModel.latestTour.collectAsState()
 
-    val approvals = (approvalsState as? Resource.Success)?.data
     val latestTour = (latestTourState as? Resource.Success)?.data
 
     Column(
@@ -54,15 +50,15 @@ fun DashboardScreen(
             .background(BackgroundDark)
             .verticalScroll(rememberScrollState())
     ) {
-        Row(){
+        Row {
             TopBar(
                 title = "DASHBOARD",
                 onMenuClick = {
                     onMenuClick()
                 }
             )
-
         }
+
         Spacer(modifier = Modifier.height(24.dp))
 
         Column(modifier = Modifier.padding(horizontal = 24.dp)) {
@@ -70,7 +66,6 @@ fun DashboardScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-
                 Text(
                     text = "R",
                     style = MaterialTheme.typography.headlineLarge,
@@ -100,7 +95,6 @@ fun DashboardScreen(
             Spacer(modifier = Modifier.height(40.dp))
 
             Column {
-
                 Text(
                     text = "APPROVAL REQUEST",
                     style = MaterialTheme.typography.titleLarge,
@@ -109,22 +103,68 @@ fun DashboardScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                approvals?.take(3)?.forEach { approval ->
-                    ApprovalCard(
-                        userName = approval.fullName,
-                        groupName = approval.groupName
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
+                when (val state = approvalsState) {
+                    is Resource.Loading -> {
+                        Text(
+                            text = "Loading approval requests...",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = BodyColor
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        Text(
+                            text = state.message,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        val pendingApprovals = state.data
+
+                        if (pendingApprovals.isEmpty()) {
+                            ApprovalRequestPlaceholder()
+                        } else {
+                            pendingApprovals.take(3).forEach { approval ->
+                                ApprovalCard(
+                                    userName = approval.fullName,
+                                    groupName = approval.groupName,
+                                    enabled = viewModel.processingAccountId != approval.id,
+                                    onApprove = {
+                                        viewModel.approve(approval.id)
+                                    },
+                                    onReject = {
+                                        viewModel.reject(approval.id)
+                                    }
+                                )
+
+                                Spacer(modifier = Modifier.height(16.dp))
+                            }
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                Text(
+                                    text = "See More",
+                                    color = BodyColor,
+                                    modifier = Modifier.clickable {
+                                        onApprovalClick()
+                                    }
+                                )
+                            }
+                        }
+                    }
                 }
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End) {
+                viewModel.approvalActionError?.let { message ->
+                    Spacer(modifier = Modifier.height(12.dp))
+
                     Text(
-                        text = "See More",
-                        color = BodyColor,
-                        modifier = Modifier
-                            .clickable {onApprovalClick()},
+                        text = message,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.error
                     )
                 }
             }
@@ -140,7 +180,6 @@ fun DashboardScreen(
                     )
                     .padding(20.dp)
             ) {
-
                 Text(
                     text = "ADD SONGS",
                     style = MaterialTheme.typography.titleLarge,
@@ -164,11 +203,12 @@ fun DashboardScreen(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.CenterEnd
                 ) {
-
                     Text(
                         text = "See More",
                         color = BodyColor,
-                        modifier = Modifier.clickable {onSongClick()}
+                        modifier = Modifier.clickable {
+                            onSongClick()
+                        }
                     )
                 }
             }
@@ -176,7 +216,6 @@ fun DashboardScreen(
             Spacer(modifier = Modifier.height(40.dp))
 
             Column {
-
                 Text(
                     text = "RECENT ONGOING TRIP",
                     style = MaterialTheme.typography.titleLarge,
@@ -208,10 +247,11 @@ fun DashboardScreen(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.CenterEnd
                 ) {
-
                     Text(
                         text = "See More",
-                        modifier = Modifier.clickable {onRecentClick()},
+                        modifier = Modifier.clickable {
+                            onRecentClick()
+                        },
                         color = BodyColor
                     )
                 }
@@ -229,7 +269,6 @@ fun DashboardScreen(
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 Text(
                     text = "CREATE NEW TOUR!",
                     style = MaterialTheme.typography.titleLarge,
@@ -257,7 +296,6 @@ fun DashboardScreen(
                     ),
                     shape = RoundedCornerShape(50)
                 ) {
-
                     Text(
                         text = "CREATE NEW TOUR",
                         color = H1Color
@@ -267,5 +305,34 @@ fun DashboardScreen(
 
             Spacer(modifier = Modifier.height(40.dp))
         }
+    }
+}
+
+@Composable
+private fun ApprovalRequestPlaceholder() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = DrawerBackground,
+                shape = RoundedCornerShape(20.dp)
+            )
+            .padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "No approval requests",
+            style = MaterialTheme.typography.titleMedium,
+            color = H1Color
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "All participant requests have been approved or rejected.",
+            style = MaterialTheme.typography.bodyLarge,
+            color = BodyColor,
+            textAlign = TextAlign.Center
+        )
     }
 }

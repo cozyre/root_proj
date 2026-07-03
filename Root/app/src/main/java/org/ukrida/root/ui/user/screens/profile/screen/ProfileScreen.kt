@@ -117,7 +117,6 @@ fun ProfileScreen(
                             ProfileHeader(
                                 profile = loadedProfile,
                                 onChangePhotoClick = {
-                                    // TODO Backend Integration
                                     // Open Image Picker
                                 }
                             )
