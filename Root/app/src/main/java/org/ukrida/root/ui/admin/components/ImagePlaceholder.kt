@@ -12,12 +12,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 
 @Composable
 fun ImagePlaceholder(
-    imageUrl: String?, // Nanti diisi URL dari MySQL lewat Coil
+    imageUrl: String?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -30,13 +32,29 @@ fun ImagePlaceholder(
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        // Catatan: Jika pakai data riil MySQL, ganti Text ini dengan AsyncImage dari Coil
-        Text(text = "[ Foto Utama Trip ]", color = Color.White)
+        if (!imageUrl.isNullOrBlank()) {
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = "Trip Photo",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Text(
+                text = "[ Foto Utama Trip ]",
+                color = Color.White
+            )
+        }
 
         Box(
             modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(12.dp)
                 .size(48.dp)
-                .background(Color.White.copy(alpha = 0.8f), RoundedCornerShape(8.dp)),
+                .background(
+                    Color.White.copy(alpha = 0.8f),
+                    RoundedCornerShape(8.dp)
+                ),
             contentAlignment = Alignment.Center
         ) {
             Icon(

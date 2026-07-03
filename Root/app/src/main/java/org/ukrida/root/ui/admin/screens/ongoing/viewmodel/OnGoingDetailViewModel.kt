@@ -21,6 +21,7 @@ import org.ukrida.root.ui.admin.screens.finished.viewmodel.DocumentationUiModel
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.LeaderUiModel
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.MemberUiModel
 import org.ukrida.root.utils.Resource
+import java.io.File
 
 data class TripState(
     val title: String,
@@ -48,6 +49,9 @@ data class LeaderOption(
 data class OnGoingDetailUiState(
     val isLoading: Boolean = false,
 
+    val isUploadingMainPhoto: Boolean = false,
+    val mainPhotoMessage: String? = null,
+
     val tripState: TripState? = null,
 
     val members: List<MemberUiModel> = emptyList(),
@@ -67,6 +71,62 @@ class OnGoingDetailViewModel(
     val tripId: Int
 ) : ViewModel() {
 
+    fun uploadMainPhoto(imageFile: File) {
+        viewModelScope.launch {
+            _uiState.value =
+                _uiState.value.copy(
+                    isUploadingMainPhoto = true,
+                    mainPhotoMessage = null,
+                    errorMessage = null
+                )
+
+            when (
+                val result =
+                    galleryRepository.uploadImage(
+                        groupId = tripId,
+                        imageFile = imageFile,
+                        caption = "cover"
+                    )
+            ) {
+                is Resource.Success -> {
+                    val uploadedImage = result.data
+
+                    val currentTrip =
+                        _uiState.value.tripState
+
+                    _uiState.value =
+                        _uiState.value.copy(
+                            isUploadingMainPhoto = false,
+                            mainPhotoMessage = "Foto utama berhasil disimpan",
+
+                            // PENTING:
+                            // Foto utama hanya update bagian atas,
+                            // tidak dimasukkan ke grid dokumentasi.
+                            tripState =
+                                currentTrip?.copy(
+                                    imageUrl = uploadedImage.imageUrl
+                                )
+                        )
+                }
+
+                is Resource.Error -> {
+                    _uiState.value =
+                        _uiState.value.copy(
+                            isUploadingMainPhoto = false,
+                            mainPhotoMessage =
+                                result.message ?: "Gagal menyimpan foto utama"
+                        )
+                }
+
+                is Resource.Loading -> {
+                    _uiState.value =
+                        _uiState.value.copy(
+                            isUploadingMainPhoto = true
+                        )
+                }
+            }
+        }
+    }
     private val groupRepository =
         GroupRepository(RetrofitClient.instance)
 
@@ -157,20 +217,30 @@ class OnGoingDetailViewModel(
                             else -> emptyList()
                         }
 
-                    val documentationList =
+                    val allImages =
                         when (imageResult) {
-
                             is Resource.Success -> {
-                                imageResult.data.map {
-                                    DocumentationUiModel(
-                                        id = it.id.toString(),
-                                        imageUrl = it.imageUrl
-                                    )
-                                }
+                                imageResult.data
                             }
 
                             else -> emptyList()
                         }
+
+// Sementara konsepnya:
+// gambar pertama = cover / foto utama
+// gambar berikutnya = dokumentasi
+                    val mainPhotoUrl =
+                        allImages.firstOrNull()?.imageUrl
+
+                    val documentationList =
+                        allImages
+                            .drop(1)
+                            .map {
+                                DocumentationUiModel(
+                                    id = it.id.toString(),
+                                    imageUrl = it.imageUrl
+                                )
+                            }
 
                     // Mentor & koordinator TIDAK selalu punya baris di `accounts`
                     // (mereka ditunjuk langsung lewat groups.mentor_id /
@@ -210,8 +280,11 @@ class OnGoingDetailViewModel(
                     _uiState.value =
                         _uiState.value.copy(
                             isLoading = false,
-                            tripState = group.toTripState(mentorId = detail?.mentor?.id,
-                                coordinatorId = detail?.coordinator?.id),
+                            tripState = group.toTripState(
+                                mentorId = detail?.mentor?.id,
+                                coordinatorId = detail?.coordinator?.id,
+                                imageUrl = mainPhotoUrl
+                            ),
 
                             members = memberUiList,
                             documentations = documentationList,
@@ -389,16 +462,12 @@ class OnGoingDetailViewModel(
 
     private fun Group.toTripState(
         mentorId: Int?,
-        coordinatorId: Int?
+        coordinatorId: Int?,
+        imageUrl: String?
     ) = TripState(
-
         title = name,
-
-        description =
-            description ?: "",
-
-        dateRange =
-            "${startDate ?: "-"} - ${endDate ?: "-"}",
+        description = description ?: "",
+        dateRange = "${startDate ?: "-"} - ${endDate ?: "-"}",
 
         startDate = startDate,
         endDate = endDate,
@@ -406,7 +475,7 @@ class OnGoingDetailViewModel(
         mentorId = mentorId,
         coordinatorId = coordinatorId,
 
-        imageUrl = null,
+        imageUrl = imageUrl,
 
         location = location,
         dresscode = dresscode,

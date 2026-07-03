@@ -30,6 +30,8 @@ import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.OnGoingDetailViewModel
 import org.ukrida.root.ui.theme.BackgroundDark
 import org.ukrida.root.ui.theme.DrawerBackground
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.*
+import androidx.compose.ui.platform.LocalContext
+import org.ukrida.root.utils.uriToTempFile
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,10 +58,27 @@ fun OnGoingDetailScreen(
     var showDeleteDocDialog by remember { mutableStateOf(false) }
     var selectedDocToRemove by remember { mutableStateOf<DocumentationUiModel?>(null) }
 
-    val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> /* TODO: update foto utama */ }
-    )
+    val context = LocalContext.current
+
+    val mainPhotoLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.PickVisualMedia(),
+            onResult = { uri ->
+                uri?.let {
+                    try {
+                        val imageFile =
+                            uriToTempFile(
+                                context = context,
+                                uri = it
+                            )
+
+                        viewModel.uploadMainPhoto(imageFile)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+        )
     var showEditSheet by remember {
         mutableStateOf(false)
     }
@@ -154,11 +173,47 @@ fun OnGoingDetailScreen(
                     ImagePlaceholder(
                         imageUrl = tripData?.imageUrl,
                         onClick = {
-                            galleryLauncher.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            mainPhotoLauncher.launch(
+                                PickVisualMediaRequest(
+                                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                                )
                             )
                         }
                     )
+
+                    if (uiState.isUploadingMainPhoto) {
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(18.dp),
+                                strokeWidth = 2.dp,
+                                color = Color(0xFFC49A6C)
+                            )
+
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            Text(
+                                text = "Menyimpan foto utama...",
+                                color = Color.White,
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+
+                    uiState.mainPhotoMessage?.let { message ->
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = message,
+                            color = Color.White,
+                            fontSize = 12.sp,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(24.dp))
 

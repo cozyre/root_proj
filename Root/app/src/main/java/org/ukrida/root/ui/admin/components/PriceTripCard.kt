@@ -1,8 +1,5 @@
 package org.ukrida.root.ui.admin.components
 
-import android.R.attr.end
-import android.R.attr.start
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,16 +14,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import org.ukrida.root.R
+import coil.compose.AsyncImage
 import org.ukrida.root.data.model.Group
-import org.ukrida.root.ui.theme.*
+import org.ukrida.root.ui.theme.BodyColor
+import org.ukrida.root.ui.theme.DrawerBackground
+import org.ukrida.root.ui.theme.H1Color
 
 @Composable
 fun PriceTripCard(
     group: Group,
+    imageUrl: String? = null,
     onClick: () -> Unit = {},
     showRemoveButton: Boolean = false,
     onRemoveClick: () -> Unit = {}
@@ -34,7 +34,6 @@ fun PriceTripCard(
     Box(
         modifier = Modifier.fillMaxWidth()
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -42,16 +41,28 @@ fun PriceTripCard(
                 .background(DrawerBackground)
                 .clickable { onClick() }
         ) {
-            Image(
-                painter = painterResource(
-                    id = R.drawable.ic_launcher_foreground
-                ),
-                contentDescription = null,
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp),
-                contentScale = ContentScale.Crop
-            )
+                    .height(220.dp)
+                    .background(Color.Gray),
+                contentAlignment = Alignment.Center
+            ) {
+                if (!imageUrl.isNullOrBlank()) {
+                    AsyncImage(
+                        model = imageUrl,
+                        contentDescription = group.name,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Text(
+                        text = "No Image",
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
 
             Column(
                 modifier = Modifier.padding(16.dp)
@@ -65,7 +76,7 @@ fun PriceTripCard(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 Text(
-                    text = group.description?:"",
+                    text = group.description ?: "",
                     style = MaterialTheme.typography.bodyLarge,
                     color = BodyColor
                 )
@@ -76,7 +87,6 @@ fun PriceTripCard(
                     Row(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-
                         Icon(
                             imageVector = Icons.Outlined.LocationOn,
                             contentDescription = null,
@@ -84,9 +94,7 @@ fun PriceTripCard(
                             modifier = Modifier.size(18.dp)
                         )
 
-                        Spacer(
-                            modifier = Modifier.width(6.dp)
-                        )
+                        Spacer(modifier = Modifier.width(6.dp))
 
                         Text(
                             text = group.location,
@@ -101,14 +109,10 @@ fun PriceTripCard(
                 Box(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-
                     Row(
-                        modifier = Modifier.align(
-                            Alignment.CenterStart
-                        ),
+                        modifier = Modifier.align(Alignment.CenterStart),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-
                         Icon(
                             imageVector = Icons.Outlined.CalendarMonth,
                             contentDescription = null,
@@ -116,9 +120,7 @@ fun PriceTripCard(
                             modifier = Modifier.size(18.dp)
                         )
 
-                        Spacer(
-                            modifier = Modifier.width(6.dp)
-                        )
+                        Spacer(modifier = Modifier.width(6.dp))
 
                         Text(
                             text = "${group.startDate ?: "-"} - ${group.endDate ?: "-"}",
@@ -134,7 +136,6 @@ fun PriceTripCard(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.CenterEnd
                 ) {
-
                     Text(
                         text = "Rp.XXX.XXX.XXX,XX",
                         style = MaterialTheme.typography.titleLarge,
@@ -151,7 +152,7 @@ fun PriceTripCard(
                     .size(28.dp)
                     .align(Alignment.TopEnd)
                     .background(
-                        color = androidx.compose.ui.graphics.Color(0xFFD9534F),
+                        color = Color(0xFFD9534F),
                         shape = RoundedCornerShape(50)
                     )
                     .clickable {
@@ -161,7 +162,7 @@ fun PriceTripCard(
             ) {
                 Text(
                     text = "-",
-                    color = androidx.compose.ui.graphics.Color.White,
+                    color = Color.White,
                     style = MaterialTheme.typography.titleMedium
                 )
             }
