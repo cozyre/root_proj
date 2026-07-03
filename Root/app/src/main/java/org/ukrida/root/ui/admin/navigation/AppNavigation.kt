@@ -242,6 +242,7 @@ fun AppNavigation(
             val viewModel: NewTripViewModel = viewModel(
                 factory = NewTripViewModel.factory(
                     adminRepository = appContainer.adminRepository,
+                    galleryRepository = appContainer.galleryRepository,
                     memberRepository = appContainer.memberRepository
                 )
             )

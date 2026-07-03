@@ -25,9 +25,9 @@ fun AppDrawer(
     val menuItems = listOf(
         DrawerItem("DASHBOARD", "dashboard"),
         DrawerItem("TRIP", "trip"),
-        DrawerItem("NEW TOUR", "new_trip"),
-        DrawerItem("FINISHED TOUR", "finished_trip"),
-        DrawerItem("ONGOING TOUR", "ongoing_trip"),
+        DrawerItem("NEW TRIP", "new_trip"),
+        DrawerItem("FINISHED TRIP", "finished_trip"),
+        DrawerItem("ONGOING TRIP", "ongoing_trip"),
         DrawerItem("HYMN FOR HIM", "hymn_for_him"),
         DrawerItem("APPROVAL", "approval"),
         DrawerItem("BROADCAST", "broadcast")

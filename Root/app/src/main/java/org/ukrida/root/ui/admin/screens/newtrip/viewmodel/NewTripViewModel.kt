@@ -3,16 +3,16 @@ package org.ukrida.root.ui.admin.screens.newtrip.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.ukrida.root.data.model.AdminTripRequest
-import org.ukrida.root.data.model.Member
 import org.ukrida.root.data.repository.AdminRepository
+import org.ukrida.root.data.repository.GalleryRepository
 import org.ukrida.root.data.repository.MemberRepository
 import org.ukrida.root.utils.Resource
+import java.io.File
 
 data class LeaderOptionUiState(
     val id: Int,
@@ -24,40 +24,33 @@ data class NewTripFormState(
     val description: String = "",
     val startDate: String = "",
     val endDate: String = "",
-
-    val pricePlaceholder: String = "xxx.xxx.xxx.xxx",
-
     val location: String = "",
     val dresscode: String = "",
     val meetupTime: String = "",
     val meetupAddress: String = "",
+    val mentorId: Int? = null,
+    val coordinatorId: Int? = null
+)
 
-    val selectedMentorId: Int? = null,
-    val selectedMentorName: String = "",
-
-    val selectedCoordinatorId: Int? = null,
-    val selectedCoordinatorName: String = "",
-
+data class NewTripUiState(
+    val isLoading: Boolean = false,
+    val isSuccess: Boolean = false,
+    val createdTripId: Int? = null,
+    val successMessage: String? = null,
+    val errorMessage: String? = null,
+    val form: NewTripFormState = NewTripFormState(),
     val mentorOptions: List<LeaderOptionUiState> = emptyList(),
     val coordinatorOptions: List<LeaderOptionUiState> = emptyList()
 )
 
 class NewTripViewModel(
     private val adminRepository: AdminRepository,
+    private val galleryRepository: GalleryRepository,
     private val memberRepository: MemberRepository
 ) : ViewModel() {
 
-    private val _form = MutableStateFlow(NewTripFormState())
-    val form: StateFlow<NewTripFormState> = _form.asStateFlow()
-
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-
-    private val _createdTripId = MutableStateFlow<Int?>(null)
-    val createdTripId: StateFlow<Int?> = _createdTripId.asStateFlow()
-
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+    private val _uiState = MutableStateFlow(NewTripUiState())
+    val uiState: StateFlow<NewTripUiState> = _uiState.asStateFlow()
 
     init {
         loadLeaderOptions()
@@ -65,181 +58,242 @@ class NewTripViewModel(
 
     private fun loadLeaderOptions() {
         viewModelScope.launch {
-            val mentorResult = async {
-                memberRepository.listByRole("mentor")
-            }
+            val mentorResult = memberRepository.listByRole("mentor")
+            val coordinatorResult = memberRepository.listByRole("koordinator")
 
-            val coordinatorResult = async {
-                memberRepository.listByRole("koordinator")
-            }
+            val mentors =
+                if (mentorResult is Resource.Success) {
+                    mentorResult.data.map {
+                        LeaderOptionUiState(
+                            id = it.id,
+                            name = it.fullName
+                        )
+                    }
+                } else {
+                    emptyList()
+                }
 
-            val mentors = when (val result = mentorResult.await()) {
-                is Resource.Success -> result.data.map { it.toLeaderOption() }
-                is Resource.Error -> emptyList()
-                is Resource.Loading -> emptyList()
-            }
+            val coordinators =
+                if (coordinatorResult is Resource.Success) {
+                    coordinatorResult.data.map {
+                        LeaderOptionUiState(
+                            id = it.id,
+                            name = it.fullName
+                        )
+                    }
+                } else {
+                    emptyList()
+                }
 
-            val coordinators = when (val result = coordinatorResult.await()) {
-                is Resource.Success -> result.data.map { it.toLeaderOption() }
-                is Resource.Error -> emptyList()
-                is Resource.Loading -> emptyList()
-            }
-
-            _form.value = _form.value.copy(
-                mentorOptions = mentors,
-                coordinatorOptions = coordinators
-            )
+            _uiState.value =
+                _uiState.value.copy(
+                    mentorOptions = mentors,
+                    coordinatorOptions = coordinators
+                )
         }
-    }
-
-    private fun Member.toLeaderOption(): LeaderOptionUiState {
-        val fullName = listOfNotNull(
-            firstName,
-            lastName
-        ).joinToString(" ").trim()
-
-        return LeaderOptionUiState(
-            id = id,
-            name = fullName.ifBlank { username }
-        )
     }
 
     fun updateTitle(value: String) {
-        _form.value = _form.value.copy(title = value)
+        updateForm { it.copy(title = value) }
     }
 
     fun updateDescription(value: String) {
-        _form.value = _form.value.copy(description = value)
+        updateForm { it.copy(description = value) }
     }
 
     fun updateStartDate(value: String) {
-        _form.value = _form.value.copy(startDate = value)
+        updateForm { it.copy(startDate = value) }
     }
 
     fun updateEndDate(value: String) {
-        _form.value = _form.value.copy(endDate = value)
+        updateForm { it.copy(endDate = value) }
     }
 
     fun updateLocation(value: String) {
-        _form.value = _form.value.copy(location = value)
+        updateForm { it.copy(location = value) }
     }
 
     fun updateDresscode(value: String) {
-        _form.value = _form.value.copy(dresscode = value)
+        updateForm { it.copy(dresscode = value) }
     }
 
     fun updateMeetupTime(value: String) {
-        _form.value = _form.value.copy(meetupTime = value)
+        updateForm { it.copy(meetupTime = value) }
     }
 
     fun updateMeetupAddress(value: String) {
-        _form.value = _form.value.copy(meetupAddress = value)
+        updateForm { it.copy(meetupAddress = value) }
     }
 
-    fun updateSelectedMentor(id: Int, name: String) {
-        _form.value = _form.value.copy(
-            selectedMentorId = id,
-            selectedMentorName = name
-        )
+    fun updateMentorId(value: Int) {
+        updateForm { it.copy(mentorId = value) }
     }
 
-    fun updateSelectedCoordinator(id: Int, name: String) {
-        _form.value = _form.value.copy(
-            selectedCoordinatorId = id,
-            selectedCoordinatorName = name
-        )
+    fun updateCoordinatorId(value: Int) {
+        updateForm { it.copy(coordinatorId = value) }
     }
 
-    fun submitGeneralInformation() {
-        val currentForm = _form.value
+    private fun updateForm(
+        updater: (NewTripFormState) -> NewTripFormState
+    ) {
+        _uiState.value =
+            _uiState.value.copy(
+                form = updater(_uiState.value.form),
+                errorMessage = null,
+                successMessage = null,
+                isSuccess = false,
+                createdTripId = null
+            )
+    }
 
-        if (currentForm.title.isBlank()) {
-            _errorMessage.value = "Title tidak boleh kosong"
+    fun createTrip(
+        imageFile: File?
+    ) {
+        val form = _uiState.value.form
+
+        if (form.title.isBlank()) {
+            setError("Trip title cannot be empty")
             return
         }
 
-        if (currentForm.description.isBlank()) {
-            _errorMessage.value = "Description tidak boleh kosong"
+        if (form.startDate.isBlank()) {
+            setError("Start date cannot be empty")
             return
         }
 
-        if (currentForm.startDate.isBlank()) {
-            _errorMessage.value = "Start date tidak boleh kosong"
+        if (form.endDate.isBlank()) {
+            setError("End date cannot be empty")
             return
         }
 
-        if (currentForm.endDate.isBlank()) {
-            _errorMessage.value = "End date tidak boleh kosong"
+        if (form.mentorId == null) {
+            setError("Please select mentor")
             return
         }
 
-        val mentorId = currentForm.selectedMentorId
-        if (mentorId == null) {
-            _errorMessage.value = "Mentor harus dipilih"
-            return
-        }
-
-        val coordinatorId = currentForm.selectedCoordinatorId
-        if (coordinatorId == null) {
-            _errorMessage.value = "Coordinator harus dipilih"
+        if (form.coordinatorId == null) {
+            setError("Please select coordinator")
             return
         }
 
         viewModelScope.launch {
-            _isLoading.value = true
-            _errorMessage.value = null
+            _uiState.value =
+                _uiState.value.copy(
+                    isLoading = true,
+                    errorMessage = null,
+                    successMessage = null,
+                    isSuccess = false,
+                    createdTripId = null
+                )
 
-            val request = AdminTripRequest(
-                name = currentForm.title,
-                description = currentForm.description,
-                startDate = currentForm.startDate,
-                endDate = currentForm.endDate,
-                location = currentForm.location.ifBlank { null },
-                dresscode = currentForm.dresscode.ifBlank { null },
-                meetupTime = currentForm.meetupTime.ifBlank { null },
-                meetupAddress = currentForm.meetupAddress.ifBlank { null },
-                mentorId = mentorId,
-                koordinatorId = coordinatorId
-            )
-
-            when (val result = adminRepository.createTrip(request)) {
+            when (
+                val createResult =
+                    adminRepository.createTrip(
+                        AdminTripRequest(
+                            name = form.title,
+                            description = form.description.ifBlank { null },
+                            startDate = form.startDate,
+                            endDate = form.endDate,
+                            location = form.location.ifBlank { null },
+                            dresscode = form.dresscode.ifBlank { null },
+                            meetupTime = form.meetupTime.ifBlank { null },
+                            meetupAddress = form.meetupAddress.ifBlank { null },
+                            mentorId = form.mentorId,
+                            koordinatorId = form.coordinatorId
+                        )
+                    )
+            ) {
                 is Resource.Success -> {
-                    _createdTripId.value = result.data.group.id
+                    val newGroupId = createResult.data.group.id
+
+                    if (imageFile != null) {
+                        when (
+                            val uploadResult =
+                                galleryRepository.uploadImage(
+                                    groupId = newGroupId,
+                                    imageFile = imageFile,
+                                    caption = "Main trip photo"
+                                )
+                        ) {
+                            is Resource.Success -> {
+                                _uiState.value =
+                                    _uiState.value.copy(
+                                        isLoading = false,
+                                        isSuccess = true,
+                                        createdTripId = newGroupId,
+                                        successMessage = "Trip and photo created successfully",
+                                        errorMessage = null
+                                    )
+                            }
+
+                            is Resource.Error -> {
+                                _uiState.value =
+                                    _uiState.value.copy(
+                                        isLoading = false,
+                                        isSuccess = true,
+                                        createdTripId = newGroupId,
+                                        successMessage = "Trip created, but photo upload failed",
+                                        errorMessage = uploadResult.message
+                                    )
+                            }
+
+                            is Resource.Loading -> Unit
+                        }
+                    } else {
+                        _uiState.value =
+                            _uiState.value.copy(
+                                isLoading = false,
+                                isSuccess = true,
+                                createdTripId = newGroupId,
+                                successMessage = "Trip created successfully",
+                                errorMessage = null
+                            )
+                    }
                 }
 
                 is Resource.Error -> {
-                    _errorMessage.value = result.message
+                    _uiState.value =
+                        _uiState.value.copy(
+                            isLoading = false,
+                            isSuccess = false,
+                            createdTripId = null,
+                            errorMessage = createResult.message
+                        )
                 }
 
                 is Resource.Loading -> Unit
             }
-
-            _isLoading.value = false
         }
     }
 
-    fun clearCreatedTripId() {
-        _createdTripId.value = null
-    }
-
-    fun clearError() {
-        _errorMessage.value = null
+    private fun setError(message: String) {
+        _uiState.value =
+            _uiState.value.copy(
+                isLoading = false,
+                errorMessage = message,
+                isSuccess = false,
+                successMessage = null,
+                createdTripId = null
+            )
     }
 
     companion object {
         fun factory(
             adminRepository: AdminRepository,
+            galleryRepository: GalleryRepository,
             memberRepository: MemberRepository
-        ): ViewModelProvider.Factory {
-            return object : ViewModelProvider.Factory {
+        ): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                override fun <T : ViewModel> create(
+                    modelClass: Class<T>
+                ): T {
                     return NewTripViewModel(
                         adminRepository = adminRepository,
+                        galleryRepository = galleryRepository,
                         memberRepository = memberRepository
                     ) as T
                 }
             }
-        }
     }
 }
