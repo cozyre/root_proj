@@ -15,6 +15,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.DocumentationUiModel
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 
 @Composable
 fun DocumentationGridItem(
@@ -30,12 +32,14 @@ fun DocumentationGridItem(
             .clip(RoundedCornerShape(16.dp))
             .background(Color.LightGray)
     ) {
-
-        // TODO:
-        // AsyncImage(
-        //    model = documentation.imageUrl,
-        //    contentDescription = null
-        // )
+        if (!documentation.imageUrl.isNullOrBlank()) {
+            AsyncImage(
+                model = documentation.imageUrl,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        }
 
         if (showRemoveButton) {
             Box(

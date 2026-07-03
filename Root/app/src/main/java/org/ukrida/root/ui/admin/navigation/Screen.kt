@@ -21,4 +21,9 @@ sealed class Screen(val route: String) {
 
     object EditSong : Screen("edit_song/{songId}") {
     }
+    object NewItinerary : Screen("new_itinerary/{tripId}")
+    object NewSongs : Screen("new_songs/{tripId}")
+    object NewDailyBread : Screen("new_daily_bread/{tripId}")
+
+    object Broadcast : Screen("broadcast")
 }

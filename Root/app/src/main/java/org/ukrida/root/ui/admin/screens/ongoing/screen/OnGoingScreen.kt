@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import org.ukrida.root.data.model.Group
 import org.ukrida.root.ui.admin.components.PriceTripCard
 import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.navigation.Screen
@@ -40,6 +41,12 @@ fun OnGoingScreen(
     viewModel: OnGoingViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var showDeleteDialog by remember {
+        mutableStateOf(false)
+    }
+    var selectedGroupToDelete by remember {
+        mutableStateOf<Group?>(null)
+    }
     var showDialog by remember { mutableStateOf(false) }
     var selectedId by remember { mutableStateOf<Int?>(null) }
 
@@ -110,15 +117,14 @@ fun OnGoingScreen(
                     items(uiState.groups) { group ->
                         PriceTripCard(
                             group = group,
+                            imageUrl = uiState.coverImages[group.id],
+                            onClick = {
+                                navController.navigate("ongoing_detail/${group.id}")
+                            },
                             showRemoveButton = true,
                             onRemoveClick = {
-                                selectedId = group.id
-                                showDialog = true
-                            },
-                            onClick = {
-                                val route = Screen.OngoingDetail.route
-                                    .replace("{tripId}", group.id.toString())
-                                navController.navigate(route)
+                                selectedGroupToDelete = group
+                                showDeleteDialog = true
                             }
                         )
                     }
