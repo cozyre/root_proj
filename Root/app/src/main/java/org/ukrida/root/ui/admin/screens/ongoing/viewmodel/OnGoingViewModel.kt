@@ -1,5 +1,6 @@
 package org.ukrida.root.ui.admin.screens.ongoing.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -63,14 +64,22 @@ class OnGoingViewModel : ViewModel() {
                         ongoingGroups.associate { group ->
                             val imageUrl =
                                 when (
-                                    val imageResult =
-                                        galleryRepository.listImages(group.id)
+                                    val imageResult = galleryRepository.listImages(group.id)
                                 ) {
                                     is Resource.Success -> {
-                                        imageResult.data.firstOrNull()?.imageUrl
+                                        val rawUrl = imageResult.data.firstOrNull()?.imageUrl
+                                        val fixedUrl = normalizeImageUrl(rawUrl)
+
+                                        Log.d("ONGOING_IMAGE", "groupId=${group.id}")
+                                        Log.d("ONGOING_IMAGE", "rawUrl=$rawUrl")
+                                        Log.d("ONGOING_IMAGE", "fixedUrl=$fixedUrl")
+
+                                        fixedUrl
                                     }
 
-                                    else -> null
+                                    is Resource.Error -> null
+
+                                    is Resource.Loading -> null
                                 }
 
                             group.id to imageUrl
@@ -95,6 +104,15 @@ class OnGoingViewModel : ViewModel() {
 
     fun refresh() {
         loadOngoingTours()
+    }
+
+    private fun normalizeImageUrl(url: String?): String? {
+        if (url.isNullOrBlank()) return null
+
+        return url
+            .replace("http://localhost/", "http://10.0.2.2/")
+            .replace("http://127.0.0.1/", "http://10.0.2.2/")
+            .replace("https://localhost/", "http://10.0.2.2/")
     }
 
     fun deleteTrip(id: Int) {
