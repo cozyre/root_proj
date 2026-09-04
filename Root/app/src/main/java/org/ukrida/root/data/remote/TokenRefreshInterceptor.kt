@@ -10,19 +10,33 @@ class TokenRefreshInterceptor(private val sessionManager: SessionManager) : Inte
 
     private val TAG = "TokenRefreshInterceptor"
 
+    // Routes that should NEVER trigger a refresh-retry — they either have no
+    // token yet (login/register) or ARE the refresh call itself (avoids recursion).
+    private val excludedRoutes = setOf(
+        "auth/login",
+        "auth/register",
+        "auth/refresh"
+    )
+
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
-        var response = chain.proceed(originalRequest)
+        val response = chain.proceed(originalRequest)
 
-        // If 401, try refresh once. If still fails, logout.
+        val route = originalRequest.url.queryParameter("route")
+
+        // Bail out early for auth endpoints — a 401 here means bad credentials
+        // or an invalid/missing refresh token, not an expired session.
+        if (route in excludedRoutes) {
+            return response
+        }
+
         if (response.code == 401) {
             Log.d(TAG, "Got 401, attempting token refresh...")
 
-            synchronized(this) {  // Prevent multiple simultaneous refresh attempts
+            synchronized(this) {
                 val refreshed = attemptRefresh()
 
                 if (refreshed) {
-                    // Retry original request with new token
                     val newToken = sessionManager.getToken()
                     if (newToken != null) {
                         val retryRequest = originalRequest.newBuilder()
@@ -34,7 +48,6 @@ class TokenRefreshInterceptor(private val sessionManager: SessionManager) : Inte
                     }
                 }
 
-                // Refresh failed or no token — logout
                 Log.d(TAG, "Refresh failed or no token, clearing session")
                 sessionManager.logout()
             }
@@ -45,8 +58,7 @@ class TokenRefreshInterceptor(private val sessionManager: SessionManager) : Inte
 
     private fun attemptRefresh(): Boolean {
         return try {
-            // Use runBlocking to call suspend function from non-suspend context
-            val success = runBlocking {
+            runBlocking {
                 try {
                     val apiService = RetrofitClient.instance
                     val res = apiService.refreshToken()
@@ -65,7 +77,6 @@ class TokenRefreshInterceptor(private val sessionManager: SessionManager) : Inte
                     false
                 }
             }
-            success
         } catch (e: Exception) {
             Log.e(TAG, "runBlocking error: ${e.message}")
             false
