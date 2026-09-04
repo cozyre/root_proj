@@ -61,6 +61,7 @@ fun AppNavigation(
         modifier = modifier
     ) {
 
+        // Dashboard >>>>>>>>>>>>>>>>>>>>>>>>>>
         composable(Screen.Dashboard.route) {
             val factory = remember {
                 DashboardViewModelFactory(
@@ -79,10 +80,13 @@ fun AppNavigation(
             )
         }
 
+        // TODO: update viewmodel
+        // Approval >>>>>>>>>>>>>>>>>>>>>>>>>
         composable(Screen.Approval.route) {
             ApprovalScreen(onMenuClick = onMenuClick)
         }
 
+        // HymnForHim >>>>>>>>>>>>>>>>>>>>>>>
         composable(Screen.HymnForHim.route) { backStackEntry ->
 
             val viewModel: HymnForHimViewModel = viewModel(
@@ -114,8 +118,9 @@ fun AppNavigation(
                 viewModel = viewModel
             )
         }
-        composable(Screen.AddSong.route) {
 
+        // AddSong >>>>>>>>>>>>>>>>>>>>>>>>>
+        composable(Screen.AddSong.route) {
             val viewModel: AddSongViewModel = viewModel(
                 factory = AddSongViewModel.factory(
                     appContainer.adminRepository
@@ -137,10 +142,14 @@ fun AppNavigation(
             )
         }
 
+        // TODO: update viewmodel
+        // OngoingTrip >>>>>>>>>>>>>>>>>>>>>>>>>
         composable(Screen.OngoingTrip.route) {
             OnGoingScreen(navController = navController,  onMenuClick = onMenuClick)
         }
 
+        // TODO: update viewmodel
+        // OngoingDetail >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         composable(
             route = Screen.OngoingDetail.route,
             arguments = listOf(navArgument("tripId") { type = NavType.IntType })
@@ -160,6 +169,7 @@ fun AppNavigation(
             )
         }
 
+        // Edit Itinerary >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         composable(
             route = Screen.EditItinerary.route,
             arguments = listOf(

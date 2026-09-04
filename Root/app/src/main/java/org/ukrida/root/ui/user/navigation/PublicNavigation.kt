@@ -75,6 +75,7 @@ fun PublicNavigation(
 
         // ==================== ROOT-LEVEL ROUTES ====================
 
+        // Home >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         composable(PublicScreen.Home.route) {
             val factory = remember {
                 HomeViewModelFactory(appContainer.groupRepository)
@@ -86,6 +87,7 @@ fun PublicNavigation(
             )
         }
 
+        // promised land >>>>>>>>>>>>>>>>>>>>>>>
         composable(PublicScreen.PromisedLand.route) {
             val factory = remember {
                 PromisedLandViewModelFactory(appContainer.groupRepository)
@@ -97,6 +99,7 @@ fun PublicNavigation(
             )
         }
 
+        // Group >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         composable(PublicScreen.Group.route) {
             val factory = remember {
                 GroupViewModelFactory(
@@ -111,6 +114,7 @@ fun PublicNavigation(
             )
         }
 
+        // History >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         composable(PublicScreen.History.route) {
             val factory = remember {
                 HistoryViewModelFactory(appContainer.groupRepository)
@@ -122,6 +126,7 @@ fun PublicNavigation(
             )
         }
 
+        // History Detail >>>>>>>>>>>>>>>>>>>>>>>
         composable(
             route = PublicScreen.HistoryDetail.route,
             arguments = listOf(
@@ -144,6 +149,7 @@ fun PublicNavigation(
             )
         }
 
+        // Order >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         composable(
             route = PublicScreen.Order.route,
             arguments = listOf(
@@ -162,6 +168,7 @@ fun PublicNavigation(
             )
         }
 
+        // Profile >>>>>>>>>>>>>>>>>>>>>>>>>>>>
         composable(PublicScreen.Profile.route) {
             val factory = remember {
                 ProfileViewModelFactory(appContainer.profileRepository)
@@ -176,6 +183,7 @@ fun PublicNavigation(
 
         // ==================== GROUP-SCOPED ROUTES (group/{groupId}/*) ====================
 
+        // Group/Dashboard >>>>>>>>>>>>>>>>>>>>>
         composable(
             route = PublicScreen.Dashboard.route,
             arguments = listOf(
@@ -194,6 +202,7 @@ fun PublicNavigation(
             )
         }
 
+        // Group/Itinerary >>>>>>>>>>>>>>>>>>>>
         composable(
             route = PublicScreen.Itinerary.route,
             arguments = listOf(
@@ -212,6 +221,7 @@ fun PublicNavigation(
             )
         }
 
+        // Group/Hymn >>>>>>>>>>>>>>>>>>>>>>>>>
         composable(
             route = PublicScreen.Hymn.route,
             arguments = listOf(
@@ -230,6 +240,7 @@ fun PublicNavigation(
             )
         }
 
+        // Group/Hymn/HymnDetail >>>>>>>>>>>>>>>
         composable(
             route = PublicScreen.HymnDetail.route,
             arguments = listOf(
@@ -249,6 +260,7 @@ fun PublicNavigation(
             )
         }
 
+        // Group/Gallery >>>>>>>>>>>>>>>>>>>>>>>>
         composable(
             route = PublicScreen.Gallery.route,
             arguments = listOf(
@@ -267,6 +279,7 @@ fun PublicNavigation(
             )
         }
 
+        // Group/journal >>>>>>>>>>>>>>>>>>>>>>>
         composable(
             route = PublicScreen.Journal.route,
             arguments = listOf(
@@ -285,6 +298,7 @@ fun PublicNavigation(
             )
         }
 
+        // Group/JournalEditor >>>>>>>>>>>>>>>>>>>>
         composable(
             route = PublicScreen.JournalEditor.route,
             arguments = listOf(
@@ -306,6 +320,7 @@ fun PublicNavigation(
             )
         }
 
+        // Group/DailyBread >>>>>>>>>>>>>>>>>>>>>>>>>
         composable(
             route = PublicScreen.DailyBread.route,
             arguments = listOf(
@@ -324,6 +339,7 @@ fun PublicNavigation(
             )
         }
 
+        // Group/DailyBread/DailyBreadDetail >>>>>>>>>>>>>>>>>
         composable(
             route = PublicScreen.DailyBreadDetail.route,
             arguments = listOf(
@@ -345,6 +361,7 @@ fun PublicNavigation(
             )
         }
 
+        // Group/Members >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         composable(
             route = PublicScreen.Members.route,
             arguments = listOf(
@@ -363,6 +380,7 @@ fun PublicNavigation(
             )
         }
 
+        // Group/Member/MemberDetail >>>>>>>>>>>>>>>>>>>>
         composable(
             route = PublicScreen.MemberDetail.route,
             arguments = listOf(
