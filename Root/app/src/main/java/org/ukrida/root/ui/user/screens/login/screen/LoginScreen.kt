@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -52,7 +53,8 @@ import org.ukrida.root.utils.Resource
 fun LoginScreen(
     viewModel: LoginViewModel = viewModel(),
     onRegisterClick: () -> Unit,
-    onLoginSuccess: () -> Unit) {
+    onLoginSuccess: () -> Unit
+) {
     val state by viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
 
@@ -64,11 +66,14 @@ fun LoginScreen(
 
     var identifier by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var selectedRole by remember { mutableStateOf("User") }
+    var selectedRole by remember { mutableStateOf("user") }
 
     val darkBrown = Color(0xFF2A2522)
     val cream = Color(0xFFE5C19A)
     val olive = Color(0xFF7A8A4A)
+
+    // Disable inputs during loading or after success (while navigating)
+    val isEnabled = state !is Resource.Loading && state !is Resource.Success
 
     Box(
         modifier = Modifier
@@ -129,6 +134,7 @@ fun LoginScreen(
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         FilterChip(
+                            enabled = isEnabled,
                             selected = selectedRole == "user",
                             onClick = {
                                 selectedRole = "user"
@@ -138,6 +144,7 @@ fun LoginScreen(
                             }
                         )
                         FilterChip(
+                            enabled = isEnabled,
                             selected = selectedRole == "admin",
                             onClick = {
                                 selectedRole = "admin"
@@ -159,19 +166,23 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = identifier,
                         onValueChange = { identifier = it },
+                        enabled = isEnabled,
                         label = {
                             Text(
                                 "Username / Email",
                                 color = cream
                             )
                         },
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                        textStyle = TextStyle(color = Color.White),
+                        modifier = Modifier.fillMaxWidth(),
+
+                        )
                     Spacer(modifier = Modifier.height(20.dp))
 
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
+                        enabled = isEnabled,
                         label = {
                             Text(
                                 "Password",
@@ -179,7 +190,8 @@ fun LoginScreen(
                             )
                         },
                         visualTransformation = PasswordVisualTransformation(),
-                        modifier = Modifier.fillMaxWidth()
+                        textStyle = TextStyle(color = Color.White),
+                        modifier = Modifier.fillMaxWidth(),
                     )
 
                     if (state is Resource.Error) {
@@ -202,7 +214,7 @@ fun LoginScreen(
                                 )
                             }
                         },
-                        enabled = state !is Resource.Loading,
+                        enabled = isEnabled,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(55.dp),
@@ -229,7 +241,7 @@ fun LoginScreen(
                         modifier = Modifier.fillMaxWidth(),
                         text = buildAnnotatedString {
 
-                            append("Not having account? ")
+                            append("Don't have an account? ")
 
                             pushStringAnnotation(
                                 tag = "REGISTER",
@@ -253,7 +265,9 @@ fun LoginScreen(
                             fontSize = 14.sp
                         ),
                         onClick = {
-                            onRegisterClick()
+                            if (isEnabled) {
+                                onRegisterClick()
+                            }
                         }
                     )
                 }
@@ -261,6 +275,7 @@ fun LoginScreen(
         }
     }
 }
+
 @Composable
 fun WaveHeader() {
     Box(

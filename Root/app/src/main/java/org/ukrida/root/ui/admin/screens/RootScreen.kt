@@ -29,27 +29,17 @@ fun RootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
         rememberNavController()
 
     ModalNavigationDrawer(
-
         drawerState = drawerState,
-
         drawerContent = {
-
             AppDrawer(
 
                 onItemClick = {
-
                     navController.navigate(it)
-
-                    scope.launch {
-                        drawerState.close()
-                    }
+                    scope.launch { drawerState.close() }
                 },
 
                 onCloseDrawer = {
-
-                    scope.launch {
-                        drawerState.close()
-                    }
+                    scope.launch { drawerState.close() }
                 },
                 onLogout = onLogout
             )
