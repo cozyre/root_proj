@@ -22,40 +22,33 @@ class LoginViewModel(
         viewModelScope.launch {
             _uiState.value = Resource.Loading()
 
-            try {
-                val result = authRepository.login(identifier, password)
-                when (result) {
-                    is Resource.Success -> {
-                        val backendRole = result.data.user.role
+            val result = authRepository.login(identifier, password)
+            result.fold(
+                onSuccess = { authData ->
+                    val backendRole = authData.user.role
 
-                        // Validate role match
-                        if ((selectedRole == "user") && (backendRole == "admin")) {
-                            _uiState.value = Resource.Error(
-                                "Role mismatch. You selected '$selectedRole' but your account is '$backendRole'"
-                            )
-                        } else if ((selectedRole == "admin") && (backendRole != "admin")) {
-                            _uiState.value = Resource.Error(
-                                "Role mismatch. You selected '$selectedRole' but your account is '$backendRole'"
-                            )
-                        } else {
-                            // Save token, role, and time
-                            sessionManager.saveToken(result.data.token)
-                            sessionManager.saveRole(backendRole)
-                            sessionManager.saveLoginTime()
+                    // Validate role match
+                    if ((selectedRole == "user") && (backendRole == "admin")) {
+                        _uiState.value = Resource.Error(
+                            "Role mismatch. You selected '$selectedRole' but your account is '$backendRole'"
+                        )
+                    } else if ((selectedRole == "admin") && (backendRole != "admin")) {
+                        _uiState.value = Resource.Error(
+                            "Role mismatch. You selected '$selectedRole' but your account is '$backendRole'"
+                        )
+                    } else {
+                        // Save token, role, and time
+                        sessionManager.saveToken(authData.token)
+                        sessionManager.saveRole(backendRole)
+                        sessionManager.saveLoginTime()
 
-                            _uiState.value = Resource.Success(result.data)
-                        }
+                        _uiState.value = Resource.Success(authData)
                     }
-                    is Resource.Error -> {
-                        _uiState.value = Resource.Error(result.message)
-                    }
-                    else -> {
-                        _uiState.value = Resource.Error("An unexpected error occurred")
-                    }
+                },
+                onFailure = { error ->
+                    _uiState.value = Resource.Error(error.message ?: "Failed to login. Please check your connection.")
                 }
-            } catch (e: Exception) {
-                _uiState.value = Resource.Error(e.message ?: "Failed to login. Please check your connection.")
-            }
+            )
         }
     }
 }
