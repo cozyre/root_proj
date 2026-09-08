@@ -51,4 +51,8 @@ class LoginViewModel(
             )
         }
     }
+
+    fun resetState() {
+        _uiState.value = null
+    }
 }
