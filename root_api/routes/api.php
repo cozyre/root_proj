@@ -33,6 +33,9 @@ require_once __DIR__ . '/../controllers/ProfileController.php';
 require_once __DIR__ . '/../models/AdminModel.php';
 require_once __DIR__ . '/../controllers/AdminController.php';
 
+require_once __DIR__ . '/../models/NotificationModel.php';
+require_once __DIR__ . '/../controllers/NotificationController.php';
+
 $db     = (new Database())->connect();
 $method = $_SERVER['REQUEST_METHOD'];
 $route  = $_GET['route'] ?? '';
@@ -51,6 +54,7 @@ $galleryCtrl   = new GroupImageController(new GroupImageModel($db), $auth);
 $memberCtrl    = new MemberController(new MemberModel($db), $auth);
 $profileCtrl   = new ProfileController(new ProfileModel($db), $auth);
 $adminCtrl = new AdminController(new AdminModel(($db)), new AccountModel($db),$auth);
+$ntfCtrl = new NotificationController((new NotificationModel($db)), $auth);
 
 match (true) {
     // Auth
@@ -172,6 +176,14 @@ match (true) {
         => $itineraryCtrl->updateItem(),
     $method === 'POST' && $route === 'itinerary/deleteItem'
         => $itineraryCtrl->deleteItem(),
+
+    // Notification
+    $method === 'GET'  && $route === 'notification/list'
+        => $ntfCtrl->list(),
+    $method === 'POST' && $route === 'notification/broadcast'
+        => $ntfCtrl->broadcast(),
+    $method === 'POST' && $route === 'notification/markRead'
+        => $ntfCtrl->markRead(),
 
 
     default => (function () use ($route, $method) {
