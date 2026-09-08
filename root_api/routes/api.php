@@ -128,6 +128,8 @@ match (true) {
         => $profileCtrl->get(),
     $method === 'POST' && $route === 'profile/update'
         => $profileCtrl->update(),
+    $method === 'POST' && $route === 'profile/uploadPhoto'
+        => $profileCtrl->uploadPhoto(),
 
     // Admin
     $method === 'GET'  && $route === 'admin/trips'

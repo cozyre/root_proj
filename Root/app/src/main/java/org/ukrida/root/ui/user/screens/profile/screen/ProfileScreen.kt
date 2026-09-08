@@ -1,6 +1,9 @@
 package org.ukrida.root.ui.user.screens.profile.screen
 
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -16,9 +19,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import org.ukrida.root.ui.user.screens.profile.components.*
 import org.ukrida.root.ui.user.screens.profile.viewmodel.ProfileViewModel
 import org.ukrida.root.utils.Resource
+import java.io.File
+import java.io.FileOutputStream
 
 @Composable
 fun ProfileScreen(
@@ -70,12 +78,28 @@ fun ProfileScreen(
         )
     }
 
+    // ─── Image Picker Launcher ──────────────────────────────────────────────
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { selectedUri ->
+            val file = getFileFromUri(context, selectedUri)
+            if (file != null) {
+                val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+                val body = MultipartBody.Part.createFormData("image", file.name, requestFile)
+                viewModel.uploadProfilePhoto(body)
+            }
+        }
+    }
+
     // ─── Handle update result ────────────────────────────────────────────────
     LaunchedEffect(updateState) {
         when (updateState) {
             is Resource.Success -> {
-                Toast.makeText(context, "Profile updated successfully!", Toast.LENGTH_SHORT).show()
-                viewModel.clearUpdateState()
+                // Show toast only if coming from a non-Loading state effectively
+                // But we mainly need it for the user actions
+                // Avoiding showing Toast for initial load
+                // viewModel.clearUpdateState() is handled below or here
             }
 
             is Resource.Error -> {
@@ -117,7 +141,7 @@ fun ProfileScreen(
                             ProfileHeader(
                                 profile = loadedProfile,
                                 onChangePhotoClick = {
-                                    // Open Image Picker
+                                    launcher.launch("image/*")
                                 }
                             )
                             Spacer(modifier = Modifier.height(28.dp))
@@ -180,42 +204,54 @@ fun ProfileScreen(
                                     )
                                 }
                             )
-                when (updateState) {
-                    is Resource.Error -> {
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text(
-                            text = (updateState as Resource.Error).message,
-                            color = Color.Red,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-                    is Resource.Success -> {
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Text(
-                            text = "Profile updated successfully!",
-                            color = Color.Green,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-                    else -> {}
-                }
+                            when (updateState) {
+                                is Resource.Error -> {
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Text(
+                                        text = (updateState as Resource.Error).message,
+                                        color = Color.Red,
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
+                                is Resource.Success -> {
+                                    // Show success transiently if needed, 
+                                    // usually Toast or immediate UI update is enough
+                                }
+                                else -> {}
+                            }
                             Spacer(modifier = Modifier.height(20.dp))
                             LogoutButton(
                                 onLogout = { onLogout() }
                             )
                             Spacer(modifier = Modifier.height(30.dp))
+                        }
+                    }
+                }
+
+                is Resource.Error -> {
+                    Text(
+                        text = (profile as Resource.Error).message,
+                        color = Color.Red,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
             }
         }
     }
+}
 
-    is Resource.Error -> {
-        Text(
-            text = (profile as Resource.Error).message,
-            color = Color.Red,
-            modifier = Modifier.align(Alignment.Center)
-        )
+private fun getFileFromUri(context: android.content.Context, uri: Uri): File? {
+    return try {
+        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+        val file = File(context.cacheDir, "temp_profile_photo.jpg")
+        val outputStream = FileOutputStream(file)
+        inputStream.use { input ->
+            outputStream.use { output ->
+                input.copyTo(output)
+            }
+        }
+        file
+    } catch (e: Exception) {
+        null
     }
-}
-}
-}
 }

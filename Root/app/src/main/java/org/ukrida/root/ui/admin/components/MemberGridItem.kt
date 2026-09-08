@@ -11,10 +11,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.MemberUiModel
 
 
@@ -30,18 +33,28 @@ fun MemberGridItem(
         modifier = modifier
     ) {
         Box(modifier = Modifier.size(64.dp)) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0xFFE6DCD2), CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                // Nanti ganti AsyncImage (Coil) jika profilePhotoUrl != null
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = null,
-                    tint = Color.Gray,
-                    modifier = Modifier.size(36.dp)
+            if (member.profilePhotoUrl.isNullOrBlank()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color(0xFFE6DCD2), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = null,
+                        tint = Color.Gray,
+                        modifier = Modifier.size(36.dp)
+                    )
+                }
+            } else {
+                AsyncImage(
+                    model = member.profilePhotoUrl,
+                    contentDescription = member.name,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
                 )
             }
 

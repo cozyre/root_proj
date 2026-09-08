@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
 import org.ukrida.root.data.model.Profile
 import org.ukrida.root.data.repository.ProfileRepository
 import org.ukrida.root.utils.Resource
@@ -39,11 +40,6 @@ class ProfileViewModel(
 
     // ─── Update Profile ──────────────────────────────────────────────────────
 
-    /**
-     * Update user profile. On success, refreshes the profile from server
-     * so the user sees the latest data immediately.
-     * _updateState tracks if the operation succeeded or failed.
-     */
     fun updateProfile(
         firstName: String,
         lastName: String,
@@ -61,32 +57,42 @@ class ProfileViewModel(
 
             when (result) {
                 is Resource.Success -> {
-                    // Immediately update profile with returned data
                     _profile.value = Resource.Success(result.data)
-                    // Signal success
                     _updateState.value = Resource.Success(Unit)
-                    // Refresh to ensure consistency with server
                     loadProfile()
                 }
 
                 is Resource.Error -> {
-                    // Signal error, profile remains unchanged
                     _updateState.value = Resource.Error(result.message)
                 }
 
-                is Resource.Loading -> {
-                    // Already set above, shouldn't reach here
+                is Resource.Loading -> {}
+            }
+        }
+    }
+
+    // ─── Upload Profile Photo ────────────────────────────────────────────────
+
+    fun uploadProfilePhoto(image: MultipartBody.Part) {
+        viewModelScope.launch {
+            _updateState.value = Resource.Loading()
+            val result = profileRepository.uploadProfilePhoto(image)
+            when (result) {
+                is Resource.Success -> {
+                    _profile.value = Resource.Success(result.data)
+                    _updateState.value = Resource.Success(Unit)
+                    loadProfile()
                 }
+                is Resource.Error -> {
+                    _updateState.value = Resource.Error(result.message)
+                }
+                is Resource.Loading -> {}
             }
         }
     }
 
     // ─── Reset Update State ──────────────────────────────────────────────────
 
-    /**
-     * Call this after the user has seen the update result (success/error).
-     * Clears the update state so the UI stops showing the result message.
-     */
     fun clearUpdateState() {
         _updateState.value = Resource.Success(Unit)
     }

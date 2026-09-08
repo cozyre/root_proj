@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import org.ukrida.root.data.model.AdminTripUpdateRequest
 import org.ukrida.root.data.model.Group
 import org.ukrida.root.data.model.Member
+import org.ukrida.root.data.remote.RetrofitClient
 import org.ukrida.root.data.repository.AccountRepository
 import org.ukrida.root.data.repository.AdminRepository
 import org.ukrida.root.data.repository.GalleryRepository
@@ -67,23 +68,8 @@ data class OnGoingDetailUiState(
 )
 
 class OnGoingDetailViewModel(
-    val tripId: Int,
-    private val groupRepository: GroupRepository,
-    private val memberRepository: MemberRepository,
-    private val accountRepository: AccountRepository,
-    private val galleryRepository: GalleryRepository,
-    private val adminRepository: AdminRepository
+    val tripId: Int
 ) : ViewModel() {
-
-    private val _uiState =
-        MutableStateFlow(OnGoingDetailUiState())
-
-    val uiState: StateFlow<OnGoingDetailUiState> =
-        _uiState.asStateFlow()
-
-    init {
-        loadDetail()
-    }
 
     fun uploadMainPhoto(imageFile: File) {
         viewModelScope.launch {
@@ -140,6 +126,30 @@ class OnGoingDetailViewModel(
                 }
             }
         }
+    }
+    private val groupRepository =
+        GroupRepository(RetrofitClient.instance)
+
+    private val memberRepository =
+        MemberRepository(RetrofitClient.instance)
+
+    private val accountRepository =
+        AccountRepository(RetrofitClient.instance)
+
+    private val galleryRepository =
+        GalleryRepository(RetrofitClient.instance)
+
+    private val adminRepository =
+        AdminRepository(RetrofitClient.instance)
+
+    private val _uiState =
+        MutableStateFlow(OnGoingDetailUiState())
+
+    val uiState: StateFlow<OnGoingDetailUiState> =
+        _uiState.asStateFlow()
+
+    init {
+        loadDetail()
     }
 
     fun loadDetail() {
@@ -483,12 +493,7 @@ class OnGoingDetailViewModel(
     companion object {
 
         fun factory(
-            tripId: Int,
-            groupRepository: GroupRepository,
-            memberRepository: MemberRepository,
-            accountRepository: AccountRepository,
-            galleryRepository: GalleryRepository,
-            adminRepository: AdminRepository
+            tripId: Int
         ): ViewModelProvider.Factory =
 
             object : ViewModelProvider.Factory {
@@ -499,12 +504,7 @@ class OnGoingDetailViewModel(
                 ): T {
 
                     return OnGoingDetailViewModel(
-                        tripId,
-                        groupRepository,
-                        memberRepository,
-                        accountRepository,
-                        galleryRepository,
-                        adminRepository
+                        tripId
                     ) as T
                 }
             }
