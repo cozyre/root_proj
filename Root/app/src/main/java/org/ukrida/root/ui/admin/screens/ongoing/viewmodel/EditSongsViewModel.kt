@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.ukrida.root.data.model.SongBrowseItem
-import org.ukrida.root.data.remote.RetrofitClient
 import org.ukrida.root.data.repository.GroupRepository
 import org.ukrida.root.data.repository.ItineraryRepository
 import org.ukrida.root.data.repository.SongRepository
@@ -28,12 +27,12 @@ data class SongItemUiState(
 
 
 class EditSongsViewModel(
-    val tripId: Int
+    val tripId: Int,
+    private val repository: SongRepository,
+    private val groupRepository: GroupRepository,
+    private val itineraryRepository: ItineraryRepository
 ) : ViewModel() {
 
-    private val repository = SongRepository(RetrofitClient.instance)
-    private val groupRepository = GroupRepository(RetrofitClient.instance)
-    private val itineraryRepository = ItineraryRepository(RetrofitClient.instance)
     private val dayToDate = mutableMapOf<Int, String>()
     private val dayToItineraryId = mutableMapOf<Int, Int>()
 
@@ -283,11 +282,21 @@ class EditSongsViewModel(
 
 
     companion object {
-        fun factory(tripId: Int): ViewModelProvider.Factory =
+        fun factory(
+            tripId: Int,
+            songRepository: SongRepository,
+            groupRepository: GroupRepository,
+            itineraryRepository: ItineraryRepository
+        ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return EditSongsViewModel(tripId) as T
+                    return EditSongsViewModel(
+                        tripId,
+                        songRepository,
+                        groupRepository,
+                        itineraryRepository
+                    ) as T
                 }
             }
     }

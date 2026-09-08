@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.ukrida.root.data.remote.RetrofitClient
 import org.ukrida.root.data.repository.AdminRepository
 import org.ukrida.root.data.repository.DevotionRepository
 import org.ukrida.root.data.repository.GroupRepository
@@ -25,12 +24,11 @@ data class DailyBreadItem(
 )
 
 class EditDailyBreadViewModel(
-    val tripId: Int
+    val tripId: Int,
+    private val devotionRepository: DevotionRepository,
+    private val adminRepository: AdminRepository,
+    private val groupRepository: GroupRepository
 ) : ViewModel() {
-
-    private val devotionRepository = DevotionRepository(RetrofitClient.instance)
-    private val adminRepository = AdminRepository(RetrofitClient.instance)
-    private val groupRepository = GroupRepository(RetrofitClient.instance)
 
     private val _availableDays = MutableStateFlow<List<Int>>(emptyList())
     val availableDays: StateFlow<List<Int>> = _availableDays.asStateFlow()
@@ -208,11 +206,21 @@ class EditDailyBreadViewModel(
     }
 
     companion object {
-        fun factory(tripId: Int): ViewModelProvider.Factory =
+        fun factory(
+            tripId: Int,
+            devotionRepository: DevotionRepository,
+            adminRepository: AdminRepository,
+            groupRepository: GroupRepository
+        ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return EditDailyBreadViewModel(tripId) as T
+                    return EditDailyBreadViewModel(
+                        tripId,
+                        devotionRepository,
+                        adminRepository,
+                        groupRepository
+                    ) as T
                 }
             }
     }

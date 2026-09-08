@@ -1,8 +1,6 @@
 package org.ukrida.root.ui.admin.navigation
 
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -37,6 +35,8 @@ import org.ukrida.root.ui.admin.screens.trip.screen.TripScreen
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import org.ukrida.root.ui.admin.screens.approval.viewmodel.ApprovalViewModel
+import org.ukrida.root.ui.admin.screens.finished.viewmodel.FinishedTripViewModel
 import org.ukrida.root.ui.admin.screens.hymn.viewmodel.AddSongViewModel
 import org.ukrida.root.ui.admin.screens.newtrip.screen.NewDailyBreadScreen
 import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.NewTripViewModel
@@ -45,6 +45,7 @@ import org.ukrida.root.ui.admin.screens.newtrip.screen.NewSongsScreen
 import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.NewDailyBreadViewModel
 import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.NewItineraryViewModel
 import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.NewSongsViewModel
+import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.OnGoingViewModel
 
 
 @Composable
@@ -80,10 +81,15 @@ fun AppNavigation(
             )
         }
 
-        // TODO: update viewmodel
         // Approval >>>>>>>>>>>>>>>>>>>>>>>>>
         composable(Screen.Approval.route) {
-            ApprovalScreen(onMenuClick = onMenuClick)
+            val viewModel: ApprovalViewModel = viewModel(
+                factory = ApprovalViewModel.factory(appContainer.adminRepository)
+            )
+            ApprovalScreen(
+                onMenuClick = onMenuClick,
+                viewModel = viewModel
+            )
         }
 
         // HymnForHim >>>>>>>>>>>>>>>>>>>>>>>
@@ -142,13 +148,22 @@ fun AppNavigation(
             )
         }
 
-        // TODO: update viewmodel
         // OngoingTrip >>>>>>>>>>>>>>>>>>>>>>>>>
         composable(Screen.OngoingTrip.route) {
-            OnGoingScreen(navController = navController,  onMenuClick = onMenuClick)
+            val viewModel: OnGoingViewModel = viewModel(
+                factory = OnGoingViewModel.factory(
+                    appContainer.groupRepository,
+                    appContainer.adminRepository,
+                    appContainer.galleryRepository
+                )
+            )
+            OnGoingScreen(
+                navController = navController,
+                onMenuClick = onMenuClick,
+                viewModel = viewModel
+            )
         }
 
-        // TODO: update viewmodel
         // OngoingDetail >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         composable(
             route = Screen.OngoingDetail.route,
@@ -160,7 +175,14 @@ fun AppNavigation(
                 backStackEntry.arguments?.getInt("tripId") ?: 0
 
             val viewModel: OnGoingDetailViewModel = viewModel(
-                factory = OnGoingDetailViewModel.factory(tripId)
+                factory = OnGoingDetailViewModel.factory(
+                    tripId,
+                    appContainer.groupRepository,
+                    appContainer.memberRepository,
+                    appContainer.accountRepository,
+                    appContainer.galleryRepository,
+                    appContainer.adminRepository
+                )
             )
             OnGoingDetailScreen(
                 navController = navController,
@@ -183,7 +205,11 @@ fun AppNavigation(
                 backStackEntry.arguments?.getInt("tripId") ?: 0
 
             val viewModel: EditItineraryViewModel = viewModel(
-                factory = EditItineraryViewModel.factory(tripId)
+                factory = EditItineraryViewModel.factory(
+                    tripId,
+                    appContainer.itineraryRepository,
+                    appContainer.groupRepository
+                )
             )
 
             EditItineraryScreen(
@@ -206,7 +232,12 @@ fun AppNavigation(
                 backStackEntry.arguments?.getInt("tripId") ?: 0
 
             val viewModel: EditSongsViewModel = viewModel(
-                factory = EditSongsViewModel.factory(tripId)
+                factory = EditSongsViewModel.factory(
+                    tripId,
+                    appContainer.songRepository,
+                    appContainer.groupRepository,
+                    appContainer.itineraryRepository
+                )
             )
 
             EditSongsScreen(
@@ -229,7 +260,12 @@ fun AppNavigation(
                 backStackEntry.arguments?.getInt("tripId") ?: 0
 
             val viewModel: EditDailyBreadViewModel = viewModel(
-                factory = EditDailyBreadViewModel.factory(tripId)
+                factory = EditDailyBreadViewModel.factory(
+                    tripId,
+                    appContainer.devotionRepository,
+                    appContainer.adminRepository,
+                    appContainer.groupRepository
+                )
             )
 
             EditDailyBreadScreen(
@@ -340,7 +376,14 @@ fun AppNavigation(
         }
 
         composable(Screen.FinishedTrip.route) {
-            FinishedTripScreen(navController = navController, onMenuClick = onMenuClick)
+            val viewModel: FinishedTripViewModel = viewModel(
+                factory = FinishedTripViewModel.factory(appContainer.adminRepository)
+            )
+            FinishedTripScreen(
+                navController = navController,
+                onMenuClick = onMenuClick,
+                viewModel = viewModel
+            )
         }
 
         composable(
@@ -356,7 +399,12 @@ fun AppNavigation(
                 backStackEntry.arguments?.getInt("tripId") ?: 0
 
             val viewModel: FinishedTripDetailViewModel = viewModel(
-                factory = FinishedTripDetailViewModel.factory(tripId)
+                factory = FinishedTripDetailViewModel.factory(
+                    tripId,
+                    appContainer.groupRepository,
+                    appContainer.memberRepository,
+                    appContainer.galleryRepository
+                )
             )
 
             FinishedTripDetailScreen(
