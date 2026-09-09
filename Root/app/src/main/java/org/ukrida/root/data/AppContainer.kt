@@ -11,6 +11,7 @@ import org.ukrida.root.data.repository.GroupRepository
 import org.ukrida.root.data.repository.ItineraryRepository
 import org.ukrida.root.data.repository.JournalRepository
 import org.ukrida.root.data.repository.MemberRepository
+import org.ukrida.root.data.repository.NotificationRepository
 import org.ukrida.root.data.repository.ProfileRepository
 import org.ukrida.root.data.repository.SongRepository
 import org.ukrida.root.utils.SessionManager
@@ -62,5 +63,9 @@ class AppContainer {
 
     val songRepository by lazy {
         SongRepository(api)
+    }
+
+    val notificationRepository by lazy {
+        NotificationRepository(api)
     }
 }
