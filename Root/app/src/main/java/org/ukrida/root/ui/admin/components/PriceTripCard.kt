@@ -22,6 +22,8 @@ import org.ukrida.root.data.model.Group
 import org.ukrida.root.ui.theme.BodyColor
 import org.ukrida.root.ui.theme.DrawerBackground
 import org.ukrida.root.ui.theme.H1Color
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun PriceTripCard(
@@ -31,6 +33,9 @@ fun PriceTripCard(
     showRemoveButton: Boolean = false,
     onRemoveClick: () -> Unit = {}
 ) {
+    val formatter = NumberFormat.getCurrencyInstance(Locale("id", "ID"))
+    val formattedPrice = formatter.format(group.price)
+
     Box(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -137,7 +142,7 @@ fun PriceTripCard(
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     Text(
-                        text = "Rp.XXX.XXX.XXX,XX",
+                        text = formattedPrice,
                         style = MaterialTheme.typography.titleLarge,
                         color = H1Color
                     )

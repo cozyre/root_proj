@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -53,6 +54,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -169,6 +171,16 @@ fun NewTripScreen(
                         label = "Trip Title",
                         value = form.title,
                         onValueChange = viewModel::updateTitle
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    NewTripTextField(
+                        label = "Price",
+                        value = form.price,
+                        onValueChange = viewModel::updatePrice,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        placeholder = "Insert amount"
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -412,7 +424,8 @@ private fun NewTripTextField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String = "",
-    minLines: Int = 1
+    minLines: Int = 1,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
 ) {
     OutlinedTextField(
         value = value,
@@ -426,6 +439,7 @@ private fun NewTripTextField(
             }
         },
         minLines = minLines,
+        keyboardOptions = keyboardOptions,
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
         colors = newTripTextFieldColors()

@@ -354,4 +354,22 @@ interface ApiService {
         @Query("route") route: String = "admin/devotion/update",
         @Body body: AdminDevotionUpdateRequest
     ): Response<ApiResponse<AdminDevotion>>
+
+    // Notification ─────────────────────────────────────────────────────
+        @GET("index.php")
+        suspend fun listNotifications(
+            @Query("route") route: String = "notifications/list"
+        ): Response<NotificationListResponse>
+
+        @POST("index.php")
+        suspend fun broadcast(
+            @Query("route") route: String = "notifications/broadcast",
+            @Body body: BroadcastRequest
+        ): Response<BroadcastResponse>
+
+        @POST("index.php")
+        suspend fun markRead(
+            @Query("route") route: String = "notifications/markRead",
+            @Body body: MarkReadRequest
+        ): Response<GenericResponse>
 }

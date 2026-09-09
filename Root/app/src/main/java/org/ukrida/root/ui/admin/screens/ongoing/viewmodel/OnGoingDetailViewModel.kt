@@ -38,7 +38,8 @@ data class TripState(
     val location: String?,
     val dresscode: String?,
     val meetupTime: String?,
-    val meetupAddress: String?
+    val meetupAddress: String?,
+    val price: Int
 )
 
 data class LeaderOption(
@@ -398,7 +399,8 @@ class OnGoingDetailViewModel(
         title: String,
         description: String,
         mentorId: Int,
-        coordinatorId: Int
+        coordinatorId: Int,
+        price: Int
     ) {
 
         viewModelScope.launch {
@@ -437,7 +439,9 @@ class OnGoingDetailViewModel(
                                 mentorId,
 
                             koordinatorId =
-                                coordinatorId
+                                coordinatorId,
+                            
+                            price = price
                         )
                     )
             ) {
@@ -480,7 +484,8 @@ class OnGoingDetailViewModel(
         location = location,
         dresscode = dresscode,
         meetupTime = meetupTime,
-        meetupAddress = meetupAddress
+        meetupAddress = meetupAddress,
+        price = price
     )
 
     private fun Member.toUiModel() =

@@ -36,6 +36,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import org.ukrida.root.ui.admin.screens.approval.viewmodel.ApprovalViewModel
+import org.ukrida.root.ui.admin.screens.broadcast.screen.BroadcastScreen
+import org.ukrida.root.ui.admin.screens.broadcast.viewmodel.BroadcastViewModel
+import org.ukrida.root.ui.admin.screens.broadcast.viewmodel.BroadcastViewModelFactory
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.FinishedTripViewModel
 import org.ukrida.root.ui.admin.screens.hymn.viewmodel.AddSongViewModel
 import org.ukrida.root.ui.admin.screens.newtrip.screen.NewDailyBreadScreen
@@ -176,12 +179,7 @@ fun AppNavigation(
 
             val viewModel: OnGoingDetailViewModel = viewModel(
                 factory = OnGoingDetailViewModel.factory(
-                    tripId,
-                    appContainer.groupRepository,
-                    appContainer.memberRepository,
-                    appContainer.accountRepository,
-                    appContainer.galleryRepository,
-                    appContainer.adminRepository
+                    tripId
                 )
             )
             OnGoingDetailScreen(
@@ -437,6 +435,19 @@ fun AppNavigation(
                 navController = navController,
                 onMenuClick = onMenuClick,
                 viewModel = viewModel
+            )
+        }
+
+        composable(Screen.Broadcast.route) {
+            val viewModel: BroadcastViewModel = viewModel(
+                factory = BroadcastViewModelFactory(
+                    appContainer.notificationRepository,
+                    appContainer.groupRepository
+                )
+            )
+            BroadcastScreen(
+                viewModel = viewModel,
+                onMenuClick = onMenuClick
             )
         }
     }

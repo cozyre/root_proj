@@ -12,6 +12,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,7 +28,8 @@ import androidx.compose.ui.unit.sp
 fun PublicTopBar(
     title: String,
     onNotificationClick: () -> Unit = {},
-    onBackClick: (() -> Unit)? = null
+    onBackClick: (() -> Unit)? = null,
+    notificationViewModel: NotificationViewModel
 ) {
     val cream = Color(0xFFE5C19A)
     Row(
@@ -50,14 +55,18 @@ fun PublicTopBar(
             fontWeight = FontWeight.Bold
         )
 
+        var showNotifications by remember { mutableStateOf(false) }
         IconButton(
-            onClick = onNotificationClick
+            onClick = { showNotifications = !showNotifications }
         ) {
             Icon(
                 imageVector = Icons.Outlined.Notifications,
-                contentDescription = null,
+                contentDescription = "Notifications",
                 tint = cream
             )
+        }
+        if (showNotifications) {
+            NotificationPopup(viewModel = notificationViewModel) { showNotifications = false }
         }
     }
 }

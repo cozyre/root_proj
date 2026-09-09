@@ -40,11 +40,11 @@ class AdminModel {
             "INSERT INTO groups
                  (name, description, start_date, end_date, location, dresscode,
                   meetup_time, meetup_address, mentor_id, koordinator_id,
-                  created_by, status, created_at, updated_at)
+                  created_by, status, created_at, updated_at, price)
              VALUES
                  (:name, :description, :start_date, :end_date, :location, :dresscode,
                   :meetup_time, :meetup_address, :mentor_id, :koordinator_id,
-                  :created_by, 'active', NOW(), NOW())"
+                  :created_by, 'active', NOW(), NOW(), :price)"
         );
         $stmt->execute([
             'name'           => $data['name'],
@@ -58,6 +58,7 @@ class AdminModel {
             'mentor_id'      => $data['mentor_id'],
             'koordinator_id' => $data['koordinator_id'],
             'created_by'     => $adminId,
+            'price'         => $data['price']
         ]);
         $id = $this->db->lastInsertId();
         return $id ? (int) $id : null;
@@ -77,7 +78,8 @@ class AdminModel {
                  meetup_address = :meetup_address,
                  mentor_id      = :mentor_id,
                  koordinator_id = :koordinator_id,
-                 updated_at     = NOW()
+                 updated_at     = NOW(),
+                 price         = :price
              WHERE id = :id AND deleted_at IS NULL"
         );
         return $stmt->execute([
@@ -91,6 +93,7 @@ class AdminModel {
             'meetup_address' => $data['meetup_address'] ?? null,
             'mentor_id'      => $data['mentor_id'],
             'koordinator_id' => $data['koordinator_id'],
+            'price'         => $data['price'],
             'id'             => $id,
         ]);
     }
