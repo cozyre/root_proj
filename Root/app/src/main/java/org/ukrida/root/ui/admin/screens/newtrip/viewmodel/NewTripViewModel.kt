@@ -29,7 +29,8 @@ data class NewTripFormState(
     val meetupTime: String = "",
     val meetupAddress: String = "",
     val mentorId: Int? = null,
-    val coordinatorId: Int? = null
+    val coordinatorId: Int? = null,
+    val price: String = ""
 )
 
 data class NewTripUiState(
@@ -133,6 +134,10 @@ class NewTripViewModel(
         updateForm { it.copy(coordinatorId = value) }
     }
 
+    fun updatePrice(value: String) {
+        updateForm { it.copy(price = value) }
+    }
+
     private fun updateForm(
         updater: (NewTripFormState) -> NewTripFormState
     ) {
@@ -176,6 +181,12 @@ class NewTripViewModel(
             return
         }
 
+        val priceInt = form.price.toIntOrNull()
+        if (priceInt == null) {
+            setError("Invalid price format")
+            return
+        }
+
         viewModelScope.launch {
             _uiState.value =
                 _uiState.value.copy(
@@ -199,7 +210,8 @@ class NewTripViewModel(
                             meetupTime = form.meetupTime.ifBlank { null },
                             meetupAddress = form.meetupAddress.ifBlank { null },
                             mentorId = form.mentorId,
-                            koordinatorId = form.coordinatorId
+                            koordinatorId = form.coordinatorId,
+                            price = priceInt
                         )
                     )
             ) {
