@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 import org.ukrida.root.data.model.Group
 import org.ukrida.root.data.model.GroupImage
 import org.ukrida.root.data.model.Member
-import org.ukrida.root.data.remote.RetrofitClient
 import org.ukrida.root.data.repository.GalleryRepository
 import org.ukrida.root.data.repository.GroupRepository
 import org.ukrida.root.data.repository.MemberRepository
@@ -37,12 +36,11 @@ data class FinishedTripDetailUiState(
 )
 
 class FinishedTripDetailViewModel(
-    val tripId: Int
+    val tripId: Int,
+    private val groupRepository: GroupRepository,
+    private val memberRepository: MemberRepository,
+    private val galleryRepository: GalleryRepository
 ) : ViewModel() {
-
-    private val groupRepository = GroupRepository(RetrofitClient.instance)
-    private val memberRepository = MemberRepository(RetrofitClient.instance)
-    private val galleryRepository = GalleryRepository(RetrofitClient.instance)
 
     private val _uiState =
         MutableStateFlow(FinishedTripDetailUiState())
@@ -126,7 +124,12 @@ class FinishedTripDetailViewModel(
     )
 
     companion object {
-        fun factory(tripId: Int): ViewModelProvider.Factory =
+        fun factory(
+            tripId: Int,
+            groupRepository: GroupRepository,
+            memberRepository: MemberRepository,
+            galleryRepository: GalleryRepository
+        ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
 
                 @Suppress("UNCHECKED_CAST")
@@ -134,7 +137,10 @@ class FinishedTripDetailViewModel(
                     modelClass: Class<T>
                 ): T {
                     return FinishedTripDetailViewModel(
-                        tripId
+                        tripId,
+                        groupRepository,
+                        memberRepository,
+                        galleryRepository
                     ) as T
                 }
             }

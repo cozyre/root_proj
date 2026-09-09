@@ -58,6 +58,12 @@ fun LoginScreen(
     val state by viewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
 
+    // Reset the login state when entering the screen to prevent automatic navigation
+    // if the ViewModel retains a "Success" state from a previous session.
+    LaunchedEffect(Unit) {
+        viewModel.resetState()
+    }
+
     LaunchedEffect(state) {
         if (state is Resource.Success) {
             onLoginSuccess()

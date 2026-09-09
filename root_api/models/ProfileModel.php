@@ -22,6 +22,21 @@ class ProfileModel {
         return $row;
     }
 
+    // update profile picture
+    public function updatePhoto(int $userId, string $relativePath): bool {
+        $stmt = $this->db->prepare(
+            "UPDATE users SET profile_photo_url = ? WHERE id = ?"
+        );
+        return $stmt->execute([$relativePath, $userId]);
+    }
+
+    public function getCurrentPhotoPath(int $userId): ?string {
+        $stmt = $this->db->prepare("SELECT profile_photo_url FROM users WHERE id = ?");
+        $stmt->execute([$userId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['profile_photo_url'] ?? null;
+    }
+
     /** Returns false only on query failure; 0 changed rows (same data) is still ok. */
     public function update(int $userId, array $data): bool {
         $stmt = $this->db->prepare(

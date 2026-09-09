@@ -23,7 +23,6 @@ fun AuthNavigation(
 ) {
     val authRepository = AuthRepository(RetrofitClient.instance)
 
-    // Separate ViewModels with factories
     val loginViewModelFactory = LoginViewModelFactory(authRepository, sessionManager)
     val loginViewModel = viewModel<LoginViewModel>(factory = loginViewModelFactory)
 
@@ -35,7 +34,9 @@ fun AuthNavigation(
             LoginScreen(
                 viewModel = loginViewModel,
                 onLoginSuccess = {
-                    navController.popBackStack()
+                    // Do NOT pop backstack here. The parent MainActivity will switch routes,
+                    // which effectively removes this NavHost from composition.
+                    // Popping here can lead to an empty backstack if this NavController is reused.
                     onLoginSuccess()
                 },
                 onRegisterClick = {

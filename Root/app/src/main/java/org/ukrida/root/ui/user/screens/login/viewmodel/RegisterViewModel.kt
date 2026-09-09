@@ -50,10 +50,17 @@ class RegisterViewModel(private val authRepository: AuthRepository) : ViewModel(
             val result = authRepository.register(
                 firstName, lastName, username, email, phone, password, passwordConfirmation
             )
-            when (result) {
-                is Resource.Success -> _uiState.value = Resource.Success(result.data)
-                is Resource.Error -> _uiState.value = Resource.Error(result.message)
-                is Resource.Loading -> {}
+            
+            if (result.isSuccess) {
+                val user = result.getOrNull()
+                if (user != null) {
+                    _uiState.value = Resource.Success(user)
+                } else {
+                    _uiState.value = Resource.Error("Registration failed: Empty response data")
+                }
+            } else {
+                val error = result.exceptionOrNull()
+                _uiState.value = Resource.Error(error?.message ?: "Registration failed")
             }
         }
     }

@@ -20,6 +20,9 @@ import org.ukrida.root.ui.AppViewModel
 import org.ukrida.root.utils.SessionManager
 import kotlinx.coroutines.delay
 import android.util.Log
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.Alignment
 import org.ukrida.root.data.AppContainer
 import org.ukrida.root.ui.admin.screens.RootScreen
 import org.ukrida.root.ui.user.login.components.AuthNavigation
@@ -50,7 +53,6 @@ fun MainScreen(activity: MainActivity) {
     val context = LocalContext.current
     val sessionManager = remember { SessionManager(context) }
     val appContainer = remember { AppContainer() }
-    val navController = rememberNavController()
 
     // AppViewModel keeps token refresh running while screen exists
     val appViewModel = remember {
@@ -100,8 +102,11 @@ fun MainScreen(activity: MainActivity) {
 
     when (currentRoute) {
         "auth" -> {
+            // Create a fresh NavController for the auth flow each time we enter it.
+            // This ensures a clean state upon logout.
+            val authNavController = rememberNavController()
             AuthNavigation(
-                navController = navController,
+                navController = authNavController,
                 sessionManager = sessionManager,
                 onLoginSuccess = {
                     val role = sessionManager.getRole()
@@ -116,15 +121,18 @@ fun MainScreen(activity: MainActivity) {
         }
 
         "admin_root" -> {
-            RootScreen(appContainer = appContainer, onLogout)
+            RootScreen(appContainer = appContainer, onLogout = onLogout)
         }
 
         "public_root" -> {
-            PublicRootScreen(appContainer = appContainer, onLogout)
+            PublicRootScreen(appContainer = appContainer, onLogout = onLogout)
         }
 
         null -> {
             // Loading state while checking session
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
         }
     }
 

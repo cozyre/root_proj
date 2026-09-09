@@ -4,23 +4,16 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.ukrida.root.data.model.*
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Part
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface ApiService {
 
     //login & register
     @POST("index.php?route=auth/login")
-    suspend fun login(@Body body: LoginRequest): ApiResponse<AuthData>
+    suspend fun login(@Body body: LoginRequest): Response<ApiResponse<AuthData>>
 
     @POST("index.php?route=auth/register")
-    suspend fun register(@Body body: RegisterRequest): ApiResponse<User>
+    suspend fun register(@Body body: RegisterRequest): Response<ApiResponse<User>>
 
     @POST("index.php")
     suspend fun refreshToken(
@@ -240,6 +233,13 @@ interface ApiService {
     suspend fun updateProfile(
         @Query("route") route: String = "profile/update",
         @Body body: UpdateProfileRequest
+    ): Response<ApiResponse<Profile>>
+
+    @Multipart
+    @POST("index.php")
+    suspend fun uploadProfilePhoto(
+        @Query("route") route: String = "profile/uploadPhoto",
+        @Part image: MultipartBody.Part
     ): Response<ApiResponse<Profile>>
 
     //Admin -----------------------------------------------------------------
