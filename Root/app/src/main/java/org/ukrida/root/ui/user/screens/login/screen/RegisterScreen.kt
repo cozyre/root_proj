@@ -17,6 +17,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -37,6 +39,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import org.ukrida.root.ui.theme.DarkBrown
+import org.ukrida.root.ui.theme.H1Color
+import org.ukrida.root.ui.theme.MicroElement
 import org.ukrida.root.ui.user.screens.login.viewmodel.RegisterViewModel
 import org.ukrida.root.utils.Resource
 
@@ -63,14 +68,11 @@ fun RegisterScreen(
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
-    val darkBrown = Color(0xFF2A2522)
-    val cream = Color(0xFFE5C19A)
-    val olive = Color(0xFF7A8A4A)
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(darkBrown)
+            .background(DarkBrown)
             .verticalScroll(rememberScrollState())
     ) {
         Box(
@@ -92,7 +94,7 @@ fun RegisterScreen(
         Column(modifier = Modifier.padding(24.dp)) {
             Text(
                 "REGISTER",
-                color = cream,
+                color = H1Color,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -100,7 +102,7 @@ fun RegisterScreen(
             Spacer(Modifier.height(8.dp))
 
             Text(
-                "Create your PilgrimMate account",
+                "Create your ROOT account",
                 color = Color.LightGray
             )
 
@@ -148,13 +150,13 @@ fun RegisterScreen(
                     .fillMaxWidth()
                     .height(55.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = olive
+                    containerColor = MicroElement
                 )
             ) {
                 if (state is Resource.Loading) {
                     CircularProgressIndicator(modifier = Modifier.size(20.dp), color = Color.White)
                 } else {
-                    Text("REGISTER")
+                    Text("REGISTER", fontSize = 18.sp)
                 }
             }
 
@@ -199,51 +201,69 @@ fun RegisterScreen(
 }
 @Composable
 fun RegisterField(
-    title:String,
-    value:String,
-    onValueChange:(String)->Unit
-){
-
+    title: String,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
     val cream = Color(0xFFE5C19A)
 
-    Text(
-        title,
-        color = cream,
-        fontWeight = FontWeight.Bold
-    )
-
     OutlinedTextField(
-        value=value,
-        onValueChange=onValueChange,
-        modifier=Modifier.fillMaxWidth(),
-        singleLine=true
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
+        label = {
+            Text(
+                text = title,
+                color = H1Color
+            )
+        },
+        textStyle = TextStyle(
+            color = Color.White
+        ),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = H1Color,
+            unfocusedBorderColor = Color.Gray,
+            focusedLabelColor = H1Color,
+            unfocusedLabelColor = H1Color,
+            cursorColor = H1Color
+        )
     )
 
-    Spacer(Modifier.height(18.dp))
+    Spacer(modifier = Modifier.height(20.dp))
 }
 
 @Composable
 fun RegisterPassword(
-    title:String,
-    value:String,
-    onValueChange:(String)->Unit
-){
-
+    title: String,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
     val cream = Color(0xFFE5C19A)
 
-    Text(
-        title,
-        color=cream,
-        fontWeight = FontWeight.Bold
-    )
-
     OutlinedTextField(
-        value=value,
-        onValueChange=onValueChange,
-        modifier=Modifier.fillMaxWidth(),
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
         visualTransformation = PasswordVisualTransformation(),
-        singleLine=true
+        label = {
+            Text(
+                text = title,
+                color = H1Color
+            )
+        },
+        textStyle = TextStyle(
+            color = Color.White
+        ),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = H1Color,
+            unfocusedBorderColor = Color.Gray,
+            focusedLabelColor = H1Color,
+            unfocusedLabelColor = H1Color,
+            cursorColor = H1Color
+        )
     )
 
-    Spacer(Modifier.height(18.dp))
+    Spacer(modifier = Modifier.height(20.dp))
 }
