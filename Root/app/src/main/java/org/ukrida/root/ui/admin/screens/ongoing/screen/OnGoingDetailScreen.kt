@@ -27,7 +27,7 @@ import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.navigation.Screen
 import org.ukrida.root.ui.admin.screens.ongoing.components.*
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.OnGoingDetailViewModel
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.DrawerBackground
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.*
 import androidx.compose.ui.platform.LocalContext
@@ -85,7 +85,7 @@ fun OnGoingDetailScreen(
     }
 
     Scaffold(
-        containerColor = BackgroundDark,
+        containerColor = DarkBrown,
         topBar = {
             TopBar(
                 title = "EDIT TOUR",

@@ -13,7 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.BodyColor
 import org.ukrida.root.ui.theme.TitleColor
 
@@ -46,13 +46,13 @@ fun LeaderDropdown(
             },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = BodyColor,
-                unfocusedTextColor = BackgroundDark,
+                unfocusedTextColor = DarkBrown,
 
                 focusedBorderColor = TitleColor,
-                unfocusedBorderColor = BackgroundDark,
+                unfocusedBorderColor = DarkBrown,
 
                 focusedLabelColor = TitleColor,
-                unfocusedLabelColor = BackgroundDark,
+                unfocusedLabelColor = DarkBrown,
 
                 cursorColor = TitleColor
             ),

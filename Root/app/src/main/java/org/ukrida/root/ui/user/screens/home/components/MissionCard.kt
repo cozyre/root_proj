@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.ukrida.root.ui.theme.BodyColor
 
 @Composable
 fun MissionCard(
@@ -39,7 +40,7 @@ fun MissionCard(
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.White,
+                color = BodyColor,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(12.dp)
             )

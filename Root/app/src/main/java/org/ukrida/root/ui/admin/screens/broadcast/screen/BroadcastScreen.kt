@@ -11,7 +11,7 @@ import org.ukrida.root.data.model.Group
 import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.screens.broadcast.viewmodel.BroadcastViewModel
 import org.ukrida.root.ui.admin.screens.broadcast.viewmodel.SendState
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.H1Color
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,7 +33,7 @@ fun BroadcastScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundDark)
+            .background(DarkBrown)
     ) {
         TopBar(
             title = "BROADCAST",

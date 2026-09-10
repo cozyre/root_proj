@@ -46,7 +46,7 @@ fun DashboardTopBar(
                 text = "R",
                 color = cream,
                 fontSize = 34.sp,
-                fontStyle = FontStyle.Italic,
+                style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold
             )
         }

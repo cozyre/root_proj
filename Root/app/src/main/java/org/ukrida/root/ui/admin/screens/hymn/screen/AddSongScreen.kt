@@ -27,7 +27,7 @@ import org.ukrida.root.ui.admin.screens.hymn.viewmodel.AddSongViewModel
 import org.ukrida.root.ui.theme.BodyColor
 import org.ukrida.root.ui.theme.DrawerBackground
 import org.ukrida.root.ui.theme.H1Color
-import org.ukrida.root.ui.theme.MainButton
+import org.ukrida.root.ui.theme.MicroElement
 import org.ukrida.root.ui.theme.RejectButton
 import org.ukrida.root.ui.theme.TitleColor
 
@@ -160,7 +160,7 @@ fun AddSongScreen(
                 viewModel.addSection()
             }
         ) {
-            Text("Add Section", color = MainButton)
+            Text("Add Section", color = MicroElement)
         }
 
         if (viewModel.errorMessage != null) {
@@ -183,7 +183,7 @@ fun AddSongScreen(
             enabled = !viewModel.isLoading,
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MainButton
+                containerColor = MicroElement
             )
         ) {
             if (viewModel.isLoading) {

@@ -5,9 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
@@ -42,7 +40,7 @@ fun EditSongsScreen(
     var showDayDropdown by remember { mutableStateOf(false) }
 
     Scaffold(
-        containerColor = BackgroundDark,
+        containerColor = DarkBrown,
         topBar = {
             TopBar(
                 title = "EDIT SONGS",
@@ -84,7 +82,7 @@ fun EditSongsScreen(
                     modifier = Modifier.width(110.dp).height(30.dp),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = MainButton,
+                        containerColor = MicroElement,
                         contentColor = Color.White
                     ),
                     border = null,
@@ -147,7 +145,7 @@ fun EditSongsScreen(
                         modifier = Modifier.wrapContentWidth().height(28.dp),
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = MainButton,
+                            containerColor = MicroElement,
                             contentColor = H1Color
                         ),
                         border = null,
@@ -172,7 +170,7 @@ fun EditSongsScreen(
                 },
                 modifier = Modifier.fillMaxWidth().height(32.dp),
                 shape = RoundedCornerShape(26.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MainButton)
+                colors = ButtonDefaults.buttonColors(containerColor = MicroElement)
             ) {
                 Text(
                     text = "SUBMIT",
