@@ -11,12 +11,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import org.ukrida.root.ui.theme.*
 import kotlin.Unit
 
 @Composable
 fun AppDrawer(
+    adminName: String,
+    adminEmail: String,
+    adminPhotoUrl: String? = null,
     onItemClick: (String) -> Unit,
     onCloseDrawer: () -> Unit,
     onLogout: () -> Unit
@@ -54,10 +60,22 @@ fun AppDrawer(
                     shape = CircleShape,
                     color = TitleColor
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = null
-                    )
+                    if (adminPhotoUrl != null) {
+                        AsyncImage(
+                            model = adminPhotoUrl,
+                            contentDescription = "Profile Photo",
+                            modifier = Modifier
+                                .size(56.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = null,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.width(12.dp))
@@ -65,14 +83,15 @@ fun AppDrawer(
                 Column {
 
                     Text(
-                        text = "ADMIN NAME",
+                        text = adminName.uppercase(),
                         style = MaterialTheme.typography.titleMedium,
                         color = TitleColor
                     )
 
                     Text(
-                        text = "admin@gmail.com",
-                        color = H1Color
+                        text = adminEmail,
+                        color = H1Color,
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
             }
