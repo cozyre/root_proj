@@ -77,10 +77,17 @@ fun PublicNavigation(
 
         // Home >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         composable(PublicScreen.Home.route) {
+
             val factory = remember {
-                HomeViewModelFactory(appContainer.groupRepository)
+                HomeViewModelFactory(
+                    groupRepository = appContainer.groupRepository,
+                    galleryRepository = appContainer.galleryRepository
+                )
             }
-            val viewModel: HomeViewModel = viewModel(factory = factory)
+
+            val viewModel: HomeViewModel =
+                viewModel(factory = factory)
+
             HomeScreen(
                 viewModel = viewModel,
                 navController = navController
