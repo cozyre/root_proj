@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import org.ukrida.root.ui.theme.DrawerBackground
+import org.ukrida.root.ui.theme.H1Color
 
 @Composable
 fun OrderPriceSection(
@@ -18,7 +19,7 @@ fun OrderPriceSection(
         Text(
             text = price,
             style = MaterialTheme.typography.titleLarge,
-            color = DrawerBackground,
+            color = H1Color,
         )
     }
 }

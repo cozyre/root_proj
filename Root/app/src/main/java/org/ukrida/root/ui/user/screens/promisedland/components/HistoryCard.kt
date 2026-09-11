@@ -21,11 +21,12 @@ import androidx.compose.ui.unit.dp
 import org.ukrida.root.R
 import org.ukrida.root.data.model.Group
 import androidx.compose.foundation.clickable
-
+import coil.compose.AsyncImage
 @Composable
 fun HistoryCard(
     group: Group,
-        onClick: () -> Unit
+    imageUrl: String? = null,
+    onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -38,20 +39,40 @@ fun HistoryCard(
         ),
         shape = RoundedCornerShape(18.dp)
     ) {
-        Image(
-            painter = painterResource(R.drawable.pyramid),
-            contentDescription = group.name,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp)
-                .clip(
-                    RoundedCornerShape(
-                        topStart = 18.dp,
-                        topEnd = 18.dp
-                    )
-                ),
-            contentScale = ContentScale.Crop
-        )
+        if (!imageUrl.isNullOrBlank()) {
+
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = group.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+                    .clip(
+                        RoundedCornerShape(
+                            topStart = 18.dp,
+                            topEnd = 18.dp
+                        )
+                    ),
+                contentScale = ContentScale.Crop
+            )
+
+        } else {
+
+            Image(
+                painter = painterResource(R.drawable.no_image),
+                contentDescription = group.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+                    .clip(
+                        RoundedCornerShape(
+                            topStart = 18.dp,
+                            topEnd = 18.dp
+                        )
+                    ),
+                contentScale = ContentScale.Crop
+            )
+        }
         Column(
             modifier = Modifier.padding(16.dp)
         ) {

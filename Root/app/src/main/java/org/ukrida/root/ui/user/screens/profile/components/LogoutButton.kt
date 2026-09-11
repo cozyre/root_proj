@@ -16,8 +16,7 @@ fun LogoutButton(
     Text(
         text = "Log out from account",
         color = Color.Red,
-        style = MaterialTheme.typography.bodyMedium,
-        fontWeight = FontWeight.Bold,
+        style = MaterialTheme.typography.bodyLarge,
         modifier = Modifier.clickable {
             onLogout()
         }

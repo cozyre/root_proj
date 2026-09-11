@@ -36,6 +36,8 @@ import org.ukrida.root.ui.user.screens.order.components.OrderInfoSection
 import org.ukrida.root.ui.user.screens.order.components.OrderPriceSection
 import org.ukrida.root.ui.user.screens.order.viewmodel.OrderViewModel
 import org.ukrida.root.utils.Resource
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun OrderScreen(
@@ -96,7 +98,7 @@ fun OrderScreen(
                     ) {
                         Spacer(modifier = Modifier.height(20.dp))
 
-                        OrderHeader(group = tour)
+                        OrderHeader(group = tour, imageUrl = uiState.coverImage)
 
                         Spacer(modifier = Modifier.height(24.dp))
 
@@ -104,7 +106,13 @@ fun OrderScreen(
 
                         Spacer(modifier = Modifier.height(24.dp))
 
-                        OrderPriceSection(price = "Rp 25.000.000")
+                        val formattedPrice = " " + NumberFormat
+                            .getNumberInstance(Locale("id", "ID"))
+                            .format(tour.price)
+
+                        OrderPriceSection(
+                            price = "Rp $formattedPrice"
+                        )
 
                         Spacer(modifier = Modifier.height(36.dp))
 

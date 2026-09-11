@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.outlined.Notifications
@@ -21,13 +22,15 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.ukrida.root.ui.theme.TitleColor
 
 @Composable
 fun DashboardTopBar(
     title: String,
     expanded: Boolean,
     onExpandClick: () -> Unit,
-    onNotificationClick: () -> Unit = {}
+    onNotificationClick: () -> Unit = {},
+    onBackClick: () -> Unit
 ) {
     val cream = Color(0xFFE5C19A)
     Row(
@@ -42,13 +45,15 @@ fun DashboardTopBar(
             modifier = Modifier.weight(1f),
             contentAlignment = Alignment.CenterStart
         ) {
-            Text(
-                text = "R",
-                color = cream,
-                fontSize = 34.sp,
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold
-            )
+            IconButton(
+                onClick = onBackClick
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = TitleColor
+                )
+            }
         }
 
         // Title
