@@ -22,10 +22,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.ukrida.root.R
 import org.ukrida.root.data.model.Group
+import org.ukrida.root.ui.theme.BodyColor
+import org.ukrida.root.ui.theme.DrawerBackground
+import org.ukrida.root.ui.theme.H1Color
+import coil.compose.AsyncImage
 
 @Composable
 fun RecommendationCard(
     group: Group,
+    imageUrl: String? = null,
     onClick: () -> Unit = {}
 ) {
     Card(
@@ -35,26 +40,46 @@ fun RecommendationCard(
                 onClick()
             },
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF9A775B)
+            containerColor = DrawerBackground
         ),
         shape = RoundedCornerShape(18.dp)
     ) {
 
         // Sementara masih pakai drawable lokal
-        Image(
-            painter = painterResource(R.drawable.pyramid),
-            contentDescription = group.name,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp)
-                .clip(
-                    RoundedCornerShape(
-                        topStart = 18.dp,
-                        topEnd = 18.dp
-                    )
-                ),
-            contentScale = ContentScale.Crop
-        )
+        if (!imageUrl.isNullOrBlank()) {
+
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = group.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+                    .clip(
+                        RoundedCornerShape(
+                            topStart = 18.dp,
+                            topEnd = 18.dp
+                        )
+                    ),
+                contentScale = ContentScale.Crop
+            )
+
+        } else {
+
+            Image(
+                painter = painterResource(R.drawable.pyramid),
+                contentDescription = group.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+                    .clip(
+                        RoundedCornerShape(
+                            topStart = 18.dp,
+                            topEnd = 18.dp
+                        )
+                    ),
+                contentScale = ContentScale.Crop
+            )
+        }
 
         Column(
             modifier = Modifier.padding(16.dp)
@@ -62,20 +87,19 @@ fun RecommendationCard(
             Text(
                 text = group.name,
                 style = MaterialTheme.typography.titleLarge,
-                color = Color(0xFFE8D8C9)
+                color = H1Color
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = group.description ?: "",
                 style = MaterialTheme.typography.bodyLarge,
-                color = Color.White
+                color = BodyColor
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Rp. ${group.price}",
                 style = MaterialTheme.typography.titleLarge,
-                color = Color(0xFFE8D8C9),
-                modifier = Modifier.align(Alignment.End)
+                color = H1Color,
             )
 
         }

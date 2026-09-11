@@ -25,11 +25,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.screens.hymn.components.SongCard
 import org.ukrida.root.ui.admin.screens.hymn.viewmodel.HymnForHimViewModel
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.BodyColor
 import org.ukrida.root.ui.theme.H1Color
-import org.ukrida.root.ui.theme.MainButton
-import org.ukrida.root.ui.theme.TitleColor
+import org.ukrida.root.ui.theme.MicroElement
 
 @Composable
 fun HymnForHimScreen(
@@ -42,7 +41,7 @@ fun HymnForHimScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundDark)
+            .background(DarkBrown)
             .verticalScroll(rememberScrollState())
     ) {
 
@@ -77,7 +76,7 @@ fun HymnForHimScreen(
             Button(
                 onClick = onCreateSongClick,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MainButton
+                    containerColor = MicroElement
                 )
             ) {
                 Text(

@@ -18,12 +18,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import org.ukrida.root.data.AppContainer
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.user.components.DashboardMenu
 import org.ukrida.root.ui.user.components.DashboardTopBar
+import org.ukrida.root.ui.user.components.NotificationViewModel
+import org.ukrida.root.ui.user.components.NotificationViewModelFactory
 import org.ukrida.root.ui.user.components.PublicBottomNavigation
 import org.ukrida.root.ui.user.components.PublicDestination
 import org.ukrida.root.ui.user.components.PublicTopBar
@@ -41,10 +44,14 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
         PublicScreen.History.route
     )
 
+    // Instantiate the NotificationViewModel using the factory
+    val notificationViewModel: NotificationViewModel = viewModel(
+        factory = NotificationViewModelFactory(appContainer.notificationRepository)
+    )
+
     val (menuExpanded, setMenuExpanded) = remember { mutableStateOf(false) }
 
     val groupId = navBackStackEntry?.arguments?.getInt("groupId") ?: 0
-//    val groupId = it.arguments?.getInt("groupId") ?: 0
     val isInGroupContext = currentRoute?.startsWith("group/") == true
 
 
@@ -75,10 +82,9 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
         else -> "Root"
     }
 
-    // Wrap everything in a Box to allow menu to escape Scaffold bounds
     Box {
         Scaffold(
-            containerColor = BackgroundDark,
+            containerColor = DarkBrown,
             topBar = {
                 if (isInGroupContext && groupId != 0) {
                     DashboardTopBar(
@@ -91,7 +97,8 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
                         title = title,
                         onBackClick = if (showBackButton) {
                             { navController.popBackStack() }
-                        } else null
+                        } else null,
+                        notificationViewModel = notificationViewModel
                     )
                 }
             },
@@ -126,7 +133,6 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
             )
         }
 
-        // Menu overlay & menu—drawn on top of Scaffold
         if (isInGroupContext && groupId != 0 && menuExpanded) {
             AnimatedVisibility(
                 visible = menuExpanded,
@@ -200,10 +206,6 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
     }
 }
 
-/**
- * Get human-readable title for group-scoped routes
- * Routes like "group/5/dashboard" -> "Dashboard"
- */
 private fun getTitleForGroupRoute(route: String?): String {
     if (route == null) return "Root"
     return try {

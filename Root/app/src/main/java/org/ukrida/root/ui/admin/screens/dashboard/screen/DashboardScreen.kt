@@ -23,11 +23,11 @@ import org.ukrida.root.ui.admin.components.ApprovalCard
 import org.ukrida.root.ui.admin.components.PriceTripCard
 import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.screens.dashboard.viewmodel.DashboardViewModel
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.BodyColor
 import org.ukrida.root.ui.theme.DrawerBackground
 import org.ukrida.root.ui.theme.H1Color
-import org.ukrida.root.ui.theme.MainButton
+import org.ukrida.root.ui.theme.MicroElement
 import org.ukrida.root.ui.theme.TitleColor
 import org.ukrida.root.utils.Resource
 
@@ -47,7 +47,7 @@ fun DashboardScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundDark)
+            .background(DarkBrown)
             .verticalScroll(rememberScrollState())
     ) {
         Row {
@@ -292,7 +292,7 @@ fun DashboardScreen(
                 Button(
                     onClick = { },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MainButton
+                        containerColor = MicroElement
                     ),
                     shape = RoundedCornerShape(50)
                 ) {

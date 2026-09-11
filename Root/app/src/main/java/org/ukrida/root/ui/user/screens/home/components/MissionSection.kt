@@ -18,7 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 private val missions = listOf(
-    "Growing closer to God through every pilgrimage.",
+    "Growing closer to God through every ROOT Journeys.",
     "Building strong Christian fellowship.",
     "Serving others with love and compassion.",
     "Providing meaningful spiritual journeys."

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.KeyboardType
 import org.ukrida.root.ui.theme.H1Color
 import org.ukrida.root.ui.theme.*
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.LeaderOption
@@ -31,6 +33,7 @@ import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.LeaderOption
 fun EditTripBottomSheet(
     currentTitle: String,
     currentDescription: String,
+    currentPrice: Int,
 
     currentMentorId: Int?,
     currentCoordinatorId: Int?,
@@ -41,6 +44,7 @@ fun EditTripBottomSheet(
     onSave: (
         title: String,
         description: String,
+        price: Int,
         mentorId: Int,
         coordinatorId: Int
     ) -> Unit,
@@ -53,6 +57,10 @@ fun EditTripBottomSheet(
 
     var description by remember {
         mutableStateOf(currentDescription)
+    }
+
+    var price by remember {
+        mutableStateOf(currentPrice.toString())
     }
 
     var selectedMentor by remember(
@@ -109,13 +117,39 @@ fun EditTripBottomSheet(
             },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = BodyColor,
-                unfocusedTextColor = BackgroundDark,
+                unfocusedTextColor = DarkBrown,
 
                 focusedBorderColor = TitleColor,
-                unfocusedBorderColor = BackgroundDark,
+                unfocusedBorderColor = DarkBrown,
 
                 focusedLabelColor = TitleColor,
-                unfocusedLabelColor = BackgroundDark,
+                unfocusedLabelColor = DarkBrown,
+
+                cursorColor = TitleColor
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = price,
+            onValueChange = {
+                price = it
+            },
+            label = {
+                Text("Price")
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedTextColor = BodyColor,
+                unfocusedTextColor = DarkBrown,
+
+                focusedBorderColor = TitleColor,
+                unfocusedBorderColor = DarkBrown,
+
+                focusedLabelColor = TitleColor,
+                unfocusedLabelColor = DarkBrown,
 
                 cursorColor = TitleColor
             ),
@@ -134,13 +168,13 @@ fun EditTripBottomSheet(
             },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = BodyColor,
-                unfocusedTextColor = BackgroundDark,
+                unfocusedTextColor = DarkBrown,
 
                 focusedBorderColor = TitleColor,
-                unfocusedBorderColor = BackgroundDark,
+                unfocusedBorderColor = DarkBrown,
 
                 focusedLabelColor = TitleColor,
-                unfocusedLabelColor = BackgroundDark,
+                unfocusedLabelColor = DarkBrown,
 
                 cursorColor = TitleColor
             ),
@@ -205,8 +239,11 @@ fun EditTripBottomSheet(
 
                 val mentorId = selectedMentor?.id
                 val coordinatorId = selectedCoordinator?.id
+                val priceInt = price.toIntOrNull()
 
                 validationError = when {
+                    priceInt == null ->
+                        "Masukkan harga yang valid"
                     mentorId == null && coordinatorId == null ->
                         "Pilih mentor dan koordinator terlebih dahulu"
                     mentorId == null ->
@@ -216,17 +253,18 @@ fun EditTripBottomSheet(
                     else -> null
                 }
 
-                if (mentorId != null && coordinatorId != null) {
+                if (mentorId != null && coordinatorId != null && priceInt != null) {
                     onSave(
                         title,
                         description,
+                        priceInt,
                         mentorId,
                         coordinatorId
                     )
                 }
             },
             colors = ButtonDefaults.buttonColors(
-                containerColor = MainButton
+                containerColor = MicroElement
             ),
             modifier = Modifier.fillMaxWidth()
         )

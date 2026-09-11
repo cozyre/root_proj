@@ -39,7 +39,7 @@ fun AppDrawer(
             modifier = Modifier
                 .fillMaxHeight()
                 .width(280.dp)
-                .background(BackgroundDark)
+                .background(DarkBrown)
                 .padding(16.dp)
         ) {
 
@@ -105,7 +105,7 @@ fun AppDrawer(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MainButton
+                    containerColor = MicroElement
                 ),
                 shape = RoundedCornerShape(50)
             ) {
@@ -121,7 +121,7 @@ fun AppDrawer(
                 .offset(x = 24.dp)
                 .size(60.dp),
             shape = CircleShape,
-            color = BackgroundDark,
+            color = DarkBrown,
             onClick = onCloseDrawer
         ) {
 

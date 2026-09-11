@@ -2,13 +2,13 @@ package org.ukrida.root.ui.admin.screens.ongoing.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.ukrida.root.data.model.Group
-import org.ukrida.root.data.remote.RetrofitClient
 import org.ukrida.root.data.repository.GroupRepository
 import org.ukrida.root.data.repository.AdminRepository
 import org.ukrida.root.data.repository.GalleryRepository
@@ -22,16 +22,11 @@ data class OnGoingUiState(
 
 )
 
-class OnGoingViewModel : ViewModel() {
-
-    private val groupRepository =
-        GroupRepository(RetrofitClient.instance)
-
-    private val adminRepository =
-        AdminRepository(RetrofitClient.instance)
-
-    private val galleryRepository =
-        GalleryRepository(RetrofitClient.instance)
+class OnGoingViewModel(
+    private val groupRepository: GroupRepository,
+    private val adminRepository: AdminRepository,
+    private val galleryRepository: GalleryRepository
+) : ViewModel() {
 
     private val _uiState =
         MutableStateFlow(OnGoingUiState())
@@ -128,5 +123,23 @@ class OnGoingViewModel : ViewModel() {
                 )
             }
         }
+    }
+
+    companion object {
+        fun factory(
+            groupRepository: GroupRepository,
+            adminRepository: AdminRepository,
+            galleryRepository: GalleryRepository
+        ): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return OnGoingViewModel(
+                        groupRepository,
+                        adminRepository,
+                        galleryRepository
+                    ) as T
+                }
+            }
     }
 }

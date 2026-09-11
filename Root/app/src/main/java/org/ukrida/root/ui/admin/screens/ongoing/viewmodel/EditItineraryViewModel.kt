@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import org.ukrida.root.data.model.CreateItineraryItemRequest
 import org.ukrida.root.data.model.ItineraryItem
 import org.ukrida.root.data.model.UpdateItineraryRequest
-import org.ukrida.root.data.remote.RetrofitClient
 import org.ukrida.root.data.repository.GroupRepository
 import org.ukrida.root.data.repository.ItineraryRepository
 import java.time.LocalDate
@@ -27,11 +26,10 @@ data class ItineraryItemUiState(
 )
 
 class EditItineraryViewModel(
-    val tripId: Int
+    val tripId: Int,
+    private val itineraryRepository: ItineraryRepository,
+    private val groupRepository: GroupRepository
 ) : ViewModel() {
-
-    private val itineraryRepository = ItineraryRepository(RetrofitClient.instance)
-    private val groupRepository = GroupRepository(RetrofitClient.instance)
 
     private val _itineraryList = MutableStateFlow<List<ItineraryItemUiState>>(emptyList())
     val itineraryList: StateFlow<List<ItineraryItemUiState>> = _itineraryList.asStateFlow()
@@ -210,11 +208,19 @@ class EditItineraryViewModel(
     }
 
     companion object {
-        fun factory(tripId: Int): ViewModelProvider.Factory =
+        fun factory(
+            tripId: Int,
+            itineraryRepository: ItineraryRepository,
+            groupRepository: GroupRepository
+        ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return EditItineraryViewModel(tripId) as T
+                    return EditItineraryViewModel(
+                        tripId,
+                        itineraryRepository,
+                        groupRepository
+                    ) as T
                 }
             }
     }

@@ -18,7 +18,7 @@ import org.ukrida.root.ui.admin.components.ApprovalCard
 import org.ukrida.root.ui.admin.components.ApprovalStatusCard
 import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.screens.approval.viewmodel.ApprovalViewModel
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.BodyColor
 import org.ukrida.root.ui.theme.DrawerBackground
 import org.ukrida.root.ui.theme.H1Color
@@ -35,7 +35,7 @@ fun ApprovalScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundDark)
+            .background(DarkBrown)
             .verticalScroll(rememberScrollState())
     ) {
 

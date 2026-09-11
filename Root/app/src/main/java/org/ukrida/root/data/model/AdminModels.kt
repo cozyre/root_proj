@@ -34,7 +34,9 @@ data class AdminTripRequest(
     val mentorId: Int?,
 
     @SerializedName("koordinator_id")
-    val koordinatorId: Int?
+    val koordinatorId: Int?,
+
+    val price: Int
 )
 
 /** Body for POST admin/trip/update — same as create but with id */
@@ -49,7 +51,8 @@ data class AdminTripUpdateRequest(
     @SerializedName("meetup_time")    val meetupTime: String?,
     @SerializedName("meetup_address") val meetupAddress: String?,
     @SerializedName("mentor_id")      val mentorId: Int,
-    @SerializedName("koordinator_id") val koordinatorId: Int
+    @SerializedName("koordinator_id") val koordinatorId: Int,
+    val price: Int
 )
 
 data class AdminTripDeleteRequest(
@@ -70,7 +73,9 @@ data class AdminTrip(
     @SerializedName("mentor_id")      val mentorId: Int,
     @SerializedName("koordinator_id") val koordinatorId: Int,
     val status: String,
-    @SerializedName("created_at")     val createdAt: String
+    @SerializedName("created_at")     val createdAt: String,
+    @SerializedName("price")     val price: Int,
+
 )
 
 /** How many stubs were auto-generated (returned alongside the trip) */

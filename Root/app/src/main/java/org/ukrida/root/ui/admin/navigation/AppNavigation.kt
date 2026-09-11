@@ -1,8 +1,6 @@
 package org.ukrida.root.ui.admin.navigation
 
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -37,6 +35,11 @@ import org.ukrida.root.ui.admin.screens.trip.screen.TripScreen
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import org.ukrida.root.ui.admin.screens.approval.viewmodel.ApprovalViewModel
+import org.ukrida.root.ui.admin.screens.broadcast.screen.BroadcastScreen
+import org.ukrida.root.ui.admin.screens.broadcast.viewmodel.BroadcastViewModel
+import org.ukrida.root.ui.admin.screens.broadcast.viewmodel.BroadcastViewModelFactory
+import org.ukrida.root.ui.admin.screens.finished.viewmodel.FinishedTripViewModel
 import org.ukrida.root.ui.admin.screens.hymn.viewmodel.AddSongViewModel
 import org.ukrida.root.ui.admin.screens.newtrip.screen.NewDailyBreadScreen
 import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.NewTripViewModel
@@ -45,6 +48,7 @@ import org.ukrida.root.ui.admin.screens.newtrip.screen.NewSongsScreen
 import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.NewDailyBreadViewModel
 import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.NewItineraryViewModel
 import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.NewSongsViewModel
+import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.OnGoingViewModel
 
 
 @Composable
@@ -61,6 +65,7 @@ fun AppNavigation(
         modifier = modifier
     ) {
 
+        // Dashboard >>>>>>>>>>>>>>>>>>>>>>>>>>
         composable(Screen.Dashboard.route) {
             val factory = remember {
                 DashboardViewModelFactory(
@@ -79,10 +84,18 @@ fun AppNavigation(
             )
         }
 
+        // Approval >>>>>>>>>>>>>>>>>>>>>>>>>
         composable(Screen.Approval.route) {
-            ApprovalScreen(onMenuClick = onMenuClick)
+            val viewModel: ApprovalViewModel = viewModel(
+                factory = ApprovalViewModel.factory(appContainer.adminRepository)
+            )
+            ApprovalScreen(
+                onMenuClick = onMenuClick,
+                viewModel = viewModel
+            )
         }
 
+        // HymnForHim >>>>>>>>>>>>>>>>>>>>>>>
         composable(Screen.HymnForHim.route) { backStackEntry ->
 
             val viewModel: HymnForHimViewModel = viewModel(
@@ -114,8 +127,9 @@ fun AppNavigation(
                 viewModel = viewModel
             )
         }
-        composable(Screen.AddSong.route) {
 
+        // AddSong >>>>>>>>>>>>>>>>>>>>>>>>>
+        composable(Screen.AddSong.route) {
             val viewModel: AddSongViewModel = viewModel(
                 factory = AddSongViewModel.factory(
                     appContainer.adminRepository
@@ -137,10 +151,23 @@ fun AppNavigation(
             )
         }
 
+        // OngoingTrip >>>>>>>>>>>>>>>>>>>>>>>>>
         composable(Screen.OngoingTrip.route) {
-            OnGoingScreen(navController = navController,  onMenuClick = onMenuClick)
+            val viewModel: OnGoingViewModel = viewModel(
+                factory = OnGoingViewModel.factory(
+                    appContainer.groupRepository,
+                    appContainer.adminRepository,
+                    appContainer.galleryRepository
+                )
+            )
+            OnGoingScreen(
+                navController = navController,
+                onMenuClick = onMenuClick,
+                viewModel = viewModel
+            )
         }
 
+        // OngoingDetail >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         composable(
             route = Screen.OngoingDetail.route,
             arguments = listOf(navArgument("tripId") { type = NavType.IntType })
@@ -151,7 +178,9 @@ fun AppNavigation(
                 backStackEntry.arguments?.getInt("tripId") ?: 0
 
             val viewModel: OnGoingDetailViewModel = viewModel(
-                factory = OnGoingDetailViewModel.factory(tripId)
+                factory = OnGoingDetailViewModel.factory(
+                    tripId
+                )
             )
             OnGoingDetailScreen(
                 navController = navController,
@@ -160,6 +189,7 @@ fun AppNavigation(
             )
         }
 
+        // Edit Itinerary >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         composable(
             route = Screen.EditItinerary.route,
             arguments = listOf(
@@ -173,7 +203,11 @@ fun AppNavigation(
                 backStackEntry.arguments?.getInt("tripId") ?: 0
 
             val viewModel: EditItineraryViewModel = viewModel(
-                factory = EditItineraryViewModel.factory(tripId)
+                factory = EditItineraryViewModel.factory(
+                    tripId,
+                    appContainer.itineraryRepository,
+                    appContainer.groupRepository
+                )
             )
 
             EditItineraryScreen(
@@ -196,7 +230,12 @@ fun AppNavigation(
                 backStackEntry.arguments?.getInt("tripId") ?: 0
 
             val viewModel: EditSongsViewModel = viewModel(
-                factory = EditSongsViewModel.factory(tripId)
+                factory = EditSongsViewModel.factory(
+                    tripId,
+                    appContainer.songRepository,
+                    appContainer.groupRepository,
+                    appContainer.itineraryRepository
+                )
             )
 
             EditSongsScreen(
@@ -219,7 +258,12 @@ fun AppNavigation(
                 backStackEntry.arguments?.getInt("tripId") ?: 0
 
             val viewModel: EditDailyBreadViewModel = viewModel(
-                factory = EditDailyBreadViewModel.factory(tripId)
+                factory = EditDailyBreadViewModel.factory(
+                    tripId,
+                    appContainer.devotionRepository,
+                    appContainer.adminRepository,
+                    appContainer.groupRepository
+                )
             )
 
             EditDailyBreadScreen(
@@ -330,7 +374,14 @@ fun AppNavigation(
         }
 
         composable(Screen.FinishedTrip.route) {
-            FinishedTripScreen(navController = navController, onMenuClick = onMenuClick)
+            val viewModel: FinishedTripViewModel = viewModel(
+                factory = FinishedTripViewModel.factory(appContainer.adminRepository)
+            )
+            FinishedTripScreen(
+                navController = navController,
+                onMenuClick = onMenuClick,
+                viewModel = viewModel
+            )
         }
 
         composable(
@@ -346,7 +397,12 @@ fun AppNavigation(
                 backStackEntry.arguments?.getInt("tripId") ?: 0
 
             val viewModel: FinishedTripDetailViewModel = viewModel(
-                factory = FinishedTripDetailViewModel.factory(tripId)
+                factory = FinishedTripDetailViewModel.factory(
+                    tripId,
+                    appContainer.groupRepository,
+                    appContainer.memberRepository,
+                    appContainer.galleryRepository
+                )
             )
 
             FinishedTripDetailScreen(
@@ -379,6 +435,19 @@ fun AppNavigation(
                 navController = navController,
                 onMenuClick = onMenuClick,
                 viewModel = viewModel
+            )
+        }
+
+        composable(Screen.Broadcast.route) {
+            val viewModel: BroadcastViewModel = viewModel(
+                factory = BroadcastViewModelFactory(
+                    appContainer.notificationRepository,
+                    appContainer.groupRepository
+                )
+            )
+            BroadcastScreen(
+                viewModel = viewModel,
+                onMenuClick = onMenuClick
             )
         }
     }

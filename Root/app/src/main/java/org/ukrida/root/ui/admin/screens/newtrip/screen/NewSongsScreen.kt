@@ -2,7 +2,6 @@ package org.ukrida.root.ui.admin.screens.newtrip.screen
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,10 +54,10 @@ import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.NewSongItemUiState
 import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.NewSongsViewModel
 import org.ukrida.root.ui.admin.screens.ongoing.components.TimelineBar
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.DrawerBackground
 import org.ukrida.root.ui.theme.H1Color
-import org.ukrida.root.ui.theme.MainButton
+import org.ukrida.root.ui.theme.MicroElement
 import org.ukrida.root.ui.theme.TitleColor
 
 @Composable
@@ -109,7 +108,7 @@ fun NewSongsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundDark)
+            .background(DarkBrown)
     ) {
         TopBar(
             title = "ADD SONGS",
@@ -154,7 +153,7 @@ fun NewSongsScreen(
                         .height(32.dp),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = MainButton,
+                        containerColor = MicroElement,
                         contentColor = H1Color
                     ),
                     border = null,
@@ -260,7 +259,7 @@ fun NewSongsScreen(
                             .height(30.dp),
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = MainButton,
+                            containerColor = MicroElement,
                             contentColor = H1Color
                         ),
                         border = null,
@@ -288,7 +287,7 @@ fun NewSongsScreen(
                     .height(36.dp),
                 shape = RoundedCornerShape(26.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MainButton
+                    containerColor = MicroElement
                 )
             ) {
                 if (isLoading) {
@@ -373,7 +372,7 @@ private fun NewSongRow(
                             .height(28.dp),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = MainButton,
+                            containerColor = MicroElement,
                             contentColor = H1Color
                         ),
                         border = null,

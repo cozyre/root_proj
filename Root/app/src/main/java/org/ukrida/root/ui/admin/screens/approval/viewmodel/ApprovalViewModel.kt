@@ -4,16 +4,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import org.ukrida.root.data.remote.RetrofitClient
 import org.ukrida.root.data.repository.AdminRepository
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.ApprovalUiModel
 import org.ukrida.root.utils.Resource
 
-class ApprovalViewModel : ViewModel() {
-
-    private val repository = AdminRepository(RetrofitClient.instance)
+class ApprovalViewModel(private val repository: AdminRepository) : ViewModel() {
 
     var approvals by mutableStateOf<List<ApprovalUiModel>>(emptyList())
         private set
@@ -136,5 +134,15 @@ class ApprovalViewModel : ViewModel() {
 
             processingAccountId = null
         }
+    }
+
+    companion object {
+        fun factory(repository: AdminRepository): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return ApprovalViewModel(repository) as T
+                }
+            }
     }
 }

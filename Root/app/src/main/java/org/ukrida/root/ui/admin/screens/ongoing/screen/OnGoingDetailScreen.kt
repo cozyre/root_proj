@@ -27,7 +27,7 @@ import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.navigation.Screen
 import org.ukrida.root.ui.admin.screens.ongoing.components.*
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.OnGoingDetailViewModel
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.DrawerBackground
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.*
 import androidx.compose.ui.platform.LocalContext
@@ -50,6 +50,7 @@ fun OnGoingDetailScreen(
     val currentTitle = tripData?.title ?: "Loading..."
     val currentDescription = tripData?.description ?: "Memuat deskripsi..."
     val currentDateRange = tripData?.dateRange ?: "DD - DD MM YYYY"
+    val currentPrice = tripData?.price ?: 0
 
     // --- STATE DIALOG ---
     var showDeleteMemberDialog by remember { mutableStateOf(false) }
@@ -84,7 +85,7 @@ fun OnGoingDetailScreen(
     }
 
     Scaffold(
-        containerColor = BackgroundDark,
+        containerColor = DarkBrown,
         topBar = {
             TopBar(
                 title = "EDIT TOUR",
@@ -415,6 +416,7 @@ fun OnGoingDetailScreen(
             EditTripBottomSheet(
                 currentTitle = currentTitle,
                 currentDescription = currentDescription,
+                currentPrice = currentPrice,
 
                 currentMentorId =
                     uiState.tripState?.mentorId,
@@ -428,11 +430,12 @@ fun OnGoingDetailScreen(
                 coordinatorOptions =
                     uiState.coordinatorOptions,
 
-                onSave = { title, description, mentorId, coordinatorId ->
+                onSave = { title, description, price, mentorId, coordinatorId ->
 
                     viewModel.updateTrip(
                         title = title,
                         description = description,
+                        price = price,
                         mentorId = mentorId,
                         coordinatorId = coordinatorId
                     )

@@ -6,9 +6,99 @@ class ProfileController {
     private ProfileModel  $model;
     private AuthMiddleware $auth;
 
+    // Photo variables
+    private const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+    private const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    private const UPLOAD_DIR = __DIR__ . '/../public/uploads/profile_photos/';
+    private const PUBLIC_BASE = 'uploads/profile_photos/'; // relative path stored in DB
+
     public function __construct(ProfileModel $model, AuthMiddleware $auth) {
         $this->model = $model;
         $this->auth  = $auth;
+    }
+
+    // POST ?route=profile/uploadPhoto
+    public function uploadPhoto(): void {
+        $user = $this->auth->requireAuth(); // exits on failure
+        $userId = (int) $user['id'];
+
+        if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+            http_response_code(400);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'No image uploaded or upload error',
+            ]);
+            return;
+        }
+
+        $file = $_FILES['image'];
+
+        // Validate type
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+
+        if (!in_array($mime, self::ALLOWED_TYPES, true)) {
+            http_response_code(400);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Invalid file type. Only JPG, PNG, WEBP allowed',
+                'errors' => ['image' => 'Unsupported file type'],
+            ]);
+            return;
+        }
+
+        // Validate size
+        if ($file['size'] > self::MAX_SIZE) {
+            http_response_code(400);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'File too large. Max 5MB',
+                'errors' => ['image' => 'File exceeds size limit'],
+            ]);
+            return;
+        }
+
+        // Ensure upload dir exists
+        if (!is_dir(self::UPLOAD_DIR)) {
+            mkdir(self::UPLOAD_DIR, 0755, true);
+        }
+
+        $ext = match ($mime) {
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/webp' => 'webp',
+        };
+        $filename = 'user_' . $userId . '_' . time() . '.' . $ext;
+        $destination = self::UPLOAD_DIR . $filename;
+
+        if (!move_uploaded_file($file['tmp_name'], $destination)) {
+            http_response_code(500);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to save uploaded file',
+            ]);
+            return;
+        }
+
+        // Delete old photo if it exists
+        $oldPhoto = $this->model->getCurrentPhotoPath($userId);
+        if ($oldPhoto) {
+            $oldFilePath = __DIR__ . '/../public/' . $oldPhoto;
+            if (file_exists($oldFilePath)) {
+                unlink($oldFilePath);
+            }
+        }
+
+        $relativePath = self::PUBLIC_BASE . $filename;
+        $this->model->updatePhoto($userId, $relativePath);
+
+        $updatedProfile = $this->model->getById($userId);
+
+        echo json_encode([
+            'status' => 'success',
+            'data' => $updatedProfile,
+        ]);
     }
 
     // GET ?route=profile/get
