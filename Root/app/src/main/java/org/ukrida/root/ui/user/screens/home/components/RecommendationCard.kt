@@ -13,19 +13,19 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import org.ukrida.root.R
 import org.ukrida.root.data.model.Group
 import org.ukrida.root.ui.theme.BodyColor
 import org.ukrida.root.ui.theme.DrawerBackground
 import org.ukrida.root.ui.theme.H1Color
-import coil.compose.AsyncImage
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun RecommendationCard(
@@ -33,21 +33,22 @@ fun RecommendationCard(
     imageUrl: String? = null,
     onClick: () -> Unit = {}
 ) {
+
+    val formattedPrice = NumberFormat
+        .getNumberInstance(Locale("id", "ID"))
+        .format(group.price ?: 0)
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-                onClick()
-            },
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(
             containerColor = DrawerBackground
         ),
         shape = RoundedCornerShape(18.dp)
     ) {
 
-        // Sementara masih pakai drawable lokal
         if (!imageUrl.isNullOrBlank()) {
-
             AsyncImage(
                 model = imageUrl,
                 contentDescription = group.name,
@@ -62,11 +63,9 @@ fun RecommendationCard(
                     ),
                 contentScale = ContentScale.Crop
             )
-
         } else {
-
             Image(
-                painter = painterResource(R.drawable.pyramid),
+                painter = painterResource(R.drawable.no_image),
                 contentDescription = group.name,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -84,26 +83,28 @@ fun RecommendationCard(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
+
             Text(
                 text = group.name,
                 style = MaterialTheme.typography.titleLarge,
                 color = H1Color
             )
+
             Spacer(modifier = Modifier.height(8.dp))
+
             Text(
-                text = group.description ?: "",
+                text = group.description.orEmpty(),
                 style = MaterialTheme.typography.bodyLarge,
                 color = BodyColor
             )
+
             Spacer(modifier = Modifier.height(16.dp))
+
             Text(
-                text = "Rp. ${group.price}",
+                text = "Rp $formattedPrice",
                 style = MaterialTheme.typography.titleLarge,
-                color = H1Color,
+                color = H1Color
             )
-
         }
-
     }
-
 }
