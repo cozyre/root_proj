@@ -17,7 +17,7 @@ import org.ukrida.root.ui.admin.components.FinishedTripCard
 import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.navigation.Screen
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.FinishedTripViewModel
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.BodyColor
 import org.ukrida.root.ui.theme.H1Color
 import org.ukrida.root.ui.theme.TitleColor
@@ -34,7 +34,7 @@ fun FinishedTripScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundDark)
+            .background(DarkBrown)
     ) {
 
         TopBar(

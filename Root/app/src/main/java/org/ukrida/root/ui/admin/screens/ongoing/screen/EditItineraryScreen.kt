@@ -22,11 +22,8 @@ import org.ukrida.root.ui.admin.screens.ongoing.components.TimelineBar
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.EditItineraryViewModel
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.ItineraryItemUiState
 import org.ukrida.root.ui.theme.*
-import android.app.TimePickerDialog
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import org.ukrida.root.ui.admin.components.TimePickerField
 
 @Composable
@@ -61,7 +58,7 @@ fun EditItineraryScreen(
     }
 
     Scaffold(
-        containerColor = BackgroundDark,
+        containerColor = DarkBrown,
         topBar = {
             TopBar(
                 title = "EDIT ITINERARY",
@@ -102,7 +99,7 @@ fun EditItineraryScreen(
                     modifier = Modifier.width(110.dp).height(30.dp),
                     shape = RoundedCornerShape(8.dp),
                     colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = MainButton,
+                        containerColor = MicroElement,
                         contentColor = Color.White
                     ),
                     border = null
@@ -169,7 +166,7 @@ fun EditItineraryScreen(
                         modifier = Modifier.wrapContentWidth().height(28.dp),
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = MainButton,
+                            containerColor = MicroElement,
                             contentColor = H1Color
                         ),
                         border = null
@@ -190,7 +187,7 @@ fun EditItineraryScreen(
                 onClick = { viewModel.submitAll() },
                 modifier = Modifier.fillMaxWidth().height(32.dp),
                 shape = RoundedCornerShape(26.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MainButton)
+                colors = ButtonDefaults.buttonColors(containerColor = MicroElement)
             ) {
                 Text(
                     text = "SUBMIT",

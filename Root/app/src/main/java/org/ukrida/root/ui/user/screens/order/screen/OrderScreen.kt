@@ -89,16 +89,6 @@ fun OrderScreen(
                         .background(Color(0xFF2A2522))
                         .verticalScroll(rememberScrollState())
                 ) {
-                    IconButton(
-                        onClick = { navController.popBackStack() },
-                        modifier = Modifier.padding(start = 8.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.ArrowBack,
-                            contentDescription = null,
-                            tint = Color.White
-                        )
-                    }
 
                     Column(
                         modifier = Modifier

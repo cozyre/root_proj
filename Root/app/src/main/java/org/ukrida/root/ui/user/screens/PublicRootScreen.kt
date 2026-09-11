@@ -22,7 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import org.ukrida.root.data.AppContainer
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.user.components.DashboardMenu
 import org.ukrida.root.ui.user.components.DashboardTopBar
 import org.ukrida.root.ui.user.components.NotificationViewModel
@@ -84,7 +84,7 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
 
     Box {
         Scaffold(
-            containerColor = BackgroundDark,
+            containerColor = DarkBrown,
             topBar = {
                 if (isInGroupContext && groupId != 0) {
                     DashboardTopBar(

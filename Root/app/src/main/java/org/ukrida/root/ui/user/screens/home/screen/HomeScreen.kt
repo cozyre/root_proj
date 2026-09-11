@@ -32,6 +32,7 @@ fun HomeScreen(
     navController: NavHostController
 ) {
     val groupState by viewModel.groups.collectAsState()
+    val coverImages by viewModel.coverImages.collectAsState()
     val groups = (groupState as? Resource.Success)?.data
 
     Scaffold(
@@ -52,6 +53,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(60.dp))
             RecommendationSection(
                 groups = groups?.take(4),
+                coverImages = coverImages,
                 onTripClick = { groupId ->
                     navController.navigate(
                         PublicScreen.Order.createRoute(groupId)

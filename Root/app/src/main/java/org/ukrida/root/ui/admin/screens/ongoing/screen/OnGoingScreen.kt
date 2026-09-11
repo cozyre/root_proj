@@ -27,9 +27,8 @@ import androidx.navigation.NavController
 import org.ukrida.root.data.model.Group
 import org.ukrida.root.ui.admin.components.PriceTripCard
 import org.ukrida.root.ui.admin.components.TopBar
-import org.ukrida.root.ui.admin.navigation.Screen
 import org.ukrida.root.ui.admin.screens.ongoing.viewmodel.OnGoingViewModel
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.BodyColor
 import org.ukrida.root.ui.theme.H1Color
 import org.ukrida.root.ui.theme.TitleColor
@@ -53,7 +52,7 @@ fun OnGoingScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundDark)
+            .background(DarkBrown)
     ) {
 
         TopBar(

@@ -14,6 +14,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.ukrida.root.ui.theme.BodyColor
+import org.ukrida.root.ui.theme.H1Color
+import org.ukrida.root.ui.theme.TitleColor
 
 @Composable
 fun HeroSection() {
@@ -28,8 +31,7 @@ fun HeroSection() {
         Text(
             text = "R",
             style = MaterialTheme.typography.headlineLarge,
-            fontStyle = FontStyle.Italic,
-            color = Color(0xFFE5C19A)
+            color = TitleColor
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -37,15 +39,15 @@ fun HeroSection() {
         Text(
             text = "ROOT",
             style = MaterialTheme.typography.titleLarge,
-            color = Color(0xFFE8D8C9)
+            color = H1Color
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "Walk together in faith and experience unforgettable spiritual journeys with PilgrimMate.",
+            text = "Walk together in faith and experience unforgettable spiritual journeys with ROOT.",
             style = MaterialTheme.typography.bodyLarge,
-            color = Color.White,
+            color = BodyColor,
             textAlign = TextAlign.Center
         )
     }

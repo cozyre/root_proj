@@ -62,7 +62,7 @@ import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.navigation.Screen
 import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.LeaderOptionUiState
 import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.NewTripViewModel
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.BodyColor
 import org.ukrida.root.ui.theme.DrawerBackground
 import org.ukrida.root.ui.theme.H1Color
@@ -116,7 +116,7 @@ fun NewTripScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundDark)
+            .background(DarkBrown)
     ) {
         TopBar(
             title = "NEW TRIP",
@@ -343,7 +343,7 @@ private fun NewTripSection(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(
-            containerColor = BackgroundDark
+            containerColor = DarkBrown
         )
     ) {
         Column(

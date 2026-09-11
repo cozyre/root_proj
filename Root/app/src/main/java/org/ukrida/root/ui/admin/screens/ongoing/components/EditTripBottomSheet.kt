@@ -117,13 +117,13 @@ fun EditTripBottomSheet(
             },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = BodyColor,
-                unfocusedTextColor = BackgroundDark,
+                unfocusedTextColor = DarkBrown,
 
                 focusedBorderColor = TitleColor,
-                unfocusedBorderColor = BackgroundDark,
+                unfocusedBorderColor = DarkBrown,
 
                 focusedLabelColor = TitleColor,
-                unfocusedLabelColor = BackgroundDark,
+                unfocusedLabelColor = DarkBrown,
 
                 cursorColor = TitleColor
             ),
@@ -143,13 +143,13 @@ fun EditTripBottomSheet(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = BodyColor,
-                unfocusedTextColor = BackgroundDark,
+                unfocusedTextColor = DarkBrown,
 
                 focusedBorderColor = TitleColor,
-                unfocusedBorderColor = BackgroundDark,
+                unfocusedBorderColor = DarkBrown,
 
                 focusedLabelColor = TitleColor,
-                unfocusedLabelColor = BackgroundDark,
+                unfocusedLabelColor = DarkBrown,
 
                 cursorColor = TitleColor
             ),
@@ -168,13 +168,13 @@ fun EditTripBottomSheet(
             },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = BodyColor,
-                unfocusedTextColor = BackgroundDark,
+                unfocusedTextColor = DarkBrown,
 
                 focusedBorderColor = TitleColor,
-                unfocusedBorderColor = BackgroundDark,
+                unfocusedBorderColor = DarkBrown,
 
                 focusedLabelColor = TitleColor,
-                unfocusedLabelColor = BackgroundDark,
+                unfocusedLabelColor = DarkBrown,
 
                 cursorColor = TitleColor
             ),
@@ -264,7 +264,7 @@ fun EditTripBottomSheet(
                 }
             },
             colors = ButtonDefaults.buttonColors(
-                containerColor = MainButton
+                containerColor = MicroElement
             ),
             modifier = Modifier.fillMaxWidth()
         )

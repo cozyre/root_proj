@@ -1,6 +1,7 @@
 package org.ukrida.root.ui.user.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -23,6 +24,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.ukrida.root.ui.theme.TitleColor
 
 @Composable
 fun PublicTopBar(
@@ -31,42 +33,67 @@ fun PublicTopBar(
     onBackClick: (() -> Unit)? = null,
     notificationViewModel: NotificationViewModel
 ) {
-    val cream = Color(0xFFE5C19A)
-    Row(
+    val titleColor = TitleColor
+    var showNotifications by remember { mutableStateOf(false) }
+
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 20.dp, vertical = 16.dp)
     ) {
+
+        // Kiri (Back atau Logo)
+        if (onBackClick != null) {
+            IconButton(
+                modifier = Modifier.align(Alignment.CenterStart),
+                onClick = onBackClick
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = titleColor
+                )
+            }
+        } else {
+            Text(
+                modifier = Modifier.align(Alignment.CenterStart),
+                text = "R",
+                color = titleColor,
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        // Tengah (Selalu Simetris)
         Text(
-            text = "R",
-            color = cream,
-            fontSize = 34.sp,
-            fontStyle = FontStyle.Italic,
+            modifier = Modifier.align(Alignment.Center),
+            text = title.uppercase(),
+            color = titleColor,
+            style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold
         )
 
-        Text(
-            text = title,
-            color = cream,
-            style = MaterialTheme.typography.headlineLarge,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        var showNotifications by remember { mutableStateOf(false) }
+        // Kanan
         IconButton(
-            onClick = { showNotifications = !showNotifications }
+            modifier = Modifier.align(Alignment.CenterEnd),
+            onClick = {
+                showNotifications = !showNotifications
+                onNotificationClick()
+            }
         ) {
             Icon(
                 imageVector = Icons.Outlined.Notifications,
                 contentDescription = "Notifications",
-                tint = cream
+                tint = titleColor
             )
         }
+
         if (showNotifications) {
-            NotificationPopup(viewModel = notificationViewModel) { showNotifications = false }
+            NotificationPopup(
+                viewModel = notificationViewModel
+            ) {
+                showNotifications = false
+            }
         }
     }
 }

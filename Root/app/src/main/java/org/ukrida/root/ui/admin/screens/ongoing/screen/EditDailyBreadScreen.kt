@@ -74,7 +74,7 @@ fun EditDailyBreadScreen(
     }
 
     Scaffold(
-        containerColor = BackgroundDark,
+        containerColor = DarkBrown,
         topBar = {
             TopBar(
                 title = "EDIT DAILY BREAD",
@@ -129,7 +129,7 @@ fun EditDailyBreadScreen(
                             modifier = Modifier.width(110.dp).height(30.dp),
                             shape = RoundedCornerShape(8.dp),
                             colors = ButtonDefaults.outlinedButtonColors(
-                                containerColor = MainButton,
+                                containerColor = MicroElement,
                                 contentColor = Color.White
                             ),
                             border = null,
@@ -262,7 +262,7 @@ fun EditDailyBreadScreen(
                         },
                         modifier = Modifier.fillMaxWidth().height(32.dp),
                         shape = RoundedCornerShape(26.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = MainButton)
+                        colors = ButtonDefaults.buttonColors(containerColor = MicroElement)
                     ) {
                         Text(
                             text = "SUBMIT",

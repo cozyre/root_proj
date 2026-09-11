@@ -1,8 +1,6 @@
 package org.ukrida.root.ui.admin.screens
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -11,8 +9,7 @@ import kotlinx.coroutines.launch
 import org.ukrida.root.data.AppContainer
 import org.ukrida.root.ui.admin.navigation.AppNavigation
 import org.ukrida.root.ui.admin.components.AppDrawer
-import org.ukrida.root.ui.admin.navigation.AppNavigation
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.theme.DarkBrown
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +45,7 @@ fun RootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
 
         Scaffold(
 
-            containerColor = BackgroundDark
+            containerColor = DarkBrown
 
         ) { padding ->
 

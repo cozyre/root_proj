@@ -19,8 +19,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -46,6 +48,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
+import org.ukrida.root.ui.theme.DarkBrown
+import org.ukrida.root.ui.theme.H1Color
+import org.ukrida.root.ui.theme.MicroElement
+import org.ukrida.root.ui.theme.RejectButton
 import org.ukrida.root.ui.user.screens.login.viewmodel.LoginViewModel
 import org.ukrida.root.utils.Resource
 
@@ -73,10 +79,6 @@ fun LoginScreen(
     var identifier by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var selectedRole by remember { mutableStateOf("user") }
-
-    val darkBrown = Color(0xFF2A2522)
-    val cream = Color(0xFFE5C19A)
-    val olive = Color(0xFF7A8A4A)
 
     // Disable inputs during loading or after success (while navigating)
     val isEnabled = state !is Resource.Loading && state !is Resource.Success
@@ -116,7 +118,7 @@ fun LoginScreen(
                         .background(
                             Brush.verticalGradient(
                                 listOf(
-                                    darkBrown,
+                                    DarkBrown,
                                     Color(0xFF302A26)
                                 )
                             )
@@ -126,13 +128,13 @@ fun LoginScreen(
 
                     Text(
                         text = "LOGIN",
-                        color = cream,
+                        color = H1Color,
                         fontSize = 30.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
                         text = "Login As",
-                        color = cream
+                        color = H1Color
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
@@ -147,7 +149,18 @@ fun LoginScreen(
                             },
                             label = {
                                 Text("user")
-                            }
+                            } ,
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MicroElement,
+                                selectedLabelColor = H1Color,
+
+                            ),
+                            border = FilterChipDefaults.filterChipBorder(
+                                enabled = true,
+                                selected = selectedRole == "user",
+                                borderColor = DarkBrown,
+                                selectedBorderColor = MicroElement
+                            )
                         )
                         FilterChip(
                             enabled = isEnabled,
@@ -157,7 +170,17 @@ fun LoginScreen(
                             },
                             label = {
                                 Text("admin")
-                            }
+                            },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MicroElement,
+                                selectedLabelColor = H1Color
+                            ),
+                            border = FilterChipDefaults.filterChipBorder(
+                                enabled = true,
+                                selected = selectedRole == "admin",
+                                borderColor = DarkBrown,
+                                selectedBorderColor = MicroElement
+                            )
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
@@ -176,11 +199,18 @@ fun LoginScreen(
                         label = {
                             Text(
                                 "Username / Email",
-                                color = cream
+                                color = H1Color
                             )
                         },
                         textStyle = TextStyle(color = Color.White),
                         modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = H1Color,
+                            unfocusedBorderColor = Color.Gray,
+                            focusedLabelColor = H1Color,
+                            unfocusedLabelColor = H1Color,
+                            cursorColor = H1Color
+                        )
 
                         )
                     Spacer(modifier = Modifier.height(20.dp))
@@ -192,19 +222,26 @@ fun LoginScreen(
                         label = {
                             Text(
                                 "Password",
-                                color = cream
+                                color = H1Color
                             )
                         },
                         visualTransformation = PasswordVisualTransformation(),
                         textStyle = TextStyle(color = Color.White),
                         modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = H1Color,
+                            unfocusedBorderColor = Color.Gray,
+                            focusedLabelColor = H1Color,
+                            unfocusedLabelColor = H1Color,
+                            cursorColor = H1Color
+                        )
                     )
 
                     if (state is Resource.Error) {
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = (state as Resource.Error).message,
-                            color = Color.Red,
+                            color = RejectButton,
                             fontSize = 14.sp
                         )
                     }
@@ -225,7 +262,7 @@ fun LoginScreen(
                             .fillMaxWidth()
                             .height(55.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = olive
+                            containerColor = MicroElement
                         ),
                         shape = RoundedCornerShape(20.dp)
                     ) {
@@ -311,7 +348,7 @@ fun WaveHeader() {
             }
             drawPath(
                 path = path,
-                color = Color(0xFF2A2522)
+                color = DarkBrown
             )
         }
     }

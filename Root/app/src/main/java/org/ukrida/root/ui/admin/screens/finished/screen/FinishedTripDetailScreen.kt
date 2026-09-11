@@ -24,7 +24,7 @@ import org.ukrida.root.ui.admin.components.MemberGridItem
 import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.navigation.Screen
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.FinishedTripDetailViewModel
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.DrawerBackground
 
 @Composable
@@ -42,7 +42,7 @@ fun FinishedTripDetailScreen(
     val tripData = uiState.tripState
 
     Scaffold(
-        containerColor = BackgroundDark,
+        containerColor = DarkBrown,
         topBar = {
             TopBar(
                 title = "FINISHED TRIP",

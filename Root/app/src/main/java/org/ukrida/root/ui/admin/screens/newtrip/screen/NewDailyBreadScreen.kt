@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -51,11 +50,11 @@ import org.ukrida.root.ui.admin.components.TopBar
 import org.ukrida.root.ui.admin.navigation.Screen
 import org.ukrida.root.ui.admin.screens.newtrip.viewmodel.NewDailyBreadViewModel
 import org.ukrida.root.ui.admin.screens.ongoing.components.TimelineBar
-import org.ukrida.root.ui.theme.BackgroundDark
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.BodyColor
 import org.ukrida.root.ui.theme.DrawerBackground
 import org.ukrida.root.ui.theme.H1Color
-import org.ukrida.root.ui.theme.MainButton
+import org.ukrida.root.ui.theme.MicroElement
 import org.ukrida.root.ui.theme.TitleColor
 
 @Composable
@@ -115,7 +114,7 @@ fun NewDailyBreadScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(BackgroundDark)
+            .background(DarkBrown)
     ) {
         TopBar(
             title = "ADD DAILY BREAD",
@@ -128,7 +127,7 @@ fun NewDailyBreadScreen(
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(
-                    color = MainButton
+                    color = MicroElement
                 )
             }
         } else {
@@ -171,7 +170,7 @@ fun NewDailyBreadScreen(
                             .height(30.dp),
                         shape = RoundedCornerShape(8.dp),
                         colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = MainButton,
+                            containerColor = MicroElement,
                             contentColor = H1Color
                         ),
                         border = null,
@@ -333,7 +332,7 @@ fun NewDailyBreadScreen(
                         .height(36.dp),
                     shape = RoundedCornerShape(26.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MainButton
+                        containerColor = MicroElement
                     )
                 ) {
                     if (isLoading) {
