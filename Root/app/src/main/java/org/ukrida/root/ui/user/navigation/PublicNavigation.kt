@@ -97,7 +97,10 @@ fun PublicNavigation(
         // promised land >>>>>>>>>>>>>>>>>>>>>>>
         composable(PublicScreen.PromisedLand.route) {
             val factory = remember {
-                PromisedLandViewModelFactory(appContainer.groupRepository)
+                PromisedLandViewModelFactory(
+                    groupRepository = appContainer.groupRepository,
+                    galleryRepository = appContainer.galleryRepository
+                )
             }
             val viewModel: PromisedLandViewModel = viewModel(factory = factory)
             PromisedLandScreen(
@@ -165,7 +168,7 @@ fun PublicNavigation(
         ) {
             val groupId = it.arguments?.getInt("groupId") ?: 0
             val factory = remember{
-                OrderViewModelFactory(appContainer.groupRepository, appContainer.accountRepository)
+                OrderViewModelFactory(appContainer.groupRepository, appContainer.accountRepository,galleryRepository = appContainer.galleryRepository)
             }
             val viewModel: OrderViewModel = viewModel(factory=factory)
             OrderScreen(

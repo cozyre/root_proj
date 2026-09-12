@@ -19,7 +19,8 @@ import org.ukrida.root.data.model.Group
 fun HistorySection(
     historyGroups: List<Group>?,
     onSeeMoreClick: () -> Unit,
-    onHistoryClick: (Int) -> Unit
+    onHistoryClick: (Int) -> Unit,
+    coverImages: Map<Int, String?>
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 20.dp)
@@ -49,8 +50,9 @@ fun HistorySection(
                     Spacer(modifier = Modifier.height(20.dp))
                     HistoryCard(
                         group = group,
+                        imageUrl = coverImages[group.id],
                         onClick = {
-                            onHistoryClick.invoke(group.id)
+                            onHistoryClick(group.id)
                         }
                     )
                 }

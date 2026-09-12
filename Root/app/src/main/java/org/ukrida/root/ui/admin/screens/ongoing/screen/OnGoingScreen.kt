@@ -14,6 +14,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,14 +41,39 @@ fun OnGoingScreen(
     viewModel: OnGoingViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
     var showDeleteDialog by remember {
         mutableStateOf(false)
     }
+
     var selectedGroupToDelete by remember {
         mutableStateOf<Group?>(null)
     }
-    var showDialog by remember { mutableStateOf(false) }
-    var selectedId by remember { mutableStateOf<Int?>(null) }
+
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+
+    var selectedId by remember {
+        mutableStateOf<Int?>(null)
+    }
+
+    val refreshOngoing =
+        navController.currentBackStackEntry
+            ?.savedStateHandle
+            ?.getStateFlow("refresh_ongoing", false)
+            ?.collectAsState()
+
+    LaunchedEffect(refreshOngoing?.value) {
+        if (refreshOngoing?.value == true) {
+
+            viewModel.refresh()
+
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.set("refresh_ongoing", false)
+        }
+    }
 
     Column(
         modifier = Modifier

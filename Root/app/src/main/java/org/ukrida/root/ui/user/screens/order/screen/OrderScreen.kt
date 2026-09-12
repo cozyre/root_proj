@@ -95,7 +95,7 @@ fun OrderScreen(
                     ) {
                         Spacer(modifier = Modifier.height(20.dp))
 
-                        OrderHeader(group = tour)
+                        OrderHeader(group = tour, imageUrl = uiState.coverImage)
 
                         Spacer(modifier = Modifier.height(24.dp))
 
@@ -103,7 +103,13 @@ fun OrderScreen(
 
                         Spacer(modifier = Modifier.height(24.dp))
 
-                        OrderPriceSection(price = formattedPrice)
+                        val formattedPrice = " " + NumberFormat
+                            .getNumberInstance(Locale("id", "ID"))
+                            .format(tour.price)
+
+                        OrderPriceSection(
+                            price = "Rp $formattedPrice"
+                        )
 
                         Spacer(modifier = Modifier.height(36.dp))
 

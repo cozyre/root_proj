@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import org.ukrida.root.ui.theme.H1Color
 
 @Composable
 fun ProfileTextField(
@@ -46,16 +47,16 @@ fun ProfileTextField(
 
         colors = OutlinedTextFieldDefaults.colors(
 
-            focusedBorderColor = Color(0xFF7A8A4A),
-            unfocusedBorderColor = Color(0xFF7A8A4A),
+            focusedBorderColor = H1Color,
+            unfocusedBorderColor = Color.Gray,
 
-            focusedLabelColor = Color(0xFF7A8A4A),
-            unfocusedLabelColor = Color.Gray,
+            focusedLabelColor = H1Color,
+            unfocusedLabelColor = H1Color,
 
             focusedTextColor = Color.White,
             unfocusedTextColor = Color.White,
 
-            cursorColor = Color(0xFF7A8A4A),
+            cursorColor = H1Color,
 
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,

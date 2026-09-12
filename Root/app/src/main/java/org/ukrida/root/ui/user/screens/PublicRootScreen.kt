@@ -90,7 +90,10 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
                     DashboardTopBar(
                         title = title,
                         expanded = menuExpanded,
-                        onExpandClick = { setMenuExpanded(!menuExpanded) }
+                        onExpandClick = { setMenuExpanded(!menuExpanded) },
+                        onBackClick = {
+                            navController.popBackStack()
+                        }
                     )
                 } else {
                     PublicTopBar(

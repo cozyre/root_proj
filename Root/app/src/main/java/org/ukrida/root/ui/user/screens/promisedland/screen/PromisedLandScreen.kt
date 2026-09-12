@@ -30,6 +30,7 @@ fun PromisedLandScreen(
 ) {
     val historyGroupState by viewModel.historyGroups.collectAsState()
     val allTripState by viewModel.allTrips.collectAsState()
+    val coverImages by viewModel.coverImages.collectAsState()
 
     val historyGroups = (historyGroupState as? Resource.Success)?.data
     val allTrips = (allTripState as? Resource.Success)?.data
@@ -47,6 +48,7 @@ fun PromisedLandScreen(
             Spacer(modifier = Modifier.height(12.dp))
             HistorySection(
                 historyGroups = historyGroups,
+                coverImages = coverImages,
                 onSeeMoreClick = {
                     navController.navigate(
                         PublicScreen.History.route
@@ -61,6 +63,7 @@ fun PromisedLandScreen(
             Spacer(modifier = Modifier.height(10.dp))
             AllTripSection(
                 allTrips = allTrips,
+                coverImages = coverImages,
                 onTripClick = { groupId ->
                     navController.navigate(
                         PublicScreen.Order.createRoute(groupId)

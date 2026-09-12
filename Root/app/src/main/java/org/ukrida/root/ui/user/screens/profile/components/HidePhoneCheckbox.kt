@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import org.ukrida.root.ui.theme.H1Color
+import org.ukrida.root.ui.theme.MicroElement
 
 @Composable
 fun HidePhoneCheckbox(
@@ -28,8 +30,8 @@ fun HidePhoneCheckbox(
             checked = checked,
             onCheckedChange = onCheckedChange,
             colors = CheckboxDefaults.colors(
-                checkedColor = Color(0xFF7A8A4A),
-                uncheckedColor = Color(0xFF7A8A4A),
+                checkedColor = MicroElement,
+                uncheckedColor = H1Color,
                 checkmarkColor = Color.White
             )
         )
