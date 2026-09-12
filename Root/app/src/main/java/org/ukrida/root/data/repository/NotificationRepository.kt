@@ -28,6 +28,10 @@ class NotificationRepository(private val api: ApiService) {
 
     suspend fun markRead(notificationId: Int): Result<Unit> = try {
         val res = api.markRead(body = MarkReadRequest(notificationId))
-        if (res.isSuccessful) Result.success(Unit) else Result.failure(Exception("Failed"))
+        if (res.isSuccessful && res.body()?.status == "success") {
+            Result.success(Unit)
+        } else {
+            Result.failure(Exception(res.body()?.message ?: "Failed to mark notification as read"))
+        }
     } catch (e: Exception) { Result.failure(e) }
 }

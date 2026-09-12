@@ -19,20 +19,23 @@ class NotificationController {
         $userId = (int) $user['id'];
         if ($user['role'] !== 'admin') {
             http_response_code(403);
-            echo json_encode(["status" => "error", "message" => "Forbidden: admin only"]);
+            $this->fail(403, 'Forbidden: admin only');
             return;
         }
 
-        $input = json_decode(file_get_contents("php://input"), true);
-        $groupId = $input['groupId'] ?? null;
-        $message = trim($input['message'] ?? '');
+        $input = json_decode(file_get_contents("php://input"), true) ?? [];
+        $groupId = filter_var($input['groupId'] ?? null, FILTER_VALIDATE_INT, [
+            'options' => ['min_range' => 1],
+        ]);
+        $message = is_string($input['message'] ?? null) ? trim($input['message']) : '';
 
         $errors = [];
-        if (!$groupId) $errors['groupId'] = 'groupId is required';
+        if ($groupId === false) $errors['groupId'] = 'groupId must be a positive integer';
         if ($message === '') $errors['message'] = 'message is required';
+        if (strlen($message) > 2000) $errors['message'] = 'message must not exceed 2000 characters';
         if (!empty($errors)) {
             http_response_code(422);
-            echo json_encode(["status" => "error", "message" => "Validation failed", "errors" => $errors]);
+            echo json_encode(["status" => "error", "data" => null, "message" => "Validation failed", "errors" => $errors]);
             return;
         }
 
@@ -41,7 +44,7 @@ class NotificationController {
             echo json_encode(["status" => "success", "data" => $result]);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["status" => "error", "message" => "Failed to broadcast notification"]);
+            $this->fail(500, 'Database error while broadcasting notification');
         }
     }
 
@@ -49,8 +52,12 @@ class NotificationController {
     public function list() {
         $user = $this->auth->requireAuth();
         $userId = (int) $user['id'];
-        $notifications = $this->model->getForUser($userId);
-        echo json_encode(["status" => "success", "data" => $notifications]);
+        try {
+            $notifications = $this->model->getForUser($userId);
+            echo json_encode(["status" => "success", "data" => $notifications]);
+        } catch (Throwable $e) {
+            $this->fail(500, 'Failed to load notifications');
+        }
     }
 
     // POST ?route=notification/markRead
@@ -58,13 +65,27 @@ class NotificationController {
         $user = $this->auth->requireAuth();
         $userId = (int) $user['id'];
         $input = json_decode(file_get_contents("php://input"), true);
-        $id = $input['notificationId'] ?? null;
-        if (!$id) {
+        $id = filter_var($input['notificationId'] ?? null, FILTER_VALIDATE_INT, [
+            'options' => ['min_range' => 1],
+        ]);
+        if ($id === false) {
             http_response_code(422);
-            echo json_encode(["status" => "error", "message" => "notificationId required"]);
+            echo json_encode(["status" => "error", "data" => null, "message" => "notificationId must be a positive integer"]);
             return;
         }
-        $this->model->markRead($id, $userId);
-        echo json_encode(["status" => "success", "data" => null]);
+        try {
+            if ($this->model->markRead($id, $userId) === 0) {
+                $this->fail(404, 'Notification not found');
+                return;
+            }
+            echo json_encode(["status" => "success", "data" => null]);
+        } catch (Throwable $e) {
+            $this->fail(500, 'Failed to mark notification as read');
+        }
+    }
+
+    private function fail(int $code, string $message): void {
+        http_response_code($code);
+        echo json_encode(["status" => "error", "data" => null, "message" => $message]);
     }
 }

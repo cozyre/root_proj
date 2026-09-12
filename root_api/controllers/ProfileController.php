@@ -10,7 +10,8 @@ class ProfileController {
     private const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
     private const MAX_SIZE = 5 * 1024 * 1024; // 5MB
     private const UPLOAD_DIR = __DIR__ . '/../public/uploads/profile_photos/';
-    private const PUBLIC_BASE = 'uploads/profile_photos/'; // relative path stored in DB
+    private const PUBLIC_BASE = 'uploads/profile_photos/';
+    private const DEFAULT_PUBLIC_URL = 'http://10.0.2.2/root_proj/root_api/public/';
 
     public function __construct(ProfileModel $model, AuthMiddleware $auth) {
         $this->model = $model;
@@ -23,11 +24,7 @@ class ProfileController {
         $userId = (int) $user['id'];
 
         if (!isset($_FILES['image']) || $_FILES['image']['error'] !== UPLOAD_ERR_OK) {
-            http_response_code(400);
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'No image uploaded or upload error',
-            ]);
+            $this->fail(400, 'No image uploaded or upload error');
             return;
         }
 
@@ -35,33 +32,28 @@ class ProfileController {
 
         // Validate type
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        if ($finfo === false) {
+            $this->fail(500, 'Unable to validate uploaded image');
+            return;
+        }
         $mime = finfo_file($finfo, $file['tmp_name']);
         finfo_close($finfo);
 
         if (!in_array($mime, self::ALLOWED_TYPES, true)) {
-            http_response_code(400);
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Invalid file type. Only JPG, PNG, WEBP allowed',
-                'errors' => ['image' => 'Unsupported file type'],
-            ]);
+            $this->fail(400, 'Invalid file type. Only JPG, PNG, WEBP allowed');
             return;
         }
 
         // Validate size
         if ($file['size'] > self::MAX_SIZE) {
-            http_response_code(400);
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'File too large. Max 5MB',
-                'errors' => ['image' => 'File exceeds size limit'],
-            ]);
+            $this->fail(400, 'File too large. Max 5MB');
             return;
         }
 
         // Ensure upload dir exists
-        if (!is_dir(self::UPLOAD_DIR)) {
-            mkdir(self::UPLOAD_DIR, 0755, true);
+        if (!is_dir(self::UPLOAD_DIR) && (!mkdir(self::UPLOAD_DIR, 0755, true) && !is_dir(self::UPLOAD_DIR))) {
+            $this->fail(500, 'Failed to create upload directory');
+            return;
         }
 
         $ext = match ($mime) {
@@ -69,36 +61,38 @@ class ProfileController {
             'image/png' => 'png',
             'image/webp' => 'webp',
         };
-        $filename = 'user_' . $userId . '_' . time() . '.' . $ext;
+        $filename = 'user_' . $userId . '_' . uniqid('', true) . '.' . $ext;
         $destination = self::UPLOAD_DIR . $filename;
 
         if (!move_uploaded_file($file['tmp_name'], $destination)) {
-            http_response_code(500);
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Failed to save uploaded file',
-            ]);
+            $this->fail(500, 'Failed to save uploaded file');
             return;
         }
 
-        // Delete old photo if it exists
-        $oldPhoto = $this->model->getCurrentPhotoPath($userId);
-        if ($oldPhoto) {
-            $oldFilePath = __DIR__ . '/../public/' . $oldPhoto;
-            if (file_exists($oldFilePath)) {
-                unlink($oldFilePath);
+        try {
+            $oldPhoto = $this->model->getCurrentPhotoPath($userId);
+            $relativePath = self::PUBLIC_BASE . $filename;
+            $photoUrl = rtrim($_ENV['API_PUBLIC_URL'] ?? self::DEFAULT_PUBLIC_URL, '/') . '/' . $relativePath;
+
+            if (!$this->model->updatePhoto($userId, $photoUrl)) {
+                unlink($destination);
+                $this->fail(500, 'Failed to update profile photo');
+                return;
             }
+        } catch (Throwable $e) {
+            if (is_file($destination)) {
+                unlink($destination);
+            }
+            $this->fail(500, 'Failed to update profile photo');
+            return;
         }
 
-        $relativePath = self::PUBLIC_BASE . $filename;
-        $this->model->updatePhoto($userId, $relativePath);
+        // Remove the previous image only after the new file and DB update succeed.
+        $this->deleteProfilePhoto($oldPhoto ?? null);
 
         $updatedProfile = $this->model->getById($userId);
 
-        echo json_encode([
-            'status' => 'success',
-            'data' => $updatedProfile,
-        ]);
+        $this->ok($updatedProfile, 'Profile photo uploaded');
     }
 
     // GET ?route=profile/get
@@ -163,5 +157,19 @@ class ProfileController {
     private function fail(int $code, string $message): void {
         http_response_code($code);
         echo json_encode(['success' => false, 'data' => null, 'message' => $message]);
+    }
+
+    private function deleteProfilePhoto(?string $photoPath): void {
+        if (!$photoPath) return;
+
+        $filename = basename(parse_url($photoPath, PHP_URL_PATH) ?: '');
+        if ($filename === '') return;
+
+        $uploadDir = realpath(self::UPLOAD_DIR);
+        $oldFile = realpath(self::UPLOAD_DIR . $filename);
+        if ($uploadDir !== false && $oldFile !== false
+            && dirname($oldFile) === $uploadDir && is_file($oldFile)) {
+            unlink($oldFile);
+        }
     }
 }

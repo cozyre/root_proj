@@ -92,10 +92,6 @@ fun ProfileHeader(
             )
 
             Button(
-                // TODO Backend Integration
-                // Open Android Photo Picker
-                // Upload selected image to backend
-                // Refresh profile after successful upload
                 onClick = onChangePhotoClick,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF7A8A4A)
@@ -104,7 +100,7 @@ fun ProfileHeader(
             ) {
 
                 Text(
-                    text = "Change Profile",
+                    text = "Change Profile Picture",
                     color = Color.White,
                     style = MaterialTheme.typography.labelMedium
                 )

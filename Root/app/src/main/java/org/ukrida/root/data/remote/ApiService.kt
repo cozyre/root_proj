@@ -358,18 +358,18 @@ interface ApiService {
     // Notification ─────────────────────────────────────────────────────
         @GET("index.php")
         suspend fun listNotifications(
-            @Query("route") route: String = "notifications/list"
+            @Query("route") route: String = "notification/list"
         ): Response<NotificationListResponse>
 
         @POST("index.php")
         suspend fun broadcast(
-            @Query("route") route: String = "notifications/broadcast",
+            @Query("route") route: String = "notification/broadcast",
             @Body body: BroadcastRequest
         ): Response<BroadcastResponse>
 
         @POST("index.php")
         suspend fun markRead(
-            @Query("route") route: String = "notifications/markRead",
+            @Query("route") route: String = "notification/markRead",
             @Body body: MarkReadRequest
         ): Response<GenericResponse>
 }
