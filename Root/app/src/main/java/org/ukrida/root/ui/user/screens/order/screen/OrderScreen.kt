@@ -10,11 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,9 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import org.ukrida.root.ui.user.components.PublicTopBar
 import org.ukrida.root.ui.user.navigation.PublicScreen
 import org.ukrida.root.ui.user.screens.order.components.OrderButton
 import org.ukrida.root.ui.user.screens.order.components.OrderHeader
@@ -84,6 +78,9 @@ fun OrderScreen(
             }
             is Resource.Success -> {
                 val tour = groupRes.data
+                val formatter = NumberFormat.getCurrencyInstance(Locale.forLanguageTag("id-ID"))
+                val formattedPrice = formatter.format(tour.price)
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
