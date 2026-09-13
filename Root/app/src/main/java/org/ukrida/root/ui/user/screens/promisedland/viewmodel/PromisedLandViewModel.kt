@@ -37,15 +37,24 @@ class PromisedLandViewModel(
     }
 
     private suspend fun loadAllTours() {
+
         _allTrips.value = Resource.Loading()
+
         val result = groupRepository.getAllTours()
 
         if (result.isSuccess) {
+
             val tours = result.getOrNull() ?: emptyList()
+
+            loadCoverImages(tours)
+
             _allTrips.value = Resource.Success(tours)
+
         } else {
+
             _allTrips.value = Resource.Error(
-                result.exceptionOrNull()?.message ?: "Failed to load Tours"
+                result.exceptionOrNull()?.message
+                    ?: "Failed to load Tours"
             )
         }
     }
@@ -60,28 +69,6 @@ class PromisedLandViewModel(
 
             val tours = result.getOrNull() ?: emptyList()
 
-            val coverMap =
-                tours.associate { group ->
-
-                    val imageUrl =
-                        when (
-                            val imageResult =
-                                galleryRepository.listImages(group.id)
-                        ) {
-                            is Resource.Success -> {
-                                normalizeImageUrl(
-                                    imageResult.data.firstOrNull()?.imageUrl
-                                )
-                            }
-
-                            else -> null
-                        }
-
-                    group.id to imageUrl
-                }
-
-            _coverImages.value = coverMap
-
             _historyGroups.value =
                 Resource.Success(tours)
 
@@ -93,6 +80,30 @@ class PromisedLandViewModel(
             )
         }
     }
+    private suspend fun loadCoverImages(groups: List<Group>) {
+
+        val coverMap = groups.associate { group ->
+
+            val imageUrl =
+                when (
+                    val imageResult =
+                        galleryRepository.listImages(group.id)
+                ) {
+                    is Resource.Success -> {
+                        normalizeImageUrl(
+                            imageResult.data.firstOrNull()?.imageUrl
+                        )
+                    }
+
+                    else -> null
+                }
+
+            group.id to imageUrl
+        }
+
+        _coverImages.value = coverMap
+    }
+
     private fun normalizeImageUrl(url: String?): String? {
 
         if (url.isNullOrBlank()) return null

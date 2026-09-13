@@ -62,13 +62,43 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
         println("DEBUG: menuExpanded=$menuExpanded")
     }
 
+
     val currentDestination = when {
-        currentRoute == PublicScreen.Group.route -> PublicDestination.GROUP
-        currentRoute?.startsWith("group/") == true -> PublicDestination.GROUP
-        currentRoute == PublicScreen.Home.route -> PublicDestination.HOME
-        currentRoute == PublicScreen.PromisedLand.route -> PublicDestination.PROMISED_LAND
-        currentRoute == PublicScreen.Profile.route -> PublicDestination.PROFILE
-        else -> PublicDestination.HOME
+
+        currentRoute == PublicScreen.Group.route ->
+            PublicDestination.GROUP
+
+        currentRoute?.startsWith("group/") == true ->
+            PublicDestination.GROUP
+
+        currentRoute == PublicScreen.Home.route ->
+            PublicDestination.HOME
+
+        currentRoute == PublicScreen.PromisedLand.route ||
+                currentRoute == PublicScreen.History.route ||
+                currentRoute?.startsWith("historyDetail") == true ->
+            PublicDestination.PROMISED_LAND
+
+        currentRoute == PublicScreen.Profile.route ->
+            PublicDestination.PROFILE
+
+        else ->
+            PublicDestination.HOME
+    }
+    LaunchedEffect(
+        currentRoute,
+        currentDestination,
+        isInGroupContext
+    ) {
+        android.util.Log.d(
+            "NAV_DEBUG",
+            """
+        currentRoute      = $currentRoute
+        currentDestination= $currentDestination
+        isInGroupContext  = $isInGroupContext
+        groupId           = $groupId
+        """.trimIndent()
+        )
     }
 
     val title = when {

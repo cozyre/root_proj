@@ -29,6 +29,7 @@ fun GroupScreen(
 ) {
     val groupState by viewModel.groups.collectAsState()
     val groups = (groupState as? Resource.Success)?.data
+    val coverImages by viewModel.coverImages.collectAsState()
     Scaffold(
         containerColor = Color(0xFF2A2522),
     ) { paddingValues ->
@@ -42,6 +43,7 @@ fun GroupScreen(
             Spacer(modifier = Modifier.height(20.dp))
             GroupSection(
                 groups = groups,
+                coverImages = coverImages,
                 onGroupClick = { groupId ->
                     navController.navigate(
                         PublicScreen.Dashboard.createRoute(groupId)

@@ -114,7 +114,8 @@ fun PublicNavigation(
             val factory = remember {
                 GroupViewModelFactory(
                     groupRepository = appContainer.groupRepository,
-                    accountRepository = appContainer.accountRepository
+                    accountRepository = appContainer.accountRepository,
+                    galleryRepository = appContainer.galleryRepository
                 )
             }
             val viewModel: GroupViewModel = viewModel(factory = factory)

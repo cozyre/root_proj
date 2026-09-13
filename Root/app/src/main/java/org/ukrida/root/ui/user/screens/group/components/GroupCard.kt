@@ -26,10 +26,12 @@ import org.ukrida.root.R
 import org.ukrida.root.data.model.Group
 import org.ukrida.root.data.model.GroupWithDetails
 import org.ukrida.root.utils.GroupStatus
+import coil.compose.AsyncImage
 
 @Composable
 fun GroupCard(
     group: GroupWithDetails,
+    imageUrl: String? = null,
     onClick: () -> Unit = {}
 ) {
     val enabled = group.statusJoin == GroupStatus.APPROVED
@@ -47,8 +49,8 @@ fun GroupCard(
         shape = RoundedCornerShape(18.dp)
     ) {
         Box {
-            Image(
-                painter = painterResource(R.drawable.pyramid),
+            AsyncImage(
+                model = imageUrl,
                 contentDescription = group.name,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -62,7 +64,9 @@ fun GroupCard(
                             topEnd = 18.dp
                         )
                     ),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(R.drawable.no_image),
+                error = painterResource(R.drawable.no_image)
             )
             StatusBadge(
                 status = group.statusJoin,
