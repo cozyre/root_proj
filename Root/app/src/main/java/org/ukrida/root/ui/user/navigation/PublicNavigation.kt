@@ -128,9 +128,15 @@ fun PublicNavigation(
         // History >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         composable(PublicScreen.History.route) {
             val factory = remember {
-                HistoryViewModelFactory(appContainer.groupRepository)
+                HistoryViewModelFactory(
+                    groupRepository = appContainer.groupRepository,
+                    galleryRepository = appContainer.galleryRepository
+                )
             }
-            val viewModel: HistoryViewModel = viewModel(factory = factory)
+
+            val viewModel: HistoryViewModel =
+                viewModel(factory = factory)
+
             HistoryScreen(
                 viewModel = viewModel,
                 navController = navController

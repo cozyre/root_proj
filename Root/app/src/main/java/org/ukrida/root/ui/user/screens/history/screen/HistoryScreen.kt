@@ -29,6 +29,7 @@ fun HistoryScreen(
 ) {
     val historyGroupState by viewModel.historyGroups.collectAsState()
     val historyGroups = (historyGroupState as? Resource.Success)?.data
+    val coverImages by viewModel.coverImages.collectAsState()
     Scaffold(
         containerColor = Color(0xFF2A2522),
     ) { paddingValues ->
@@ -43,6 +44,7 @@ fun HistoryScreen(
             HistorySection(
                 navController = navController,
                 historyGroups = historyGroups,
+                coverImages = coverImages,
                 onHistoryClick = { groupId ->
                     navController.navigate(
                         PublicScreen.HistoryDetail.createRoute(groupId)
