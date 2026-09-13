@@ -22,13 +22,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import org.ukrida.root.R
 import org.ukrida.root.data.model.GroupDetail
-
+import coil.compose.AsyncImage
 @Composable
 fun HistoryHeader(
     group: GroupDetail,
-    navController: NavController
+    navController: NavController,
+    coverImageUrl: String?
 ) {
 
     Column(
@@ -38,15 +40,30 @@ fun HistoryHeader(
     ) {
         Breadcrumb(navController)
         Spacer(modifier = Modifier.height(20.dp))
-        Image(
-            painter = painterResource(R.drawable.pyramid),
-            contentDescription = group.name,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp)
-                .clip(RoundedCornerShape(18.dp)),
-            contentScale = ContentScale.Crop
-        )
+        if (!coverImageUrl.isNullOrBlank()) {
+
+            AsyncImage(
+                model = coverImageUrl,
+                contentDescription = group.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+                    .clip(RoundedCornerShape(18.dp)),
+                contentScale = ContentScale.Crop
+            )
+
+        } else {
+
+            Image(
+                painter = painterResource(R.drawable.no_image),
+                contentDescription = group.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+                    .clip(RoundedCornerShape(18.dp)),
+                contentScale = ContentScale.Crop
+            )
+        }
         Spacer(modifier = Modifier.height(20.dp))
         Text(
             text = group.name,

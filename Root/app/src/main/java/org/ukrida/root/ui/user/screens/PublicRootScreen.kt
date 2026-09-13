@@ -42,7 +42,7 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
     val showBackButton = currentRoute in listOf(
         PublicScreen.Order.route,
         PublicScreen.History.route
-    )
+    ) || currentRoute?.startsWith("history_detail") == true
 
     // Instantiate the NotificationViewModel using the factory
     val notificationViewModel: NotificationViewModel = viewModel(
@@ -62,13 +62,43 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
         println("DEBUG: menuExpanded=$menuExpanded")
     }
 
+
     val currentDestination = when {
-        currentRoute == PublicScreen.Group.route -> PublicDestination.GROUP
-        currentRoute?.startsWith("group/") == true -> PublicDestination.GROUP
-        currentRoute == PublicScreen.Home.route -> PublicDestination.HOME
-        currentRoute == PublicScreen.PromisedLand.route -> PublicDestination.PROMISED_LAND
-        currentRoute == PublicScreen.Profile.route -> PublicDestination.PROFILE
-        else -> PublicDestination.HOME
+
+        currentRoute == PublicScreen.Group.route ->
+            PublicDestination.GROUP
+
+        currentRoute?.startsWith("group/") == true ->
+            PublicDestination.GROUP
+
+        currentRoute == PublicScreen.Home.route ->
+            PublicDestination.HOME
+
+        currentRoute == PublicScreen.PromisedLand.route ||
+                currentRoute == PublicScreen.History.route ||
+                currentRoute?.startsWith("history_detail") == true ->
+            PublicDestination.PROMISED_LAND
+
+        currentRoute == PublicScreen.Profile.route ->
+            PublicDestination.PROFILE
+
+        else ->
+            PublicDestination.HOME
+    }
+    LaunchedEffect(
+        currentRoute,
+        currentDestination,
+        isInGroupContext
+    ) {
+        android.util.Log.d(
+            "NAV_DEBUG",
+            """
+        currentRoute      = $currentRoute
+        currentDestination= $currentDestination
+        isInGroupContext  = $isInGroupContext
+        groupId           = $groupId
+        """.trimIndent()
+        )
     }
 
     val title = when {
@@ -76,6 +106,7 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
         currentRoute == PublicScreen.Home.route -> "Home"
         currentRoute == PublicScreen.PromisedLand.route -> "Promised Land"
         currentRoute == PublicScreen.History.route -> "History"
+        currentRoute?.startsWith("history_detail") == true -> "History"
         currentRoute == PublicScreen.Group.route -> "Group"
         currentRoute == PublicScreen.Profile.route -> "Profile"
         currentRoute == PublicScreen.Order.route -> "Order"

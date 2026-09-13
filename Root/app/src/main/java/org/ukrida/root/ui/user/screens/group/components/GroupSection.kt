@@ -18,7 +18,8 @@ import org.ukrida.root.utils.GroupStatus
 @Composable
 fun GroupSection(
     groups: List<GroupWithDetails>?,
-    onGroupClick: (Int) -> Unit = {}
+    onGroupClick: (Int) -> Unit = {},
+            coverImages: Map<Int, String?>,
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 20.dp)
@@ -38,6 +39,7 @@ fun GroupSection(
         groups?.forEach { group ->
             GroupCard(
                 group = group,
+                imageUrl = coverImages[group.id],
                 onClick = {
                     println("DEBUG GroupCard: group.id=${group.id}, statusJoin=${group.statusJoin}")
                     if (group.statusJoin == GroupStatus.APPROVED) {
