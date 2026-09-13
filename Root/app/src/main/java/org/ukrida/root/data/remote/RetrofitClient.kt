@@ -1,5 +1,6 @@
 package org.ukrida.root.data.remote
 
+import org.ukrida.root.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.ukrida.root.utils.SessionManager
@@ -8,8 +9,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-
-    private const val BASE_URL = "http://10.0.2.2/root_proj/root_api/public/"
 
     private lateinit var sessionManager: SessionManager
 
@@ -33,7 +32,7 @@ object RetrofitClient {
 
     val instance: ApiService by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.API_BASE_URL)
             .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

@@ -19,6 +19,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val apiHost = providers.gradleProperty("apiHost").orElse("10.0.2.2").get()
+        buildConfigField(
+            "String",
+            "API_BASE_URL",
+            "\"http://$apiHost/root_proj/root_api/public/\""
+        )
     }
 
     buildTypes {
@@ -36,6 +43,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
