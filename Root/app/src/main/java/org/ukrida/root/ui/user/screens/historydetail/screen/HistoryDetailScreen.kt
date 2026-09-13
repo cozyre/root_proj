@@ -59,7 +59,10 @@ fun HistoryDetailScreen(
                 val groupData = groupRes.data
                 val members = (uiState.members as? Resource.Success)?.data ?: emptyList()
                 val gallery = (uiState.gallery as? Resource.Success)?.data ?: emptyList()
-
+                val coverImageUrl =
+                    gallery.firstOrNull()?.imageUrl
+                        ?.replace("http://localhost/", "http://10.0.2.2/")
+                        ?.replace("http://127.0.0.1/", "http://10.0.2.2/")
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -68,7 +71,11 @@ fun HistoryDetailScreen(
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = 20.dp)
                 ) {
-                    HistoryHeader(group = groupData, navController)
+                    HistoryHeader(
+                        group = groupData,
+                        navController = navController,
+                        coverImageUrl = coverImageUrl
+                    )
                     Spacer(Modifier.height(30.dp))
                     GroupMemberSection(
                         members = members,

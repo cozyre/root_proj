@@ -42,7 +42,7 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
     val showBackButton = currentRoute in listOf(
         PublicScreen.Order.route,
         PublicScreen.History.route
-    )
+    ) || currentRoute?.startsWith("history_detail") == true
 
     // Instantiate the NotificationViewModel using the factory
     val notificationViewModel: NotificationViewModel = viewModel(
@@ -76,7 +76,7 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
 
         currentRoute == PublicScreen.PromisedLand.route ||
                 currentRoute == PublicScreen.History.route ||
-                currentRoute?.startsWith("historyDetail") == true ->
+                currentRoute?.startsWith("history_detail") == true ->
             PublicDestination.PROMISED_LAND
 
         currentRoute == PublicScreen.Profile.route ->
@@ -106,6 +106,7 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
         currentRoute == PublicScreen.Home.route -> "Home"
         currentRoute == PublicScreen.PromisedLand.route -> "Promised Land"
         currentRoute == PublicScreen.History.route -> "History"
+        currentRoute?.startsWith("history_detail") == true -> "History"
         currentRoute == PublicScreen.Group.route -> "Group"
         currentRoute == PublicScreen.Profile.route -> "Profile"
         currentRoute == PublicScreen.Order.route -> "Order"
