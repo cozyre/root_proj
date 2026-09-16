@@ -4,7 +4,7 @@ class GroupImageController {
     private GroupImageModel $model;
     private AuthMiddleware  $auth;
 
-    private const UPLOAD_DIR   = __DIR__ . '/../public/uploads/gallery/';
+    private const UPLOAD_DIR   = __DIR__ . '/../uploads/gallery/';
     private const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
     private const MAX_BYTES    = 5 * 1024 * 1024; // 5 MB
 

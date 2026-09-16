@@ -9,7 +9,7 @@ class ProfileController {
     // Photo variables
     private const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
     private const MAX_SIZE = 5 * 1024 * 1024; // 5MB
-    private const UPLOAD_DIR = __DIR__ . '/../public/uploads/profile_photos/';
+    private const UPLOAD_DIR = __DIR__ . '/../uploads/profile_photos/';
     private const PUBLIC_BASE = 'uploads/profile_photos/';
     private const DEFAULT_PUBLIC_URL = 'https://root.ifukrida.net/api/';
 
