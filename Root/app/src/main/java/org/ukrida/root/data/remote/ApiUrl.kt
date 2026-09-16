@@ -16,6 +16,8 @@ object ApiUrl {
         }
 
         val path = value.substringAfter("://", value).substringAfter("/", value)
+            .removePrefix("root_proj/api/")
+            .removePrefix("api/")
             .removePrefix("root_proj/root_api/public/")
             .removePrefix("root_api/public/")
             .removePrefix("public/")

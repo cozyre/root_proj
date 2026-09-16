@@ -22,7 +22,7 @@ android {
 
         val apiBaseUrl = providers.gradleProperty("apiBaseUrl").orElse(
             providers.gradleProperty("apiHost").map { host ->
-                "http://$host/root_proj/root_api/public/"
+                "http://$host/root_proj/api/"
             }
         ).orElse("https://root.ifukrida.net/api/").get()
         buildConfigField(
