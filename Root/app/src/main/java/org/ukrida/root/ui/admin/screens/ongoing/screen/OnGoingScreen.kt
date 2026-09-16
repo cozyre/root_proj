@@ -148,8 +148,8 @@ fun OnGoingScreen(
                             },
                             showRemoveButton = true,
                             onRemoveClick = {
-                                selectedGroupToDelete = group
-                                showDeleteDialog = true
+                                selectedId = group.id
+                                showDialog = true
                             }
                         )
                     }

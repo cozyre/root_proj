@@ -38,10 +38,12 @@ fun DashboardScreen(
     onApprovalClick: () -> Unit,
     onRecentClick: () -> Unit,
     onSongClick: () -> Unit,
+    onRecentTripClick: (Int) -> Unit
 ) {
     val approvalsState by viewModel.pendingApprovals.collectAsState()
     val latestTourState by viewModel.latestTour.collectAsState()
-
+    val latestTourCoverImage by
+    viewModel.latestTourCoverImage.collectAsState()
     val latestTour = (latestTourState as? Resource.Success)?.data
 
     Column(
@@ -237,7 +239,11 @@ fun DashboardScreen(
 
                 latestTour?.let { group ->
                     PriceTripCard(
-                        group = group
+                        group = group,
+                        imageUrl = latestTourCoverImage,
+                        onClick = {
+                            onRecentTripClick(group.id)
+                        }
                     )
                 }
 

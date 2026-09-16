@@ -54,31 +54,7 @@ fun AppDrawer(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
-                Surface(
-                    modifier = Modifier.size(56.dp),
-                    shape = CircleShape,
-                    color = TitleColor
-                ) {
-                    if (adminPhotoUrl != null) {
-                        AsyncImage(
-                            model = adminPhotoUrl,
-                            contentDescription = "Profile Photo",
-                            modifier = Modifier
-                                .size(56.dp)
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = null,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Column {
 

@@ -70,7 +70,8 @@ fun AppNavigation(
             val factory = remember {
                 DashboardViewModelFactory(
                     appContainer.adminRepository,
-                    appContainer.groupRepository
+                    appContainer.groupRepository,
+                    appContainer.galleryRepository
                 )
             }
 
@@ -80,7 +81,12 @@ fun AppNavigation(
                 onMenuClick = onMenuClick,
                 onApprovalClick = { navController.navigate(Screen.Approval.route) },
                 onSongClick = { navController.navigate(Screen.HymnForHim.route) },
-                onRecentClick = { navController.navigate(Screen.OngoingTrip.route) }
+                onRecentClick = { navController.navigate(Screen.OngoingTrip.route) },
+                onRecentTripClick = { tripId ->
+                    navController.navigate(
+                        "ongoing_detail/$tripId"
+                    )
+                }
             )
         }
 
@@ -374,9 +380,14 @@ fun AppNavigation(
         }
 
         composable(Screen.FinishedTrip.route) {
+
             val viewModel: FinishedTripViewModel = viewModel(
-                factory = FinishedTripViewModel.factory(appContainer.adminRepository)
+                factory = FinishedTripViewModel.factory(
+                    repository = appContainer.adminRepository,
+                    galleryRepository = appContainer.galleryRepository
+                )
             )
+
             FinishedTripScreen(
                 navController = navController,
                 onMenuClick = onMenuClick,

@@ -21,12 +21,13 @@ import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material3.Icon
 import androidx.compose.ui.Alignment
-
+import coil.compose.AsyncImage
 @Composable
 fun FinishedTripCard(
     trip: CompletedTrip,
+    imageUrl: String? = null,
     onClick: () -> Unit = {}
-) {
+){
 
     Column(
         modifier = Modifier
@@ -36,14 +37,28 @@ fun FinishedTripCard(
             .clickable { onClick() }
     ) {
 
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_foreground),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp),
-            contentScale = ContentScale.Crop
-        )
+        if (!imageUrl.isNullOrBlank()) {
+
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = trip.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp),
+                contentScale = ContentScale.Crop
+            )
+
+        } else {
+
+            Image(
+                painter = painterResource(R.drawable.no_image),
+                contentDescription = trip.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp),
+                contentScale = ContentScale.Crop
+            )
+        }
 
         Column(
             modifier = Modifier.padding(16.dp)

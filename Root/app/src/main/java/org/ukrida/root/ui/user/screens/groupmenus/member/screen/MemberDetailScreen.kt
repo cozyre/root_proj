@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import org.ukrida.root.ui.user.screens.groupmenus.member.components.MemberBackButton
 import org.ukrida.root.ui.user.screens.groupmenus.member.components.MemberDetailHeader
 import org.ukrida.root.ui.user.screens.groupmenus.member.components.MemberInfoItem
 import org.ukrida.root.ui.user.screens.groupmenus.member.viewmodel.MemberViewModel
@@ -66,11 +65,6 @@ fun MemberDetailScreen(
                                 .fillMaxSize()
                                 .verticalScroll(rememberScrollState())
                         ) {
-                            MemberBackButton(
-                                onBackClick = {
-                                    navController.popBackStack()
-                                }
-                            )
                             MemberDetailHeader(
                                 member = member
                             )
