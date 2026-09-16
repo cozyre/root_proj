@@ -64,7 +64,9 @@ fun HomeScreen(
             BookingBanner(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 onSeeMore = {
-                    navController.navigate(PublicScreen.Group.route)
+                    navController.navigate(
+                        PublicScreen.Group.route
+                    )
                 }
             )
             Spacer(modifier = Modifier.height(30.dp))

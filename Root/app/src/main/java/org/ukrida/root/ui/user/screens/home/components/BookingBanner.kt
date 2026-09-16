@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun BookingBanner(
     modifier: Modifier = Modifier,
-    onSeeMore: () -> Unit = {}
+    onSeeMore: () -> Unit
 ) {
     Box(
         modifier = modifier

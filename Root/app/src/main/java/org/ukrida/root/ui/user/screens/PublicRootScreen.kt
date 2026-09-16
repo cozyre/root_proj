@@ -32,6 +32,7 @@ import org.ukrida.root.ui.user.components.PublicDestination
 import org.ukrida.root.ui.user.components.PublicTopBar
 import org.ukrida.root.ui.user.navigation.PublicNavigation
 import org.ukrida.root.ui.user.navigation.PublicScreen
+import androidx.navigation.NavGraph.Companion.findStartDestination
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -148,9 +149,6 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
                         }
                         if (currentRoute != route) {
                             navController.navigate(route) {
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
-                                }
                                 launchSingleTop = true
                                 restoreState = true
                             }
