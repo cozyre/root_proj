@@ -11,36 +11,55 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import org.ukrida.root.ui.theme.*
 
 @Composable
 fun ApprovalCard(
     userName: String,
     groupName: String,
+    profilePhotoUrl: String?,
     enabled: Boolean = true,
     onApprove: () -> Unit = {},
     onReject: () -> Unit = {}
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
-        // Placeholder Profile Picture
-        Box(
-            modifier = Modifier
-                .size(42.dp)
-                .clip(CircleShape)
-                .background(DrawerBackground),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = null,
-                tint = BodyColor,
-                modifier = Modifier.size(24.dp)
+        if (profilePhotoUrl.isNullOrBlank()) {
+
+            Box(
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(CircleShape)
+                    .background(DrawerBackground),
+                contentAlignment = Alignment.Center
+            ) {
+
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = null,
+                    tint = BodyColor,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+
+        } else {
+
+            AsyncImage(
+                model = profilePhotoUrl,
+                contentDescription = userName,
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
             )
+
         }
 
         Spacer(modifier = Modifier.width(16.dp))

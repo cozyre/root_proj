@@ -73,15 +73,14 @@ fun DailyBreadScreen(
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize(),
                                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
-                                verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
                                 itemsIndexed(resource.data) { index, devotion ->
                                     Text(
                                         text = "DAY ${String.format("%02d", index + 1)}",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold,
+                                        style = MaterialTheme.typography.titleLarge,
                                         color = Color(0xFFE8D8C9)
                                     )
+                                    Spacer(modifier = Modifier.height(10.dp))
                                     DevotionCard(
                                         devotion = devotion,
                                         onClick = {

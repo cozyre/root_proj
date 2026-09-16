@@ -89,6 +89,7 @@ fun ApprovalScreen(
                     ApprovalCard(
                         userName = approval.userName,
                         groupName = approval.groupName,
+                        profilePhotoUrl = approval.profilePhotoUrl,
                         enabled = viewModel.processingAccountId != approval.accountId,
                         onApprove = {
                             viewModel.approve(approval.accountId)

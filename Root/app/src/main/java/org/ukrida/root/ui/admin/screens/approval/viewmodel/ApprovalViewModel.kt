@@ -1,5 +1,6 @@
 package org.ukrida.root.ui.admin.screens.approval.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,7 +12,9 @@ import org.ukrida.root.data.repository.AdminRepository
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.ApprovalUiModel
 import org.ukrida.root.utils.Resource
 
-class ApprovalViewModel(private val repository: AdminRepository) : ViewModel() {
+class ApprovalViewModel(
+    private val repository: AdminRepository
+) : ViewModel() {
 
     var approvals by mutableStateOf<List<ApprovalUiModel>>(emptyList())
         private set
@@ -37,6 +40,7 @@ class ApprovalViewModel(private val repository: AdminRepository) : ViewModel() {
 
     fun loadApprovals() {
         viewModelScope.launch {
+
             isLoading = true
             errorMessage = null
 
@@ -44,32 +48,84 @@ class ApprovalViewModel(private val repository: AdminRepository) : ViewModel() {
 
             result
                 .onSuccess { accounts ->
+
                     approvals = accounts.map { account ->
+
+                        val fixedUrl =
+                            normalizeImageUrl(
+                                account.profilePhotoUrl
+                            )
+
+                        Log.d(
+                            "APPROVAL_PHOTO",
+                            "name=${account.fullName}"
+                        )
+
+                        Log.d(
+                            "APPROVAL_PHOTO",
+                            "url=$fixedUrl"
+                        )
+
                         ApprovalUiModel(
                             accountId = account.id,
                             userName = account.fullName,
                             groupName = account.groupName,
-                            status = account.statusJoin
+                            status = account.statusJoin,
+                            profilePhotoUrl = fixedUrl
                         )
                     }
                 }
+
                 .onFailure { error ->
-                    errorMessage = error.message ?: "Failed to load approvals"
+
+                    errorMessage =
+                        error.message
+                            ?: "Failed to load approvals"
                 }
 
             isLoading = false
         }
     }
 
+    private fun normalizeImageUrl(
+        url: String?
+    ): String? {
+
+        if (url.isNullOrBlank()) return null
+
+        return url
+            .replace(
+                "http://localhost/",
+                "http://10.0.2.2/"
+            )
+            .replace(
+                "http://127.0.0.1/",
+                "http://10.0.2.2/"
+            )
+            .replace(
+                "https://localhost/",
+                "http://10.0.2.2/"
+            )
+    }
+
     val pendingRequests: List<ApprovalUiModel>
         get() = approvals.filter {
-            it.status.equals("pending", ignoreCase = true)
+            it.status.equals(
+                "pending",
+                ignoreCase = true
+            )
         }
 
     val processedRequests: List<ApprovalUiModel>
         get() = approvals.filter {
-            it.status.equals("approved", ignoreCase = true) ||
-                    it.status.equals("rejected", ignoreCase = true)
+            it.status.equals(
+                "approved",
+                ignoreCase = true
+            ) ||
+                    it.status.equals(
+                        "rejected",
+                        ignoreCase = true
+                    )
         }
 
     fun togglePending() {
@@ -99,26 +155,34 @@ class ApprovalViewModel(private val repository: AdminRepository) : ViewModel() {
         isApprove: Boolean
     ) {
         viewModelScope.launch {
+
             processingAccountId = accountId
             errorMessage = null
 
-            val result = if (isApprove) {
-                repository.approveOrder(accountId)
-            } else {
-                repository.rejectOrder(accountId)
-            }
+            val result =
+                if (isApprove) {
+                    repository.approveOrder(accountId)
+                } else {
+                    repository.rejectOrder(accountId)
+                }
 
             when (result) {
+
                 is Resource.Success -> {
-                    val updatedOrder = result.data
+
+                    val updatedOrder =
+                        result.data
 
                     approvals = approvals.map { approval ->
+
                         if (approval.accountId == accountId) {
+
                             approval.copy(
                                 userName = updatedOrder.userName,
                                 groupName = updatedOrder.groupName,
                                 status = updatedOrder.statusJoin
                             )
+
                         } else {
                             approval
                         }
@@ -137,11 +201,20 @@ class ApprovalViewModel(private val repository: AdminRepository) : ViewModel() {
     }
 
     companion object {
-        fun factory(repository: AdminRepository): ViewModelProvider.Factory =
+
+        fun factory(
+            repository: AdminRepository
+        ): ViewModelProvider.Factory =
             object : ViewModelProvider.Factory {
+
                 @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return ApprovalViewModel(repository) as T
+                override fun <T : ViewModel> create(
+                    modelClass: Class<T>
+                ): T {
+
+                    return ApprovalViewModel(
+                        repository
+                    ) as T
                 }
             }
     }

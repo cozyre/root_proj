@@ -55,12 +55,27 @@ fun DashboardScreen(
                 }
                 is Resource.Success -> {
                     val group = groupResource.data
+                    val gallery =
+                        (uiState.gallery as? Resource.Success)
+                            ?.data
+                            ?: emptyList()
+
+                    val coverImage =
+                        gallery.firstOrNull()?.imageUrl?.let {
+                            it.replace(
+                                "http://localhost/",
+                                "http://10.0.2.2/"
+                            ).replace(
+                                "http://127.0.0.1/",
+                                "http://10.0.2.2/"
+                            )
+                        }
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                     ) {
-                        DashboardHeader(group)
+                        DashboardHeader(group,coverImage)
                         Spacer(modifier = Modifier.height(32.dp))
                         OrganizerSection(group)
                         Spacer(modifier = Modifier.height(32.dp))

@@ -141,13 +141,29 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
                 PublicBottomNavigation(
                     currentDestination = currentDestination,
                     onNavigate = { destination ->
+
                         val route = when (destination) {
                             PublicDestination.GROUP -> PublicScreen.Group.route
                             PublicDestination.HOME -> PublicScreen.Home.route
                             PublicDestination.PROMISED_LAND -> PublicScreen.PromisedLand.route
                             PublicDestination.PROFILE -> PublicScreen.Profile.route
                         }
+
+                        android.util.Log.d(
+                            "NAV_CLICK",
+                            """
+        currentRoute = $currentRoute
+        targetRoute  = $route
+        equal        = ${currentRoute == route}
+        """.trimIndent()
+                        )
+
                         if (currentRoute != route) {
+                            android.util.Log.d(
+                                "NAV_CLICK",
+                                "NAVIGATING TO $route"
+                            )
+
                             navController.navigate(route) {
                                 launchSingleTop = true
                                 restoreState = true
