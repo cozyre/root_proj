@@ -20,11 +20,15 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val apiHost = providers.gradleProperty("apiHost").orElse("10.0.2.2").get()
+        val apiBaseUrl = providers.gradleProperty("apiBaseUrl").orElse(
+            providers.gradleProperty("apiHost").map { host ->
+                "http://$host/root_proj/root_api/public/"
+            }
+        ).orElse("https://root.ifukrida.net/api/").get()
         buildConfigField(
             "String",
             "API_BASE_URL",
-            "\"http://$apiHost/root_proj/root_api/public/\""
+            "\"$apiBaseUrl\""
         )
     }
 

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import org.ukrida.root.data.remote.ApiUrl
 import org.ukrida.root.data.repository.AdminRepository
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.ApprovalUiModel
 import org.ukrida.root.utils.Resource
@@ -90,22 +91,7 @@ class ApprovalViewModel(
     private fun normalizeImageUrl(
         url: String?
     ): String? {
-
-        if (url.isNullOrBlank()) return null
-
-        return url
-            .replace(
-                "http://localhost/",
-                "http://10.0.2.2/"
-            )
-            .replace(
-                "http://127.0.0.1/",
-                "http://10.0.2.2/"
-            )
-            .replace(
-                "https://localhost/",
-                "http://10.0.2.2/"
-            )
+        return ApiUrl.normalize(url)
     }
 
     val pendingRequests: List<ApprovalUiModel>

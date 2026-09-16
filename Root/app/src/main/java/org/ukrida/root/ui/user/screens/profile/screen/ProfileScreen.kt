@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -17,12 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import org.ukrida.root.ui.user.screens.profile.components.*
+import org.ukrida.root.R
 import org.ukrida.root.ui.user.screens.profile.viewmodel.ProfileViewModel
 import org.ukrida.root.utils.Resource
 import java.io.File
@@ -35,6 +39,8 @@ fun ProfileScreen(
     onLogout: () -> Unit
 ) {
     val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
+    val privacyPolicyUrl = stringResource(R.string.privacy_policy_url)
     val profile by viewModel.profile.collectAsState()
     val updateState by viewModel.updateState.collectAsState()
 
@@ -220,6 +226,14 @@ fun ProfileScreen(
                                 else -> {}
                             }
                             Spacer(modifier = Modifier.height(20.dp))
+                            Text(
+                                text = stringResource(R.string.privacy_policy),
+                                color = Color(0xFFE8D8C9),
+                                modifier = Modifier.clickable {
+                                    uriHandler.openUri(privacyPolicyUrl)
+                                }
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
                             LogoutButton(
                                 onLogout = { onLogout() }
                             )

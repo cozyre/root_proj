@@ -8,10 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import org.ukrida.root.R
 import org.ukrida.root.data.model.GroupImage
+import org.ukrida.root.data.remote.ApiUrl
 import coil.compose.AsyncImage
 @Composable
 fun GalleryImage(
@@ -19,15 +18,7 @@ fun GalleryImage(
     onClick: () -> Unit = {}
 ) {
 
-    val imageUrl = image.imageUrl
-        .replace(
-            "http://localhost/",
-            "http://10.0.2.2/"
-        )
-        .replace(
-            "http://127.0.0.1/",
-            "http://10.0.2.2/"
-        )
+    val imageUrl = ApiUrl.normalize(image.imageUrl)
 
     AsyncImage(
         model = imageUrl,

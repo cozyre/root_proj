@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.ukrida.root.data.remote.ApiUrl
 import org.ukrida.root.data.model.GroupDetail
 import org.ukrida.root.data.model.GroupImage
 import org.ukrida.root.data.repository.AccountRepository
@@ -74,17 +75,6 @@ class DashboardViewModel(
         if (url.isNullOrBlank()) return null
 
         return url
-            .replace(
-                "http://localhost/",
-                "http://10.0.2.2/"
-            )
-            .replace(
-                "http://127.0.0.1/",
-                "http://10.0.2.2/"
-            )
-            .replace(
-                "https://localhost/",
-                "http://10.0.2.2/"
-            )
+            .let(ApiUrl::normalize)
     }
 }

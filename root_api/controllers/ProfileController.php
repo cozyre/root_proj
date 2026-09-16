@@ -11,7 +11,7 @@ class ProfileController {
     private const MAX_SIZE = 5 * 1024 * 1024; // 5MB
     private const UPLOAD_DIR = __DIR__ . '/../public/uploads/profile_photos/';
     private const PUBLIC_BASE = 'uploads/profile_photos/';
-    private const DEFAULT_PUBLIC_URL = 'http://10.0.2.2/root_proj/root_api/public/';
+    private const DEFAULT_PUBLIC_URL = 'https://root.ifukrida.net/api/';
 
     public function __construct(ProfileModel $model, AuthMiddleware $auth) {
         $this->model = $model;

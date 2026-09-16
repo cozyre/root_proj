@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import org.ukrida.root.data.remote.ApiUrl
 import org.ukrida.root.ui.user.screens.groupmenus.dashboard.components.DashboardHeader
 import org.ukrida.root.ui.user.screens.groupmenus.dashboard.components.InformationSection
 import org.ukrida.root.ui.user.screens.groupmenus.dashboard.components.MeetupSection
@@ -60,16 +61,7 @@ fun DashboardScreen(
                             ?.data
                             ?: emptyList()
 
-                    val coverImage =
-                        gallery.firstOrNull()?.imageUrl?.let {
-                            it.replace(
-                                "http://localhost/",
-                                "http://10.0.2.2/"
-                            ).replace(
-                                "http://127.0.0.1/",
-                                "http://10.0.2.2/"
-                            )
-                        }
+                    val coverImage = ApiUrl.normalize(gallery.firstOrNull()?.imageUrl)
                     Column(
                         modifier = Modifier
                             .fillMaxSize()

@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.ukrida.root.data.model.GroupWithDetails
+import org.ukrida.root.data.remote.ApiUrl
 import org.ukrida.root.data.repository.AccountRepository
 import org.ukrida.root.data.repository.GalleryRepository
 import org.ukrida.root.data.repository.GroupRepository
@@ -25,6 +26,7 @@ class GroupViewModel(
 
     private val _groups = MutableStateFlow<Resource<List<GroupWithDetails>>>(Resource.Loading())
     val groups: StateFlow<Resource<List<GroupWithDetails>>> = _groups
+
     private val _coverImages =
         MutableStateFlow<Map<Int, String?>>(emptyMap())
 
@@ -92,17 +94,7 @@ class GroupViewModel(
                 ) {
                     is Resource.Success -> {
 
-                        imageResult.data
-                            .firstOrNull()
-                            ?.imageUrl
-                            ?.replace(
-                                "http://localhost/",
-                                "http://10.0.2.2/"
-                            )
-                            ?.replace(
-                                "http://127.0.0.1/",
-                                "http://10.0.2.2/"
-                            )
+                        ApiUrl.normalize(imageResult.data.firstOrNull()?.imageUrl)
                     }
 
                     else -> null

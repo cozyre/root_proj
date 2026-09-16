@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.ukrida.root.data.model.Group
 import org.ukrida.root.data.model.PendingAccount
+import org.ukrida.root.data.remote.ApiUrl
 import org.ukrida.root.data.repository.AdminRepository
 import org.ukrida.root.data.repository.GalleryRepository
 import org.ukrida.root.data.repository.GroupRepository
@@ -110,15 +111,8 @@ class DashboardViewModel(
                         val imageUrl =
                             galleryResult.data
                                 .firstOrNull()
-                                ?.imageUrl
-                                ?.replace(
-                                    "http://localhost/",
-                                    "http://10.0.2.2/"
-                                )
-                                ?.replace(
-                                    "http://127.0.0.1/",
-                                    "http://10.0.2.2/"
-                                )
+                                    ?.imageUrl
+                                    ?.let(ApiUrl::normalize)
 
                         _latestTourCoverImage.value =
                             imageUrl
