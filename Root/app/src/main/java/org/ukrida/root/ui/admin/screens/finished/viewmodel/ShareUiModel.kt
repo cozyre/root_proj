@@ -20,5 +20,6 @@ data class ApprovalUiModel(
     val accountId: Int,
     val userName: String,
     val groupName: String,
-    val status: String
+    val status: String,
+    val profilePhotoUrl: String?
 )

@@ -165,6 +165,7 @@ fun TripScreen(
 
                 PriceTripCard(
                     group = group,
+                    imageUrl = uiState.coverImages[group.id],
                     onClick = {
 
                         val route = Screen.OngoingDetail.route
@@ -252,6 +253,7 @@ fun TripScreen(
 
                 FinishedTripCard(
                     trip = trip,
+                    imageUrl = uiState.finishedCoverImages[trip.id],
                     onClick = {
 
                         val route =

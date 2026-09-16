@@ -132,6 +132,7 @@ fun DashboardScreen(
                                 ApprovalCard(
                                     userName = approval.fullName,
                                     groupName = approval.groupName,
+                                    profilePhotoUrl = approval.profilePhotoUrl,
                                     enabled = viewModel.processingAccountId != approval.id,
                                     onApprove = {
                                         viewModel.approve(approval.id)
