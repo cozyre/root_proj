@@ -1,5 +1,6 @@
 package org.ukrida.root.ui.admin.screens.ongoing.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -184,6 +185,11 @@ class EditSongsViewModel(
         )
 
         _songList.value = _songList.value + newItem
+
+        Log.d(
+            "SONG_DEBUG",
+            "ADD itemId=${newItem.id}, day=${newItem.day}"
+        )
     }
 
     fun deleteItem(itemId: Int) {

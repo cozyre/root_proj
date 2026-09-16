@@ -6,19 +6,26 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.ukrida.root.data.remote.ApiUrl
 import org.ukrida.root.data.model.Group
+import org.ukrida.root.data.repository.GalleryRepository
 import org.ukrida.root.data.repository.GroupRepository
 import org.ukrida.root.utils.Resource
 import kotlin.collections.emptyList
 
 class PromisedLandViewModel(
-    private val groupRepository: GroupRepository
+    private val groupRepository: GroupRepository,
+    private val galleryRepository: GalleryRepository
 ) : ViewModel() {
     private val _historyGroups = MutableStateFlow<Resource<List<Group>>>(Resource.Loading())
     val historyGroups: StateFlow<Resource<List<Group>>> = _historyGroups
     private val _allTrips = MutableStateFlow<Resource<List<Group>>>(Resource.Loading())
     val allTrips: StateFlow<Resource<List<Group>>> = _allTrips
+    private val _coverImages =
+        MutableStateFlow<Map<Int, String?>>(emptyMap())
 
+    val coverImages: StateFlow<Map<Int, String?>> =
+        _coverImages.asStateFlow()
     init {
         loadGroups()
     }
@@ -31,30 +38,78 @@ class PromisedLandViewModel(
     }
 
     private suspend fun loadAllTours() {
+
         _allTrips.value = Resource.Loading()
+
         val result = groupRepository.getAllTours()
 
         if (result.isSuccess) {
+
             val tours = result.getOrNull() ?: emptyList()
+
+            loadCoverImages(tours)
+
             _allTrips.value = Resource.Success(tours)
+
         } else {
+
             _allTrips.value = Resource.Error(
-                result.exceptionOrNull()?.message ?: "Failed to load Tours"
+                result.exceptionOrNull()?.message
+                    ?: "Failed to load Tours"
             )
         }
     }
 
     private suspend fun loadHistoryTours() {
+
         _historyGroups.value = Resource.Loading()
+
         val result = groupRepository.getPastTours()
 
         if (result.isSuccess) {
+
             val tours = result.getOrNull() ?: emptyList()
-            _historyGroups.value = Resource.Success(tours)
+
+            _historyGroups.value =
+                Resource.Success(tours)
+
         } else {
+
             _historyGroups.value = Resource.Error(
-                result.exceptionOrNull()?.message ?: "Past tours not found"
+                result.exceptionOrNull()?.message
+                    ?: "Past tours not found"
             )
         }
+    }
+    private suspend fun loadCoverImages(groups: List<Group>) {
+
+        val coverMap = groups.associate { group ->
+
+            val imageUrl =
+                when (
+                    val imageResult =
+                        galleryRepository.listImages(group.id)
+                ) {
+                    is Resource.Success -> {
+                        normalizeImageUrl(
+                            imageResult.data.firstOrNull()?.imageUrl
+                        )
+                    }
+
+                    else -> null
+                }
+
+            group.id to imageUrl
+        }
+
+        _coverImages.value = coverMap
+    }
+
+    private fun normalizeImageUrl(url: String?): String? {
+
+        if (url.isNullOrBlank()) return null
+
+        return url
+            .let(ApiUrl::normalize)
     }
 }

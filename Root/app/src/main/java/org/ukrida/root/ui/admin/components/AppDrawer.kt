@@ -11,12 +11,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import org.ukrida.root.ui.theme.*
 import kotlin.Unit
 
 @Composable
 fun AppDrawer(
+    adminName: String,
+    adminEmail: String,
+    adminPhotoUrl: String? = null,
     onItemClick: (String) -> Unit,
     onCloseDrawer: () -> Unit,
     onLogout: () -> Unit
@@ -48,31 +54,20 @@ fun AppDrawer(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
-                Surface(
-                    modifier = Modifier.size(56.dp),
-                    shape = CircleShape,
-                    color = TitleColor
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = null
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Column {
 
                     Text(
-                        text = "ADMIN NAME",
+                        text = adminName.uppercase(),
                         style = MaterialTheme.typography.titleMedium,
                         color = TitleColor
                     )
 
                     Text(
-                        text = "admin@gmail.com",
-                        color = H1Color
+                        text = adminEmail,
+                        color = H1Color,
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
             }

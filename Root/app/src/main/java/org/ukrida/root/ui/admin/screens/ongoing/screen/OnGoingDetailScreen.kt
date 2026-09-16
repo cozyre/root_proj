@@ -440,6 +440,10 @@ fun OnGoingDetailScreen(
                         coordinatorId = coordinatorId
                     )
 
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("refresh_ongoing", true)
+
                     showEditSheet = false
                 },
 

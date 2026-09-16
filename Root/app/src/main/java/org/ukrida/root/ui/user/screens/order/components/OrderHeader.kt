@@ -17,23 +17,39 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import org.ukrida.root.R
 import org.ukrida.root.data.model.Group
-
+import coil.compose.AsyncImage
 @Composable
 fun OrderHeader(
-    group: Group
+    group: Group,
+    imageUrl: String? = null
 ) {
 
     Column {
 
-        Image(
-            painter = painterResource(R.drawable.pyramid),
-            contentDescription = group.name,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp)
-                .clip(RoundedCornerShape(18.dp)),
-            contentScale = ContentScale.Crop
-        )
+        if (!imageUrl.isNullOrBlank()) {
+
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = group.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+                    .clip(RoundedCornerShape(18.dp)),
+                contentScale = ContentScale.Crop
+            )
+
+        } else {
+
+            Image(
+                painter = painterResource(R.drawable.no_image),
+                contentDescription = group.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+                    .clip(RoundedCornerShape(18.dp)),
+                contentScale = ContentScale.Crop
+            )
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
 

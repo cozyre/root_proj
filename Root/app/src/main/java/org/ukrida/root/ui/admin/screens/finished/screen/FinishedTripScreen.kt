@@ -102,6 +102,7 @@ fun FinishedTripScreen(
 
                         FinishedTripCard(
                             trip = trip,
+                            imageUrl = uiState.coverImages[trip.id],
                             onClick = {
                                 val route = Screen.FinishedDetail.route
                                     .replace("{tripId}", trip.id.toString())

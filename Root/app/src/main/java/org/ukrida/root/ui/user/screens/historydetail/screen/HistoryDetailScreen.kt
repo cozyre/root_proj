@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import org.ukrida.root.data.remote.ApiUrl
 import org.ukrida.root.ui.user.screens.historydetail.components.GallerySection
 import org.ukrida.root.ui.user.screens.historydetail.components.GroupMemberSection
 import org.ukrida.root.ui.user.screens.historydetail.components.HistoryHeader
@@ -59,7 +60,7 @@ fun HistoryDetailScreen(
                 val groupData = groupRes.data
                 val members = (uiState.members as? Resource.Success)?.data ?: emptyList()
                 val gallery = (uiState.gallery as? Resource.Success)?.data ?: emptyList()
-
+                val coverImageUrl = ApiUrl.normalize(gallery.firstOrNull()?.imageUrl)
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -68,7 +69,11 @@ fun HistoryDetailScreen(
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = 20.dp)
                 ) {
-                    HistoryHeader(group = groupData, navController)
+                    HistoryHeader(
+                        group = groupData,
+                        navController = navController,
+                        coverImageUrl = coverImageUrl
+                    )
                     Spacer(Modifier.height(30.dp))
                     GroupMemberSection(
                         members = members,

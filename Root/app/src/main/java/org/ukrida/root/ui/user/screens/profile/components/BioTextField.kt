@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import org.ukrida.root.ui.theme.H1Color
 
 @Composable
 fun BioTextField(
@@ -37,13 +38,13 @@ fun BioTextField(
         ),
 
         label = {
-            Text("Bio")
+            Text("Bio", color = H1Color)
         },
 
         colors = OutlinedTextFieldDefaults.colors(
 
-            focusedBorderColor = Color(0xFF7A8A4A),
-            unfocusedBorderColor = Color(0xFF7A8A4A),
+            focusedBorderColor = H1Color,
+            unfocusedBorderColor = Color.Gray,
 
             focusedTextColor = Color.White,
             unfocusedTextColor = Color.White,
@@ -51,7 +52,7 @@ fun BioTextField(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
 
-            cursorColor = Color(0xFF7A8A4A)
+            cursorColor = H1Color
 
         )
     )

@@ -32,7 +32,13 @@ fun PublicBottomNavigation(
     ) {
         NavigationBarItem(
             selected = currentDestination == PublicDestination.GROUP,
-            onClick = { onNavigate(PublicDestination.GROUP) },
+            onClick = {
+                android.util.Log.d(
+                    "BOTTOM_CLICK",
+                    "GROUP CLICKED"
+                )
+                onNavigate(PublicDestination.GROUP)
+            },
             icon = {
                 Icon(
                     Icons.Outlined.Groups,
@@ -52,7 +58,13 @@ fun PublicBottomNavigation(
         )
         NavigationBarItem(
             selected = currentDestination == PublicDestination.HOME,
-            onClick = { onNavigate(PublicDestination.HOME) },
+            onClick = {
+                android.util.Log.d(
+                    "BOTTOM_CLICK",
+                    "HOME CLICKED"
+                )
+                onNavigate(PublicDestination.HOME)
+            },
             icon = {
                 Icon(
                     Icons.Outlined.Home,

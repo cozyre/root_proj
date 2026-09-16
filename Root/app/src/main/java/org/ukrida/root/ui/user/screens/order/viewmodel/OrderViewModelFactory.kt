@@ -3,11 +3,13 @@ package org.ukrida.root.ui.user.screens.order.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import org.ukrida.root.data.repository.AccountRepository
+import org.ukrida.root.data.repository.GalleryRepository
 import org.ukrida.root.data.repository.GroupRepository
 
 class OrderViewModelFactory(
     private val groupRepository: GroupRepository,
-    private val accountRepository: AccountRepository
+    private val accountRepository: AccountRepository,
+    private val galleryRepository: GalleryRepository
 ) : ViewModelProvider.Factory{
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
 
@@ -15,7 +17,8 @@ class OrderViewModelFactory(
             @Suppress("UNCHECKED_CAST")
             return OrderViewModel(
                 groupRepository,
-                accountRepository
+                accountRepository,
+                galleryRepository
             ) as T
         }
 

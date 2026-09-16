@@ -1,10 +1,8 @@
 package org.ukrida.root.data
 
-import android.content.Context
 import org.ukrida.root.data.remote.RetrofitClient
 import org.ukrida.root.data.repository.AccountRepository
 import org.ukrida.root.data.repository.AdminRepository
-import org.ukrida.root.data.repository.AuthRepository
 import org.ukrida.root.data.repository.DevotionRepository
 import org.ukrida.root.data.repository.GalleryRepository
 import org.ukrida.root.data.repository.GroupRepository
@@ -14,7 +12,6 @@ import org.ukrida.root.data.repository.MemberRepository
 import org.ukrida.root.data.repository.NotificationRepository
 import org.ukrida.root.data.repository.ProfileRepository
 import org.ukrida.root.data.repository.SongRepository
-import org.ukrida.root.utils.SessionManager
 import kotlin.getValue
 
 class AppContainer {
@@ -31,10 +28,6 @@ class AppContainer {
 
     val accountRepository by lazy {
         AccountRepository(api)
-    }
-
-    val authRepository by lazy {
-        AuthRepository(api)
     }
 
     val devotionRepository by lazy {

@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.ukrida.root.data.remote.ApiUrl
 import org.ukrida.root.data.model.GroupDetail
 import org.ukrida.root.data.model.GroupImage
 import org.ukrida.root.data.repository.AccountRepository
@@ -68,5 +69,12 @@ class DashboardViewModel(
                 )
             }
         }
+    }
+    private fun normalizeImageUrl(url: String?): String? {
+
+        if (url.isNullOrBlank()) return null
+
+        return url
+            .let(ApiUrl::normalize)
     }
 }

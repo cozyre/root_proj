@@ -1,5 +1,6 @@
 package org.ukrida.root.ui.admin.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,7 +21,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import org.ukrida.root.ui.admin.screens.finished.viewmodel.MemberUiModel
 
-
 @Composable
 fun MemberGridItem(
     member: MemberUiModel,
@@ -28,18 +28,33 @@ fun MemberGridItem(
     showRemoveButton: Boolean = true,
     modifier: Modifier = Modifier
 ) {
+
+    Log.d(
+        "MEMBER_PHOTO",
+        "name=${member.name}, url=${member.profilePhotoUrl}"
+    )
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
     ) {
-        Box(modifier = Modifier.size(64.dp)) {
+
+        Box(
+            modifier = Modifier.size(64.dp)
+        ) {
+
             if (member.profilePhotoUrl.isNullOrBlank()) {
+
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color(0xFFE6DCD2), CircleShape),
+                        .background(
+                            Color(0xFFE6DCD2),
+                            CircleShape
+                        ),
                     contentAlignment = Alignment.Center
                 ) {
+
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = null,
@@ -47,26 +62,47 @@ fun MemberGridItem(
                         modifier = Modifier.size(36.dp)
                     )
                 }
+
             } else {
+
                 AsyncImage(
                     model = member.profilePhotoUrl,
                     contentDescription = member.name,
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(CircleShape),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    onSuccess = {
+                        Log.d(
+                            "MEMBER_PHOTO",
+                            "SUCCESS ${member.profilePhotoUrl}"
+                        )
+                    },
+                    onError = {
+                        Log.e(
+                            "MEMBER_PHOTO",
+                            "FAILED ${member.profilePhotoUrl}"
+                        )
+                    }
                 )
             }
 
             if (showRemoveButton) {
+
                 Box(
                     modifier = Modifier
                         .size(20.dp)
-                        .background(Color(0xFFD9534F), CircleShape)
+                        .background(
+                            Color(0xFFD9534F),
+                            CircleShape
+                        )
                         .align(Alignment.TopEnd)
-                        .clickable { onRemoveClick(member) },
+                        .clickable {
+                            onRemoveClick(member)
+                        },
                     contentAlignment = Alignment.Center
                 ) {
+
                     Text(
                         text = "-",
                         color = Color.White,
@@ -76,7 +112,15 @@ fun MemberGridItem(
                 }
             }
         }
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(text = member.name, color = Color.White, fontSize = 12.sp)
+
+        Spacer(
+            modifier = Modifier.height(4.dp)
+        )
+
+        Text(
+            text = member.name,
+            color = Color.White,
+            fontSize = 12.sp
+        )
     }
 }

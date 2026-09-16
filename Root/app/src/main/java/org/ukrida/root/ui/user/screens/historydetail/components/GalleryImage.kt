@@ -8,25 +8,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import org.ukrida.root.R
 import org.ukrida.root.data.model.GroupImage
-
+import org.ukrida.root.data.remote.ApiUrl
+import coil.compose.AsyncImage
 @Composable
 fun GalleryImage(
     image: GroupImage,
     onClick: () -> Unit = {}
 ) {
 
-    Image(
-        //Kalau backend udah mau disambungin
-//        AsyncImage(
-//            model = image.imageUrl,
-//            contentDescription = image.caption,
-//            ...
-//        )
-        painter = painterResource(R.drawable.pyramid),
+    val imageUrl = ApiUrl.normalize(image.imageUrl)
+
+    AsyncImage(
+        model = imageUrl,
         contentDescription = image.caption,
         modifier = Modifier
             .fillMaxWidth()
@@ -34,5 +29,4 @@ fun GalleryImage(
             .clip(RoundedCornerShape(14.dp)),
         contentScale = ContentScale.Crop
     )
-
 }

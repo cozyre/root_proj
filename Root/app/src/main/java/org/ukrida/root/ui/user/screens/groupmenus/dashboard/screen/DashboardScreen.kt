@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import org.ukrida.root.data.remote.ApiUrl
 import org.ukrida.root.ui.user.screens.groupmenus.dashboard.components.DashboardHeader
 import org.ukrida.root.ui.user.screens.groupmenus.dashboard.components.InformationSection
 import org.ukrida.root.ui.user.screens.groupmenus.dashboard.components.MeetupSection
@@ -55,12 +56,18 @@ fun DashboardScreen(
                 }
                 is Resource.Success -> {
                     val group = groupResource.data
+                    val gallery =
+                        (uiState.gallery as? Resource.Success)
+                            ?.data
+                            ?: emptyList()
+
+                    val coverImage = ApiUrl.normalize(gallery.firstOrNull()?.imageUrl)
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                     ) {
-                        DashboardHeader(group)
+                        DashboardHeader(group,coverImage)
                         Spacer(modifier = Modifier.height(32.dp))
                         OrganizerSection(group)
                         Spacer(modifier = Modifier.height(32.dp))

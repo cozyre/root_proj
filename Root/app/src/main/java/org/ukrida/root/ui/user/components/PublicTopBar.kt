@@ -70,7 +70,6 @@ fun PublicTopBar(
             text = title.uppercase(),
             color = titleColor,
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
         )
 
         // Kanan

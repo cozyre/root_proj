@@ -1,11 +1,18 @@
 <?php
 class Database {
-    private string $host     = "localhost";
-    private string $db_name  = "rootandroid";
-    private string $username = "root";
-    private string $password = "";
+    private string $host;
+    private string $db_name;
+    private string $username;
+    private string $password;
 
     private ?PDO $conn = null;
+
+    public function __construct() {
+        $this->host = $_ENV['DB_HOST'] ?? 'localhost';
+        $this->db_name = $_ENV['DB_NAME'] ?? '';
+        $this->username = $_ENV['DB_USERNAME'] ?? '';
+        $this->password = $_ENV['DB_PASSWORD'] ?? '';
+    }
 
     public function connect(): PDO {
         if ($this->conn !== null) return $this->conn;

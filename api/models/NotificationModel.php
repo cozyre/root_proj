@@ -6,7 +6,7 @@ class NotificationModel {
         $this->db = $db;
     }
 
-    public function broadcast($groupId, $message, $createdBy) {
+    public function broadcast(int $groupId, string $message, int $createdBy): array {
         $this->db->beginTransaction();
         try {
             $stmt = $this->db->prepare(
@@ -16,7 +16,8 @@ class NotificationModel {
             $notificationId = $this->db->lastInsertId();
 
             $stmt = $this->db->prepare(
-                "SELECT user_id FROM group_members WHERE group_id = ? AND status = 'accepted'"
+                "SELECT user_id FROM accounts
+                 WHERE group_id = ? AND status_join = 'approved' AND deleted_at IS NULL"
             );
             $stmt->execute([$groupId]);
             $userIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
@@ -33,12 +34,14 @@ class NotificationModel {
             $this->db->commit();
             return ['notificationId' => (int)$notificationId, 'recipientCount' => count($userIds)];
         } catch (Exception $e) {
-            $this->db->rollBack();
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
             throw $e;
         }
     }
 
-    public function getForUser($userId, $limit = 50) {
+    public function getForUser(int $userId, int $limit = 50): array {
         $stmt = $this->db->prepare(
             "SELECT n.id, n.message, n.group_id, n.created_at, r.is_read
              FROM notification_recipients r
@@ -53,10 +56,11 @@ class NotificationModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function markRead($notificationId, $userId) {
+    public function markRead(int $notificationId, int $userId): int {
         $stmt = $this->db->prepare(
             "UPDATE notification_recipients SET is_read = 1 WHERE notification_id = ? AND user_id = ?"
         );
-        return $stmt->execute([$notificationId, $userId]);
+        $stmt->execute([$notificationId, $userId]);
+        return $stmt->rowCount();
     }
 }

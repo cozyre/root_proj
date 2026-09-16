@@ -1,0 +1,5 @@
+Root/gradle/gradle-daemon-jvm.properties
+*.properties
+api/.env
+*/.env
+.env

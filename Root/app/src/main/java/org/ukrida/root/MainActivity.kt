@@ -30,7 +30,6 @@ import org.ukrida.root.ui.user.screens.PublicRootScreen
 import androidx.compose.ui.platform.LocalContext
 import org.ukrida.root.ui.admin.components.LoadingScreen
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

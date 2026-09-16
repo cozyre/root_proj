@@ -18,8 +18,9 @@ import org.ukrida.root.ui.user.screens.promisedland.components.HistoryCard
 fun HistorySection(
     navController: NavController,
     historyGroups: List<Group>?,
+    coverImages: Map<Int, String?>,
     onHistoryClick: ((Int) -> Unit)? = null
-) {
+){
     Column(
         modifier = Modifier.padding(horizontal = 20.dp)
     ) {
@@ -40,6 +41,7 @@ fun HistorySection(
         historyGroups?.forEach { group ->
             HistoryCard(
                 group = group,
+                imageUrl = coverImages[group.id],
                 onClick = {
                     onHistoryClick?.invoke(group.id)
                 }

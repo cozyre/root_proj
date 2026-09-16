@@ -1,5 +1,6 @@
 package org.ukrida.root.ui.user.screens.promisedland.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +19,8 @@ import java.time.Year
 @Composable
 fun AllTripSection(
     allTrips: List<Group>?,
-    onTripClick: (Int) -> Unit
+    onTripClick: (Int) -> Unit,
+    coverImages: Map<Int, String?>,
 ) {
     Column(
         modifier = Modifier
@@ -39,11 +41,18 @@ fun AllTripSection(
             )
         } else {
             allTrips.forEach { group ->
+
+                Log.d(
+                    "PROMISED_IMAGE",
+                    "groupId=${group.id}, imageUrl=${coverImages[group.id]}"
+                )
+
                 RecommendationCard(
                     group = group,
                     onClick = {
                         onTripClick(group.id)
-                    }
+                    },
+                    imageUrl = coverImages[group.id],
                 )
                 Spacer(modifier = Modifier.height(20.dp))
             }

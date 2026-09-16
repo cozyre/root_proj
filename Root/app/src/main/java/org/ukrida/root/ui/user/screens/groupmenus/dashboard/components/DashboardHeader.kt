@@ -1,5 +1,6 @@
 package org.ukrida.root.ui.user.screens.groupmenus.dashboard.components
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,11 +18,14 @@ import androidx.compose.ui.unit.dp
 import org.ukrida.root.R
 import org.ukrida.root.data.model.Group
 import org.ukrida.root.data.model.GroupDetail
-
+import coil.compose.AsyncImage
 @Composable
 fun DashboardHeader(
-    group: GroupDetail
+    group: GroupDetail,
+    imageUrl: String? = null
 ) {
+
+    Log.d("DASHBOARD_IMAGE", "imageUrl=$imageUrl")
 
     Column(
         modifier = Modifier
@@ -55,15 +59,31 @@ fun DashboardHeader(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Image(
-            painter = painterResource(R.drawable.pyramid),
-            contentDescription = group.name,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(210.dp)
-                .clip(RoundedCornerShape(20.dp)),
-            contentScale = ContentScale.Crop
-        )
+        if (!imageUrl.isNullOrBlank()) {
+
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = group.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(210.dp)
+                    .clip(RoundedCornerShape(20.dp)),
+                contentScale = ContentScale.Crop
+            )
+
+        } else {
+
+            Image(
+                painter = painterResource(R.drawable.pyramid),
+                contentDescription = group.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(210.dp)
+                    .clip(RoundedCornerShape(20.dp)),
+                contentScale = ContentScale.Crop
+            )
+
+        }
 
     }
 

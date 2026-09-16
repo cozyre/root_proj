@@ -32,6 +32,7 @@ import org.ukrida.root.ui.user.components.PublicDestination
 import org.ukrida.root.ui.user.components.PublicTopBar
 import org.ukrida.root.ui.user.navigation.PublicNavigation
 import org.ukrida.root.ui.user.navigation.PublicScreen
+import androidx.navigation.NavGraph.Companion.findStartDestination
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +43,7 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
     val showBackButton = currentRoute in listOf(
         PublicScreen.Order.route,
         PublicScreen.History.route
-    )
+    ) || currentRoute?.startsWith("history_detail") == true
 
     // Instantiate the NotificationViewModel using the factory
     val notificationViewModel: NotificationViewModel = viewModel(
@@ -62,13 +63,43 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
         println("DEBUG: menuExpanded=$menuExpanded")
     }
 
+
     val currentDestination = when {
-        currentRoute == PublicScreen.Group.route -> PublicDestination.GROUP
-        currentRoute?.startsWith("group/") == true -> PublicDestination.GROUP
-        currentRoute == PublicScreen.Home.route -> PublicDestination.HOME
-        currentRoute == PublicScreen.PromisedLand.route -> PublicDestination.PROMISED_LAND
-        currentRoute == PublicScreen.Profile.route -> PublicDestination.PROFILE
-        else -> PublicDestination.HOME
+
+        currentRoute == PublicScreen.Group.route ->
+            PublicDestination.GROUP
+
+        currentRoute?.startsWith("group/") == true ->
+            PublicDestination.GROUP
+
+        currentRoute == PublicScreen.Home.route ->
+            PublicDestination.HOME
+
+        currentRoute == PublicScreen.PromisedLand.route ||
+                currentRoute == PublicScreen.History.route ||
+                currentRoute?.startsWith("history_detail") == true ->
+            PublicDestination.PROMISED_LAND
+
+        currentRoute == PublicScreen.Profile.route ->
+            PublicDestination.PROFILE
+
+        else ->
+            PublicDestination.HOME
+    }
+    LaunchedEffect(
+        currentRoute,
+        currentDestination,
+        isInGroupContext
+    ) {
+        android.util.Log.d(
+            "NAV_DEBUG",
+            """
+        currentRoute      = $currentRoute
+        currentDestination= $currentDestination
+        isInGroupContext  = $isInGroupContext
+        groupId           = $groupId
+        """.trimIndent()
+        )
     }
 
     val title = when {
@@ -76,6 +107,7 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
         currentRoute == PublicScreen.Home.route -> "Home"
         currentRoute == PublicScreen.PromisedLand.route -> "Promised Land"
         currentRoute == PublicScreen.History.route -> "History"
+        currentRoute?.startsWith("history_detail") == true -> "History"
         currentRoute == PublicScreen.Group.route -> "Group"
         currentRoute == PublicScreen.Profile.route -> "Profile"
         currentRoute == PublicScreen.Order.route -> "Order"
@@ -90,7 +122,10 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
                     DashboardTopBar(
                         title = title,
                         expanded = menuExpanded,
-                        onExpandClick = { setMenuExpanded(!menuExpanded) }
+                        onExpandClick = { setMenuExpanded(!menuExpanded) },
+                        onBackClick = {
+                            navController.popBackStack()
+                        }
                     )
                 } else {
                     PublicTopBar(
@@ -106,17 +141,30 @@ fun PublicRootScreen(appContainer: AppContainer, onLogout: () -> Unit) {
                 PublicBottomNavigation(
                     currentDestination = currentDestination,
                     onNavigate = { destination ->
+
                         val route = when (destination) {
                             PublicDestination.GROUP -> PublicScreen.Group.route
                             PublicDestination.HOME -> PublicScreen.Home.route
                             PublicDestination.PROMISED_LAND -> PublicScreen.PromisedLand.route
                             PublicDestination.PROFILE -> PublicScreen.Profile.route
                         }
+
+                        android.util.Log.d(
+                            "NAV_CLICK",
+                            """
+        currentRoute = $currentRoute
+        targetRoute  = $route
+        equal        = ${currentRoute == route}
+        """.trimIndent()
+                        )
+
                         if (currentRoute != route) {
+                            android.util.Log.d(
+                                "NAV_CLICK",
+                                "NAVIGATING TO $route"
+                            )
+
                             navController.navigate(route) {
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
-                                }
                                 launchSingleTop = true
                                 restoreState = true
                             }

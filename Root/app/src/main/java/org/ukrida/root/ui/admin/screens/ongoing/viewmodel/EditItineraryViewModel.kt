@@ -1,5 +1,6 @@
 package org.ukrida.root.ui.admin.screens.ongoing.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -44,6 +45,7 @@ class EditItineraryViewModel(
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     private val dayToItineraryId = mutableMapOf<Int, Int>()
+    private var nextTempId = -1
 
     init {
         loadItinerary()
@@ -128,16 +130,36 @@ class EditItineraryViewModel(
     }
 
     fun addItem() {
-        val tempId = -System.currentTimeMillis().toInt()
+
+        val itineraryId = dayToItineraryId[_selectedDay.value] ?: run {
+            Log.e(
+                "ITINERARY_DEBUG",
+                "No itineraryId found for day ${_selectedDay.value}"
+            )
+            return
+        }
+
+        val tempId = nextTempId
+        nextTempId--
 
         _itineraryList.value = _itineraryList.value + ItineraryItemUiState(
             id = tempId,
-            itineraryId = dayToItineraryId[_selectedDay.value] ?: return,
+            itineraryId = itineraryId,
             day = selectedDay.value,
             startTime = "00:00",
             endTime = "00:00",
             activity = "",
             type = "activity"
+        )
+
+        Log.d(
+            "ITINERARY_DEBUG",
+            "after add size=${_itineraryList.value.size}"
+        )
+
+        Log.d(
+            "ITINERARY_DEBUG",
+            "tempId=$tempId"
         )
     }
 
@@ -155,36 +177,90 @@ class EditItineraryViewModel(
 
     fun submitAll() {
         viewModelScope.launch {
-            deletedItemIds.forEach { id ->
-                itineraryRepository.deleteItem(id)
-            }
 
-            _itineraryList.value.forEach { item ->
-                if (item.id < 0) {
-                    itineraryRepository.createItem(
-                        CreateItineraryItemRequest(
-                            itenary_id = item.itineraryId,
-                            start_time = item.startTime,
-                            end_time = item.endTime,
-                            type = item.type,
-                            description = item.activity
-                        )
+            Log.d(
+                "ITINERARY_SUBMIT",
+                "total items=${_itineraryList.value.size}"
+            )
+
+            try {
+
+                // DELETE
+                deletedItemIds.forEach { id ->
+
+                    Log.d(
+                        "ITINERARY_SUBMIT",
+                        "DELETE itemId=$id"
                     )
-                } else {
-                    itineraryRepository.updateItem(
-                        id = item.id,
-                        request = UpdateItineraryRequest(
-                            start_time = item.startTime,
-                            end_time = item.endTime,
-                            type = item.type,
-                            description = item.activity
-                        )
-                    )
+
+                    itineraryRepository.deleteItem(id)
                 }
+
+                // CREATE / UPDATE
+                _itineraryList.value.forEach { item ->
+
+                    if (item.id < 0) {
+
+                        Log.d(
+                            "ITINERARY_SUBMIT",
+                            "CREATE itineraryId=${item.itineraryId}, activity=${item.activity}"
+                        )
+
+                        val result = itineraryRepository.createItem(
+                            CreateItineraryItemRequest(
+                                itenary_id = item.itineraryId,
+                                start_time = item.startTime,
+                                end_time = item.endTime,
+                                type = item.type,
+                                description = item.activity
+                            )
+                        )
+
+                        Log.d(
+                            "ITINERARY_SUBMIT",
+                            "CREATE RESULT = $result"
+                        )
+
+                    } else {
+
+                        Log.d(
+                            "ITINERARY_SUBMIT",
+                            "UPDATE itemId=${item.id}"
+                        )
+
+                        val result = itineraryRepository.updateItem(
+                            id = item.id,
+                            request = UpdateItineraryRequest(
+                                start_time = item.startTime,
+                                end_time = item.endTime,
+                                type = item.type,
+                                description = item.activity
+                            )
+                        )
+
+                        Log.d(
+                            "ITINERARY_SUBMIT",
+                            "UPDATE RESULT = $result"
+                        )
+                    }
+                }
+
+                deletedItemIds.clear()
+
+                // Reload data dari server
+                loadItinerary()
+
+                _submitSuccess.value = true
+
+            } catch (e: Exception) {
+
+                Log.e(
+                    "ITINERARY_SUBMIT",
+                    "Submit failed",
+                    e
+                )
+
             }
-            deletedItemIds.clear()
-            loadItinerary()
-            _submitSuccess.value = true
         }
     }
 

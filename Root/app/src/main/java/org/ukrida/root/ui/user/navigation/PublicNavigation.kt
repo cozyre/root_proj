@@ -97,7 +97,10 @@ fun PublicNavigation(
         // promised land >>>>>>>>>>>>>>>>>>>>>>>
         composable(PublicScreen.PromisedLand.route) {
             val factory = remember {
-                PromisedLandViewModelFactory(appContainer.groupRepository)
+                PromisedLandViewModelFactory(
+                    groupRepository = appContainer.groupRepository,
+                    galleryRepository = appContainer.galleryRepository
+                )
             }
             val viewModel: PromisedLandViewModel = viewModel(factory = factory)
             PromisedLandScreen(
@@ -111,7 +114,8 @@ fun PublicNavigation(
             val factory = remember {
                 GroupViewModelFactory(
                     groupRepository = appContainer.groupRepository,
-                    accountRepository = appContainer.accountRepository
+                    accountRepository = appContainer.accountRepository,
+                    galleryRepository = appContainer.galleryRepository
                 )
             }
             val viewModel: GroupViewModel = viewModel(factory = factory)
@@ -124,9 +128,15 @@ fun PublicNavigation(
         // History >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         composable(PublicScreen.History.route) {
             val factory = remember {
-                HistoryViewModelFactory(appContainer.groupRepository)
+                HistoryViewModelFactory(
+                    groupRepository = appContainer.groupRepository,
+                    galleryRepository = appContainer.galleryRepository
+                )
             }
-            val viewModel: HistoryViewModel = viewModel(factory = factory)
+
+            val viewModel: HistoryViewModel =
+                viewModel(factory = factory)
+
             HistoryScreen(
                 viewModel = viewModel,
                 navController = navController
@@ -165,7 +175,7 @@ fun PublicNavigation(
         ) {
             val groupId = it.arguments?.getInt("groupId") ?: 0
             val factory = remember{
-                OrderViewModelFactory(appContainer.groupRepository, appContainer.accountRepository)
+                OrderViewModelFactory(appContainer.groupRepository, appContainer.accountRepository,galleryRepository = appContainer.galleryRepository)
             }
             val viewModel: OrderViewModel = viewModel(factory=factory)
             OrderScreen(

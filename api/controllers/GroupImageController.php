@@ -4,7 +4,7 @@ class GroupImageController {
     private GroupImageModel $model;
     private AuthMiddleware  $auth;
 
-    private const UPLOAD_DIR   = __DIR__ . '/../public/uploads/gallery/';
+    private const UPLOAD_DIR   = __DIR__ . '/../uploads/gallery/';
     private const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
     private const MAX_BYTES    = 5 * 1024 * 1024; // 5 MB
 
@@ -82,9 +82,8 @@ class GroupImageController {
             return;
         }
 
-        $proto    = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-        $host     = $_SERVER['HTTP_HOST'];
-        $imageUrl = $proto . '://' . $host . '/root_proj/root_api/public/uploads/gallery/' . $filename;
+        $publicBase = rtrim($_ENV['API_PUBLIC_URL'] ?? 'https://root.ifukrida.net/api/', '/');
+        $imageUrl = $publicBase . '/uploads/gallery/' . $filename;
 
         $id = $this->model->addImage($groupId, $imageUrl, $caption);
         if (!$id) { $this->fail(500, 'Failed to save image record'); return; }
