@@ -1,51 +1,281 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Privacy Policy | Root</title>
-  <style>
-    :root { --ink: #1f2925; --muted: #5d6b64; --paper: #f5f1e8; --accent: #c86b45; --line: #d9d5c9; }
-    * { box-sizing: border-box; }
-    body { margin: 0; color: var(--ink); background: var(--paper); font-family: Arial, sans-serif; }
-    main { max-width: 780px; margin: 0 auto; padding: 28px 24px 72px; }
-    nav { display: flex; justify-content: space-between; gap: 20px; margin-bottom: 90px; }
-    nav a { color: var(--ink); font-weight: 700; text-decoration: none; }
-    .eyebrow { color: var(--accent); font-size: .75rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
-    h1 { margin: 14px 0 12px; font: 400 4rem Georgia, serif; letter-spacing: -.04em; }
-    .updated { color: var(--muted); }
-    article { margin-top: 54px; border-top: 1px solid var(--line); padding-top: 26px; }
-    h2 { font: 400 1.6rem Georgia, serif; }
-    p, li { color: var(--muted); line-height: 1.7; }
-    footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
-    @media (max-width: 600px) { h1 { font-size: 3rem; } nav { margin-bottom: 60px; } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Root</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F3EAE0;
+    --sand:#E7D8C9;
+    --tan:#C8A07A;
+    --umber:#8F6B4F;
+    --olive:#6C7A4A;
+    --ink:#2F2A24;
+    --olive-deep:#565f39;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Karla', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.6;
+  }
+  a{color:var(--olive-deep);}
+  h1,h2,.display{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    color:var(--ink);
+    margin:0;
+  }
+  .wrap{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 28px;
+  }
+
+  header{
+    padding:28px 0;
+  }
+  .nav-inner{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    text-decoration:none;
+  }
+  .brand img{width:32px;height:32px;border-radius:7px;}
+  .brand-name{
+    font-family:'Fraunces', serif;
+    font-size:1.2rem;
+    font-weight:500;
+    color:var(--ink);
+  }
+  .back-link{
+    font-size:0.92rem;
+    text-decoration:none;
+    color:var(--umber);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .back-link svg{width:15px;height:15px;}
+  .back-link:hover{text-decoration:underline;}
+
+  .title-block{
+    padding:36px 0 48px;
+    border-bottom:1px solid rgba(143,107,79,0.28);
+    margin-bottom:48px;
+  }
+  .title-block h1{
+    font-size:clamp(2rem, 4vw, 2.7rem);
+  }
+  .title-block p{
+    margin-top:14px;
+    color:var(--umber);
+    font-size:0.98rem;
+  }
+
+  main{padding-bottom:100px;}
+
+  section.policy-section{
+    margin-bottom:44px;
+  }
+  section.policy-section h2{
+    font-size:1.4rem;
+    margin-bottom:16px;
+  }
+  section.policy-section p{
+    margin:0 0 14px;
+    color:#4a4234;
+  }
+  section.policy-section ul{
+    margin:0;
+    padding-left:0;
+    list-style:none;
+  }
+  section.policy-section li{
+    position:relative;
+    padding:10px 0 10px 26px;
+    border-top:1px solid rgba(143,107,79,0.18);
+    color:var(--ink);
+  }
+  section.policy-section li:first-child{border-top:none;}
+  section.policy-section li::before{
+    content:"";
+    position:absolute;
+    left:2px;
+    top:19px;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--olive);
+  }
+  li strong{font-weight:600;}
+
+  .callout{
+    background:var(--sand);
+    border-radius:16px;
+    padding:26px 28px;
+    margin-top:8px;
+  }
+  .callout p{margin:0 0 8px;color:var(--ink);}
+  .callout p:last-child{margin-bottom:0;}
+  .callout a{font-weight:600;}
+
+  .contact-box{
+    background:var(--ink);
+    color:var(--sand);
+    border-radius:16px;
+    padding:30px 32px;
+    margin-top:8px;
+  }
+  .contact-box h2{color:var(--cream);font-size:1.3rem;margin-bottom:12px;}
+  .contact-box p{color:var(--tan);margin:0;}
+  .contact-box a{color:var(--cream);}
+
+  footer{
+    background:var(--ink);
+    color:var(--sand);
+    padding:36px 0;
+  }
+  .footer-inner{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 28px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:16px;
+    font-size:0.9rem;
+  }
+  footer a{color:var(--tan);text-decoration:none;}
+  footer a:hover{text-decoration:underline;}
+
+  @media (max-width:480px){
+    .nav-inner{flex-direction:column;align-items:flex-start;gap:14px;}
+  }
+</style>
 </head>
 <body>
-  <main>
-    <nav><a href="/">Root</a><a href="/">Back to home</a></nav>
-    <header>
-      <div class="eyebrow">Root app</div>
-      <h1>Privacy Policy</h1>
-      <p class="updated">Last updated: September 16, 2026</p>
-    </header>
-    <article>
-      <h2>Overview</h2>
-      <p>This page is a sample privacy policy for the Root mobile application. Replace this text with the final policy and legal contact details before publishing the app.</p>
-    </article>
-    <article>
+
+<header>
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <img src="root_logo.png" alt="Root logo">
+      <span class="brand-name">Root</span>
+    </a>
+    <a class="back-link" href="index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back to Root
+    </a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap title-block">
+    <h1>Privacy Policy</h1>
+    <p>How Root collects, stores, and handles your information as a member of a pilgrimage tour.</p>
+  </div>
+
+  <div class="wrap">
+
+    <section class="policy-section">
       <h2>Information we collect</h2>
-      <p>Root may collect account details, profile information, group activity, uploaded images, journal entries, and information needed to provide the app's features. The final policy should explain the exact data collected and the legal basis for processing it.</p>
-    </article>
-    <article>
-      <h2>How information is used</h2>
-      <p>Information may be used to authenticate users, operate group features, display uploaded content, communicate service updates, and improve the application. Add the final retention and sharing details before launch.</p>
-    </article>
-    <article>
-      <h2>Contact</h2>
-      <p>For privacy questions, replace this paragraph with the organization's official contact email and mailing address.</p>
-    </article>
-    <footer><a href="/">Return to Root</a></footer>
-  </main>
+      <p>To create your account and connect you with your tour group, Root collects:</p>
+      <ul>
+        <li><strong>Phone number or email</strong> — used to sign in and verify your account</li>
+        <li><strong>Full name</strong></li>
+        <li><strong>Profile photo</strong></li>
+        <li><strong>Bio</strong></li>
+        <li><strong>City or place of origin</strong></li>
+        <li><strong>Phone number visibility preference</strong> — your choice of who can see it</li>
+      </ul>
+    </section>
+
+    <section class="policy-section">
+      <h2>Travel-related information</h2>
+      <p>Because Root is built around your trips, it also keeps:</p>
+      <ul>
+        <li><strong>Your full trip history</strong> — every tour you've joined, kept accessible indefinitely</li>
+        <li><strong>Your group or batch assignment</strong> for each trip</li>
+        <li><strong>The participant directory</strong> for every group you join — the name, photo, and city of fellow members</li>
+        <li><strong>Your spiritual leader or coordinator's details</strong> — photo, bio, and contact information</li>
+      </ul>
+    </section>
+
+    <section class="policy-section">
+      <h2>Content you add</h2>
+      <p>Root also stores what you create and share inside the app:</p>
+      <ul>
+        <li><strong>Travel journals</strong> — your personal reflections from the trip</li>
+        <li><strong>Photos</strong> you upload to your group's shared gallery</li>
+        <li><strong>Admin broadcast notifications</strong> sent to your group</li>
+      </ul>
+    </section>
+
+    <section class="policy-section">
+      <h2>System information</h2>
+      <p>To keep the app running smoothly and securely, Root records:</p>
+      <ul>
+        <li><strong>Authentication tokens and sessions</strong></li>
+        <li><strong>Sync and cache logs</strong></li>
+        <li><strong>Content access patterns</strong></li>
+      </ul>
+    </section>
+
+    <section class="policy-section">
+      <h2>Where your data lives</h2>
+      <div class="callout">
+        <p>Your information is stored on Root's remote application server, in a MariaDB database, and is used exclusively for the Root app.</p>
+        <p>We do not share your data with third parties. Your information is kept confidential at all times.</p>
+      </div>
+    </section>
+
+    <section class="policy-section">
+      <h2>How long we keep it</h2>
+      <p>Your trip history is retained permanently — as a member, you keep indefinite access to the details of every past trip and the members who joined you.</p>
+      <p>If you'd like your account or data deleted, email us and we'll process your request. Administrator access to the system is logged and managed by our server administrator.</p>
+      <div class="callout">
+        <p>To request account or data deletion, contact:</p>
+        <p><a href="mailto:austin.412024020@civitas.ukrida.ac.id">austin.412024020@civitas.ukrida.ac.id</a></p>
+      </div>
+    </section>
+
+    <section class="policy-section">
+      <h2>Photos you upload</h2>
+      <p>When you upload a photo to Root, its metadata — including EXIF data and geolocation, if present — is preserved as-is. We only change the file's name when it's stored; no metadata is stripped or removed.</p>
+    </section>
+
+    <section class="policy-section">
+      <div class="contact-box">
+        <h2>Questions about this policy</h2>
+        <p style="color:#F3EAE0">Reach out any time at <a href="mailto:austin.412024020@civitas.ukrida.ac.id">austin.412024020@civitas.ukrida.ac.id</a>.</p>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <!-- <span>Root</span> -->
+    <a href="index.html">Back to Root</a>
+  </div>
+</footer>
+
 </body>
 </html>

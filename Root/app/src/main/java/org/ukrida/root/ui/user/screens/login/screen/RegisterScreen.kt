@@ -42,6 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.H1Color
 import org.ukrida.root.ui.theme.MicroElement
+import org.ukrida.root.ui.components.LegalLinks
 import org.ukrida.root.ui.user.screens.login.viewmodel.RegisterViewModel
 import org.ukrida.root.utils.Resource
 
@@ -194,6 +195,8 @@ fun RegisterScreen(
             }
 
             Spacer(Modifier.height(30.dp))
+            LegalLinks(modifier = Modifier.align(Alignment.CenterHorizontally))
+            Spacer(Modifier.height(16.dp))
 
         }
 
