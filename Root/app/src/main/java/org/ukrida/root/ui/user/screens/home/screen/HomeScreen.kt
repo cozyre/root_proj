@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import org.ukrida.root.ui.user.navigation.PublicScreen
+import org.ukrida.root.ui.components.LegalLinks
 import org.ukrida.root.ui.user.screens.home.components.BookingBanner
 import org.ukrida.root.ui.user.screens.home.components.HeroSection
 import org.ukrida.root.ui.user.screens.home.components.MissionSection
@@ -70,6 +71,8 @@ fun HomeScreen(
                 }
             )
             Spacer(modifier = Modifier.height(30.dp))
+            LegalLinks(modifier = Modifier.padding(horizontal = 20.dp))
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }

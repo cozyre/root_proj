@@ -52,6 +52,7 @@ import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.H1Color
 import org.ukrida.root.ui.theme.MicroElement
 import org.ukrida.root.ui.theme.RejectButton
+import org.ukrida.root.ui.components.LegalLinks
 import org.ukrida.root.ui.user.screens.login.viewmodel.LoginViewModel
 import org.ukrida.root.utils.Resource
 
@@ -312,6 +313,9 @@ fun LoginScreen(
                                 onRegisterClick()
                             }
                         }
+                    )
+                    LegalLinks(
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 }
             }
