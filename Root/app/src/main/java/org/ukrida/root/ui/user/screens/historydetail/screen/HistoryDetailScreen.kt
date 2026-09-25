@@ -69,6 +69,7 @@ fun HistoryDetailScreen(
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = 20.dp)
                 ) {
+                    Spacer(Modifier.height(50.dp))
                     HistoryHeader(
                         group = groupData,
                         navController = navController,
@@ -84,6 +85,7 @@ fun HistoryDetailScreen(
                         gallery = gallery,
                         onImageClick = {},
                     )
+                    Spacer(Modifier.height(80.dp))
                 }
             }
         }

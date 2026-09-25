@@ -67,6 +67,7 @@ fun DashboardScreen(
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                     ) {
+                        Spacer(modifier = Modifier.height(50.dp))
                         DashboardHeader(group,coverImage)
                         Spacer(modifier = Modifier.height(32.dp))
                         OrganizerSection(group)
@@ -74,6 +75,7 @@ fun DashboardScreen(
                         InformationSection(group)
                         Spacer(modifier = Modifier.height(32.dp))
                         MeetupSection(group)
+                        Spacer(modifier = Modifier.height(120.dp))
                     }
                 }
                 is Resource.Error -> {

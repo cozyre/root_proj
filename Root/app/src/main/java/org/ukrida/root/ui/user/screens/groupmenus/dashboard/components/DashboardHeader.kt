@@ -74,7 +74,7 @@ fun DashboardHeader(
         } else {
 
             Image(
-                painter = painterResource(R.drawable.pyramid),
+                painter = painterResource(R.drawable.no_image),
                 contentDescription = group.name,
                 modifier = Modifier
                     .fillMaxWidth()

@@ -45,7 +45,7 @@ fun DailyBreadScreen(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(50.dp))
                 Text(
                     text = "Daily Bread",
                     style = MaterialTheme.typography.titleLarge,
@@ -92,6 +92,7 @@ fun DailyBreadScreen(
                                             )
                                         }
                                     )
+                                    Spacer(modifier = Modifier.height(10.dp))
                                 }
                             }
                         }
@@ -104,6 +105,7 @@ fun DailyBreadScreen(
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(80.dp))
             }
         }
     }

@@ -80,7 +80,6 @@ fun JournalEditorScreen(
                             navController.popBackStack()
                         }
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
                     CustomJournalField(
                         label = "Title",
                         value = uiState.title,

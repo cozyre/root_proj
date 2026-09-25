@@ -45,7 +45,7 @@ fun PromisedLandScreen(
                 .background(Color(0xFF2A2522))
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(50.dp))
             HistorySection(
                 historyGroups = historyGroups,
                 coverImages = coverImages,
@@ -70,7 +70,7 @@ fun PromisedLandScreen(
                     )
                 }
             )
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(80.dp))
         }
     }
 }

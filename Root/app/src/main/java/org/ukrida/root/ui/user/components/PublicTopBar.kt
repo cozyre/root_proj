@@ -1,9 +1,11 @@
 package org.ukrida.root.ui.user.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -24,6 +26,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.TitleColor
 
 @Composable
@@ -39,7 +42,9 @@ fun PublicTopBar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 16.dp)
+            .background(DarkBrown)
+            .height(80.dp)
+            .padding(horizontal = 20.dp)
     ) {
 
         // Kiri (Back atau Logo)
@@ -58,9 +63,9 @@ fun PublicTopBar(
             Text(
                 modifier = Modifier.align(Alignment.CenterStart),
                 text = "R",
-                color = titleColor,
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                color = titleColor
             )
         }
 
@@ -68,8 +73,9 @@ fun PublicTopBar(
         Text(
             modifier = Modifier.align(Alignment.Center),
             text = title.uppercase(),
-            color = titleColor,
-            style = MaterialTheme.typography.titleLarge,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = titleColor
         )
 
         // Kanan

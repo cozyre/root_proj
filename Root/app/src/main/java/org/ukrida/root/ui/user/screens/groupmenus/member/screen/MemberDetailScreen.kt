@@ -65,6 +65,7 @@ fun MemberDetailScreen(
                                 .fillMaxSize()
                                 .verticalScroll(rememberScrollState())
                         ) {
+                            Spacer(modifier = Modifier.height(50.dp))
                             MemberDetailHeader(
                                 member = member
                             )

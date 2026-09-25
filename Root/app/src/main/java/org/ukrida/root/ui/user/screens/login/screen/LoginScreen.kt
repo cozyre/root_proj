@@ -73,6 +73,9 @@ fun LoginScreen(
 
     LaunchedEffect(state) {
         if (state is Resource.Success) {
+
+            viewModel.resetState()
+
             onLoginSuccess()
         }
     }
@@ -314,6 +317,8 @@ fun LoginScreen(
                             }
                         }
                     )
+                    Spacer(modifier = Modifier.height(20.dp))
+
                     LegalLinks(
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
