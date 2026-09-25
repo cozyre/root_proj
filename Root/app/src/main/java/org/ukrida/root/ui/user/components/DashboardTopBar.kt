@@ -1,5 +1,6 @@
 package org.ukrida.root.ui.user.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.ukrida.root.ui.theme.DarkBrown
 import org.ukrida.root.ui.theme.TitleColor
 
 @Composable
@@ -35,6 +37,7 @@ fun DashboardTopBar(
     val cream = Color(0xFFE5C19A)
     Row(
         modifier = Modifier
+            .background(DarkBrown)
             .fillMaxWidth()
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,

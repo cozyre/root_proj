@@ -144,6 +144,7 @@ fun ProfileScreen(
                         Column(
                             modifier = Modifier.padding(20.dp)
                         ) {
+                            Spacer(modifier = Modifier.height(30.dp))
                             ProfileHeader(
                                 profile = loadedProfile,
                                 onChangePhotoClick = {
@@ -237,7 +238,7 @@ fun ProfileScreen(
                             LogoutButton(
                                 onLogout = { onLogout() }
                             )
-                            Spacer(modifier = Modifier.height(30.dp))
+                            Spacer(modifier = Modifier.height(80.dp))
                         }
                     }
                 }

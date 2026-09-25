@@ -6,7 +6,9 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -68,7 +70,8 @@ fun GalleryScreen(
 
     Scaffold(
         containerColor = Color(0xFF2A2522),
-    ) { padding ->
+    ) {
+        padding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -91,6 +94,7 @@ fun GalleryScreen(
                         )
                     }
                     Column(modifier = Modifier.fillMaxSize()) {
+                        Spacer(modifier = Modifier.height(50.dp))
                         GalleryGrid(
                             images = images,
                             modifier = Modifier.weight(1f),
@@ -103,6 +107,7 @@ fun GalleryScreen(
                                 )
                             }
                         )
+                        Spacer(modifier = Modifier.height(80.dp))
                     }
                 }
                 is Resource.Error -> {

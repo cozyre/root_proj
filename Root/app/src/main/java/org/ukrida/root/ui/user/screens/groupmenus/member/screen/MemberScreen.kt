@@ -55,7 +55,7 @@ fun MemberScreen(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(50.dp))
                 Text(
                     text = "Meet People!",
                     modifier = Modifier.fillMaxWidth(),
@@ -131,6 +131,7 @@ fun MemberScreen(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(80.dp))
         }
     }
 }

@@ -40,7 +40,7 @@ fun HistoryScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(50.dp))
             HistorySection(
                 navController = navController,
                 historyGroups = historyGroups,
@@ -51,6 +51,7 @@ fun HistoryScreen(
                     )
                 }
             )
+            Spacer(modifier = Modifier.height(80.dp))
 
         }
 

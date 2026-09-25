@@ -59,7 +59,7 @@ fun ItineraryScreen(
                             modifier = Modifier
                                 .padding(horizontal = 20.dp)
                         ) {
-                            Spacer(modifier = Modifier.height(24.dp))
+                            Spacer(modifier = Modifier.height(50.dp))
                             ItineraryHeader(
                                 date = data.date,
                                 description = data.desc
@@ -74,6 +74,7 @@ fun ItineraryScreen(
                                 ActivityRow(item)
                             }
                         }
+
 
                         // Handle DateNavigator using the dates list from state
                         val datesRes = uiState.dates
@@ -99,6 +100,7 @@ fun ItineraryScreen(
                             Text(text = "No itinerary available", color = Color.White)
                         }
                     }
+                    Spacer(modifier = Modifier.height(80.dp))
                 }
             }
         }

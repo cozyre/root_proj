@@ -46,6 +46,7 @@ fun HomeScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
+            Spacer(modifier = Modifier.height(50.dp))
             HeroSection()
             Spacer(modifier = Modifier.height(50.dp))
             VisionSection()
@@ -72,7 +73,7 @@ fun HomeScreen(
             )
             Spacer(modifier = Modifier.height(30.dp))
             LegalLinks(modifier = Modifier.padding(horizontal = 20.dp))
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(50.dp))
         }
     }
 }

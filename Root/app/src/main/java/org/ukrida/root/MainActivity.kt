@@ -61,9 +61,27 @@ fun MainScreen(activity: MainActivity) {
 
     var currentRoute by remember { mutableStateOf<String?>(null) }
     var isLogoutTriggered by remember { mutableStateOf(false) }
-    val onLogout = {
+
+    LaunchedEffect(currentRoute) {
+        Log.d("NAV_DEBUG", "MAIN currentRoute = $currentRoute")
+    }
+
+    val onLogout: () -> Unit = {
+        Log.d("LOGOUT_DEBUG", "Logout clicked")
+
         appViewModel.logout()
+
+        Log.d(
+            "LOGOUT_DEBUG",
+            "Token after logout = ${sessionManager.getToken()}"
+        )
+
         currentRoute = "auth"
+
+        Log.d(
+            "LOGOUT_DEBUG",
+            "Route changed to auth"
+        )
     }
 
     // ─── Initial Navigation ──────────────────────────────────────────
@@ -110,12 +128,20 @@ fun MainScreen(activity: MainActivity) {
                 sessionManager = sessionManager,
                 onLoginSuccess = {
                     val role = sessionManager.getRole()
-                    isLogoutTriggered = false
+
+                    if (role == null) {
+                        Log.w(
+                            "LOGIN_DEBUG",
+                            "Ignoring onLoginSuccess because role is null"
+                        )
+                        return@AuthNavigation
+                    }
+
                     currentRoute = when (role) {
                         "admin" -> "admin_root"
-                        else -> "public_root"
+                        "user" -> "public_root"
+                        else -> "auth"
                     }
-                    Log.d("MainScreen", "Login successful, navigating to: $currentRoute")
                 }
             )
         }

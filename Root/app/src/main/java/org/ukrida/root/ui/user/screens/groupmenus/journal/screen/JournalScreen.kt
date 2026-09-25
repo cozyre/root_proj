@@ -68,7 +68,7 @@ fun JournalScreen(
                     modifier = Modifier.padding(horizontal = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(50.dp))
                     Text(
                         text = "Journal",
                         style = MaterialTheme.typography.titleLarge,
@@ -140,7 +140,7 @@ fun JournalScreen(
                                             )
                                         }
                                     )
-                                    Spacer(modifier = Modifier.height(16.dp))
+                                    Spacer(modifier = Modifier.height(80.dp))
                                 }
                             }
                         }

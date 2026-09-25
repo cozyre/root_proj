@@ -68,7 +68,7 @@ fun HymnScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(50.dp))
                     Text(
                         text = "Hymn for Him",
                         style = MaterialTheme.typography.titleLarge,
@@ -148,5 +148,6 @@ fun HymnScreen(
                 }
             }
         }
+        Spacer(modifier = Modifier.height(80.dp))
     }
 }
